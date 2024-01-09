@@ -1,0 +1,6 @@
+[submodule "submodules/barkoder-android"]
+	path = submodules/barkoder-android
+	url = git@github.com:lazyvlad/barkoder-android.git
+[submodule "submodules/barkoder-ios"]
+	path = submodules/barkoder-ios
+	url = git@github.com:lazyvlad/barkoder-ios.git
