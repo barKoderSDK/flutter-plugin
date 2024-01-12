@@ -10,7 +10,7 @@ import BarkoderSDK
 
 class Util {
     
-    static func barkoderResultsToJsonString(_ decoderResults: [DecoderResult], image: UIImage?) -> String? {
+    static func barkoderResultsToJsonString(_ decoderResults: [DecoderResult], thumbnails: [UIImage]?, image: UIImage?) -> String? {
         guard let decoderResult = decoderResults.first else {
             return nil
         }
@@ -33,6 +33,10 @@ class Util {
         if let image = image,
            let imageData = image.pngData() {
             resultJson["resultImageAsBase64"] = imageData.base64EncodedString()
+        }
+        
+        if let thumbnail = thumbnails?.first?.pngData() {
+            resultJson["resultThumbnailAsBase64"] = thumbnail.base64EncodedString()
         }
         
         do {

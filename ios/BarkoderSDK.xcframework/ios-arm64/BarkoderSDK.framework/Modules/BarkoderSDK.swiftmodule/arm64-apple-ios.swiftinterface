@@ -13,7 +13,7 @@ import _Concurrency
 import _StringProcessing
 import _SwiftConcurrencyShims
 @objc public protocol BarkoderResultDelegate {
-  @objc func scanningFinished(_ decoderResults: [Barkoder.DecoderResult], image: UIKit.UIImage?)
+  @objc func scanningFinished(_ decoderResults: [Barkoder.DecoderResult], thumbnails: [UIKit.UIImage]?, image: UIKit.UIImage?)
 }
 @_inheritsConvenienceInitializers @objc public class BarkoderConfig : ObjectiveC.NSObject {
   @objc public var roiLineColor: UIKit.UIColor {
@@ -46,6 +46,8 @@ import _SwiftConcurrencyShims
     @objc get
     @objc set
   }
+  @objc public var barcodeThumbnailOnResult: Swift.Bool
+  @objc public var thresholdBetweenDuplicatesScans: Swift.Int
   @objc open func setRegionOfInterest(_ value: CoreFoundation.CGRect) throws
   @objc open func getRegionOfInterest() -> CoreFoundation.CGRect
   @objc convenience public init(licenseKey: Swift.String, licenseCheckHandler: @escaping ((Barkoder.LicenseCheckResult) -> Swift.Void))
@@ -60,6 +62,9 @@ import _SwiftConcurrencyShims
 }
 extension UIKit.UIImage {
   public func fixOrientation() -> UIKit.UIImage
+}
+@objc public protocol BarkoderPerformanceDelegate {
+  @objc optional func performanceReceived(fps: Swift.Float, dps: Swift.Float)
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc @_Concurrency.MainActor(unsafe) public class BarkoderView : UIKit.UIView, BarkoderSDK.BarkoderPreviewFramesDelegate {
   @objc public enum BarkoderResolution : Swift.Int {
@@ -78,6 +83,7 @@ extension UIKit.UIImage {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc @_Concurrency.MainActor(unsafe) public func startCamera()
   @objc @_Concurrency.MainActor(unsafe) public func setPreviewFramesDelegate(_ delegate: (any BarkoderSDK.BarkoderPreviewFramesDelegate)?)
+  @objc @_Concurrency.MainActor(unsafe) public func setBarkoderPerformanceDelegate(_ delegate: (any BarkoderSDK.BarkoderPerformanceDelegate)?)
   @objc @_Concurrency.MainActor(unsafe) public func startScanning(_ resultDelegate: any BarkoderSDK.BarkoderResultDelegate) throws
   @objc @_Concurrency.MainActor(unsafe) public func stopScanning()
   @objc @_Concurrency.MainActor(unsafe) public func pauseScanning()
@@ -109,6 +115,10 @@ extension CoreFoundation.CGRect {
     case retail_1d
     case industrial_1d
     case all_2d
+    case dpm
+    case vin
+    case dotcode
+    case all_1d
     public init?(rawValue: Swift.Int)
     public typealias RawValue = Swift.Int
     public var rawValue: Swift.Int {

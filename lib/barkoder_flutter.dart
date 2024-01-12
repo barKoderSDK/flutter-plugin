@@ -468,6 +468,90 @@ class Barkoder {
     return _methodChannel.invokeMethod('showLogMessages', show);
   }
 
+  Future<bool> get getMulticodeCachingEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getMulticodeCachingEnabled');
+  }
+
+  Future<void> setMulticodeCachingEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setMulticodeCachingEnabled', enabled);
+  }
+
+  Future<int> get getMulticodeCachingDuration async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getMulticodeCachingDuration');
+  }
+
+  Future<void> setMulticodeCachingDuration(int multicodeCachingDuration) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setMulticodeCachingDuration', multicodeCachingDuration);
+  }
+
+  Future<void> setBarcodeThumbnailOnResultEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setBarcodeThumbnailOnResultEnabled', enabled);
+  }
+
+  Future<bool> get isBarcodeThumbnailOnResultEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isBarcodeThumbnailOnResultEnabled');
+  }
+
+  Future<void> setThresholdBetweenDuplicatesScans(
+      int thresholdBetweenDuplicatesScans) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setThresholdBetweenDuplicatesScans', thresholdBetweenDuplicatesScans);
+  }
+
+  Future<int> get getThresholdBetweenDuplicatesScans async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getThresholdBetweenDuplicatesScans');
+  }
+
 //endregion BarkoderConfig APIs
 
 //region Barkoder APIs
@@ -669,6 +753,26 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getVersion');
   }
 
+  Future<bool> get isUpcEanDeblurEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isUpcEanDeblurEnabled');
+  }
+
+  Future<void> setUpcEanDeblurEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setUpcEanDeblurEnabled', enabled);
+  }
+
   Future<void> setMaximumResultsCount(int maximumResultsCount) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -676,7 +780,8 @@ class Barkoder {
           message: BarkoderErrors.barkodeViewNotMountedDesc));
     }
 
-    return _methodChannel.invokeMethod('setMaximumResultsCount', maximumResultsCount);
+    return _methodChannel.invokeMethod(
+        'setMaximumResultsCount', maximumResultsCount);
   }
 
   Future<double> get getMaximumResultsCount async {
@@ -689,6 +794,16 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getMaximumResultsCount');
   }
 
+  Future<bool> get isMisshaped1DEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isMisshaped1DEnabled');
+  }
+
   Future<void> setDuplicatesDelayMs(int duplicatesDelayMs) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -696,7 +811,18 @@ class Barkoder {
           message: BarkoderErrors.barkodeViewNotMountedDesc));
     }
 
-    return _methodChannel.invokeMethod('setDuplicatesDelayMs', duplicatesDelayMs);
+    return _methodChannel.invokeMethod(
+        'setDuplicatesDelayMs', duplicatesDelayMs);
+  }
+
+  Future<void> setMisshaped1DEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setMisshaped1DEnabled', enabled);
   }
 
   Future<int> get getDuplicatesDelayMs async {
@@ -709,26 +835,26 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getDuplicatesDelayMs');
   }
 
-  Future<void> setMulticodeCachingEnabled(bool multicodeCachingEnabled) {
+  Future<void> setEnableVINRestrictions(bool enabled) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
           code: BarkoderErrors.barkoderViewNotMounted,
           message: BarkoderErrors.barkodeViewNotMountedDesc));
     }
 
-    return _methodChannel.invokeMethod('setMulticodeCachingEnabled', multicodeCachingEnabled);
+    return _methodChannel.invokeMethod('setEnableVINRestrictions', enabled);
   }
 
-  Future<void> setMulticodeCachingDuration(int multicodeCachingDuration) {
+  Future<bool> get isVINRestrictionsEnabled async {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
           code: BarkoderErrors.barkoderViewNotMounted,
           message: BarkoderErrors.barkodeViewNotMountedDesc));
     }
 
-    return _methodChannel.invokeMethod('setMulticodeCachingDuration', multicodeCachingDuration);
+    return await _methodChannel.invokeMethod('isVINRestrictionsEnabled');
   }
-
+  
 //endregion Barkoder APIs
 
   Future<void> configureBarkoder(BarkoderConfig barkoderConfig) {

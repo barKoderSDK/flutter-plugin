@@ -100,6 +100,26 @@ class Util {
                 return decoderConfig.PDF417Micro;
             case Datamatrix:
                 return decoderConfig.Datamatrix;
+            case Code25:
+                return decoderConfig.Code25;
+            case Interleaved25:
+                return decoderConfig.Interleaved25;
+            case ITF14:
+                return decoderConfig.ITF14;
+            case IATA25:
+                return decoderConfig.IATA25;
+            case Matrix25:
+                return decoderConfig.Matrix25;
+            case Datalogic25:
+                return decoderConfig.Datalogic25;
+            case COOP25:
+                return decoderConfig.COOP25;
+            case Code32:
+                return decoderConfig.Code32;
+            case Telepen:
+                return decoderConfig.Telepen;
+            case Dotcode:
+                return decoderConfig.Dotcode;
         }
         return null;
     }

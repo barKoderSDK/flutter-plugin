@@ -46,7 +46,8 @@ typedef enum {
     Datalogic25,
     COOP25,
     Code32,
-    Telepen
+    Telepen,
+    Dotcode
 } DecoderType;
 
 
@@ -181,6 +182,13 @@ typedef enum  {
 // Telepen Config
 //==========================================================================
 @interface TelepenConfig : SpecificConfig
+- (id)initWithDecoderType:(DecoderType)decoderType;
+@end
+
+//==========================================================================
+// Dotcode Config
+//==========================================================================
+@interface DotcodeConfig : SpecificConfig
 - (id)initWithDecoderType:(DecoderType)decoderType;
 @end
 
@@ -367,6 +375,7 @@ typedef enum {
 @property (nonatomic, readonly, retain) Code93Config* _Nonnull code93;
 @property (nonatomic, readonly, retain) Code39Config* _Nonnull code39;
 @property (nonatomic, readonly, retain) TelepenConfig* _Nonnull telepen;
+@property (nonatomic, readonly, retain) DotcodeConfig* _Nonnull dotcode;
 @property (nonatomic, readonly, retain) Code32Config* _Nonnull code32;
 @property (nonatomic, readonly, retain) CodabarConfig* _Nonnull codabar;
 @property (nonatomic, readonly, retain) Code11Config* _Nonnull code11;
@@ -392,6 +401,9 @@ typedef enum {
 @property (nonatomic, readwrite) Formatting formatting;
 @property (nonatomic, readwrite) int maximumResultsCount;
 @property (nonatomic, readwrite) int duplicatesDelayMs;
+@property (nonatomic, readwrite) bool upcEanDeblur;
+@property (nonatomic, readwrite) bool enableMisshaped1D;
+@property (nonatomic, readwrite) bool enableVINRestrictions;
 
 
 -(void)setEnabledDecoders:(NSArray* _Nonnull)decoders;
@@ -438,7 +450,8 @@ typedef enum {
     BT_Datalogic25,
     BT_COOP25,
     BT_Code32,
-    BT_Telepen
+    BT_Telepen,
+    BT_Dotcode
 } BarcodeType;
 
 @interface DecoderResult : NSObject {
@@ -467,6 +480,7 @@ typedef enum {
 //==========================================================================
 @interface iBarkoder : NSObject
 +(NSString *) GetLibVersion;
++(bool) IsDecoderBusy;
 +(NSArray<DecoderResult*>*)decodeImageInMemory:(Config*)config imagePixels:(uint8_t*)pixels imageWidth:(int)width imageHeight:(int) height;
 +(int) decodeImageAsync:(Config*)config image: (Image*) image callback:(void (^)(NSArray<DecoderResult*>*, Image*)) callback;
 +(int) decodeSampleBufferAsync:(Config*)config sampleBuffer:(CMSampleBufferRef)sampleBuffer callback:(void (^)(NSArray<DecoderResult*>*, CMSampleBufferRef)) callback;

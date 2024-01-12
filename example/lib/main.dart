@@ -25,6 +25,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   String _typeValue = '';
   String _extrasValue = '';
   Uint8List? _resultImage;
+  Uint8List? _resultThumbnailImage;
 
   @override
   void initState() {
@@ -99,11 +100,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         } else {
           _resultImage = null;
         }
+
+        if (result.resultThumbnailAsBase64 != null) {
+          _resultThumbnailImage =
+              const Base64Decoder().convert(result.resultThumbnailAsBase64!);
+        } else {
+          _resultThumbnailImage = null;
+        }
       } else {
         _resultValue = '';
         _typeValue = '';
         _extrasValue = '';
         _resultImage = null;
+        _resultThumbnailImage = null;
       }
     });
   }
@@ -252,6 +261,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           ],
                         ),
                       ),
+                      Expanded(
+                          child: Row(children: [
+                        if (_resultThumbnailImage != null)
+                          Align(
+                              alignment: Alignment.topLeft,
+                              child: Image.memory(
+                                _resultThumbnailImage!,
+                                height: 250,
+                                width: 250,
+                              )),
+                      ])),
                     ],
                   )))
         ],

@@ -290,6 +290,36 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setMulticodeCachingEnabled":
                 setMulticodeCachingEnabled((boolean) call.arguments, result);
                 break;
+            case "setBarcodeThumbnailOnResultEnabled":
+                setBarcodeThumbnailOnResultEnabled((boolean) call.arguments, result);
+                break;
+            case "setThresholdBetweenDuplicatesScans":
+                setThresholdBetweenDuplicatesScans((int) call.arguments, result);
+                break;
+            case "setUpcEanDeblurEnabled":
+                setUpcEanDeblurEnabled((boolean) call.arguments, result);
+                break;
+            case "setMisshaped1DEnabled":
+                setMisshaped1DEnabled((boolean) call.arguments, result);
+                break;
+            case "setEnableVINRestrictions":
+                setEnableVINRestrictions((boolean) call.arguments, result);
+                break;
+            case "isMisshaped1DEnabled":
+                isMisshaped1DEnabled(result);
+                break;
+            case "isVINRestrictionsEnabled":
+                isVINRestrictionsEnabled(result);
+                break;
+            case "isUpcEanDeblurEnabled":
+                isUpcEanDeblurEnabled(result);
+                break;
+            case "isBarcodeThumbnailOnResultEnabled":
+                isBarcodeThumbnailOnResultEnabled(result);
+                break;
+            case "getThresholdBetweenDuplicatesScans":
+                getThresholdBetweenDuplicatesScans(result);
+                break;
             case "configureBarkoder": //UNTIL THIS ONE TESTED
                 configureBarkoder((String) call.arguments, result);
                 break;
@@ -514,7 +544,7 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
     private void startScanning(MethodChannel.Result methodResult) {
         SoftReference<EventChannel.EventSink> scanningResultsEventSinkRef = new SoftReference<>(scanningResultsEventSink);
 
-        bkdView.startScanning((results, resultImage) -> {
+        bkdView.startScanning((results, thumbnails, resultImage) -> {
             EventChannel.EventSink sink = scanningResultsEventSinkRef.get();
             if (sink != null)
                 sink.success(Util.barkoderResultsToJsonString(results, resultImage));
@@ -755,6 +785,56 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         BarkoderConfig.SetMulticodeCachingEnabled(multicodeCachingEnabled);
 
         methodResult.success(null);
+    }
+
+    private void setBarcodeThumbnailOnResultEnabled(boolean barcodeThumbnailOnResultEnabled, MethodChannel.Result methodResult) {
+        bkdView.config.setThumbnailOnResultEnabled(barcodeThumbnailOnResultEnabled);
+
+        methodResult.success(null);
+    }
+
+    private void setThresholdBetweenDuplicatesScans(int thresholdBetweenDuplicatesScans, MethodChannel.Result methodResult) {
+        bkdView.config.setThresholdBetweenDuplicatesScans(thresholdBetweenDuplicatesScans);
+
+        methodResult.success(null);
+    }
+
+    private void setUpcEanDeblurEnabled(boolean upcEanDeblurEnabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().upcEanDeblur = upcEanDeblurEnabled;
+
+        methodResult.success(null);
+    }
+
+    private void setMisshaped1DEnabled(boolean misshaped1DEnabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().enableMisshaped1D = misshaped1DEnabled;
+
+        methodResult.success(null);
+    }
+
+    private void setEnableVINRestrictions(boolean enableVINRestrictions, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().enableVINRestrictions = enableVINRestrictions;
+
+        methodResult.success(null);
+    }
+
+    private void isMisshaped1DEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().enableMisshaped1D);
+    }
+
+    private void isVINRestrictionsEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().enableVINRestrictions);
+    }
+
+    private void isUpcEanDeblurEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().upcEanDeblur);
+    }
+
+    private void isBarcodeThumbnailOnResultEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getThumbnailOnResulEnabled());
+    }
+
+    private void getThresholdBetweenDuplicatesScans(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getThresholdBetweenDuplicatesScans());
     }
 
     private void configureBarkoder(String barkoderConfigAsJsonString, MethodChannel.Result methodResult) {

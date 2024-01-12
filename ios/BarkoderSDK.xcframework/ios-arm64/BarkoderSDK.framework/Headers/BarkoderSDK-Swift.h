@@ -354,6 +354,10 @@ SWIFT_CLASS("_TtC11BarkoderSDK14BarkoderConfig")
 /// Get the active resolution. It can be Normal(HD), or HIGH(Full HD)
 /// Default value is BarkoderView.BarkoderResolution.normal
 @property (nonatomic) enum BarkoderResolution barkoderResolution;
+/// Getting barcode thumbnail on result
+@property (nonatomic) BOOL barcodeThumbnailOnResult;
+/// Getting threshold between duplicates scans
+@property (nonatomic) NSInteger thresholdBetweenDuplicatesScans;
 - (BOOL)setRegionOfInterest:(CGRect)value error:(NSError * _Nullable * _Nullable)error;
 /// Get active region of interest
 /// Default value is ‘CGRect(x: 3, y: 30, width: 94, height: 40)’
@@ -434,7 +438,18 @@ typedef SWIFT_ENUM(NSInteger, BarkoderConfigTemplate, open) {
   BarkoderConfigTemplateRetail_1d = 3,
   BarkoderConfigTemplateIndustrial_1d = 4,
   BarkoderConfigTemplateAll_2d = 5,
+  BarkoderConfigTemplateDpm = 6,
+  BarkoderConfigTemplateVin = 7,
+  BarkoderConfigTemplateDotcode = 8,
+  BarkoderConfigTemplateAll_1d = 9,
 };
+
+
+SWIFT_PROTOCOL("_TtP11BarkoderSDK27BarkoderPerformanceDelegate_")
+@protocol BarkoderPerformanceDelegate
+@optional
+- (void)performanceReceivedWithFps:(float)fps dps:(float)dps;
+@end
 
 
 SWIFT_PROTOCOL("_TtP11BarkoderSDK29BarkoderPreviewFramesDelegate_")
@@ -447,7 +462,7 @@ SWIFT_PROTOCOL("_TtP11BarkoderSDK29BarkoderPreviewFramesDelegate_")
 
 SWIFT_PROTOCOL("_TtP11BarkoderSDK22BarkoderResultDelegate_")
 @protocol BarkoderResultDelegate
-- (void)scanningFinished:(NSArray<DecoderResult *> * _Nonnull)decoderResults image:(UIImage * _Nullable)image;
+- (void)scanningFinished:(NSArray<DecoderResult *> * _Nonnull)decoderResults thumbnails:(NSArray<UIImage *> * _Nullable)thumbnails image:(UIImage * _Nullable)image;
 @end
 
 @class NSCoder;
@@ -460,6 +475,10 @@ SWIFT_CLASS("_TtC11BarkoderSDK12BarkoderView")
 /// Start the camera preview only, without decoding
 - (void)startCamera;
 - (void)setPreviewFramesDelegate:(id <BarkoderPreviewFramesDelegate> _Nullable)delegate;
+/// Set callback for getting fps and dps for checking performance
+/// \param delegate Callback which return fps and dps as Float
+///
+- (void)setBarkoderPerformanceDelegate:(id <BarkoderPerformanceDelegate> _Nullable)delegate;
 /// Turn flash ON/OFF
 /// If preview session is already active this state be set only for active session
 /// otherwise the initial flash state is set. Every next preview session will be started with this state

@@ -144,6 +144,20 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.startScanning(result)
             case "setBarcodeTypeEnabled":
                 self?.setBarcodeTypeEnabled(call, result: result)
+            case "setMulticodeCachingEnabled":
+                self?.setMulticodeCachingEnabled(call, result: result)
+            case "setMulticodeCachingDuration":
+                self?.setMulticodeCachingDuration(call, result: result)
+            case "setBarcodeThumbnailOnResultEnabled":
+                self?.setBarcodeThumbnailOnResultEnabled(call, result: result)
+            case "setThresholdBetweenDuplicatesScans":
+                self?.setThresholdBetweenDuplicatesScans(call, result: result)
+            case "setUpcEanDeblurEnabled":
+                self?.setUpcEanDeblurEnabled(call, result: result)
+            case "setMisshaped1DEnabled":
+                self?.setMisshaped1DEnabled(call, result: result)
+            case "setEnableVINRestrictions":
+                self?.setEnableVINRestrictions(call, result: result)
             case "isFlashAvailable":
                 self?.isFlashAvailable(result)
             case "isCloseSessionOnResultEnabled":
@@ -204,6 +218,16 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.getFormattingType(result)
             case "getThreadsLimit":
                 self?.getThreadsLimit(result)
+            case "getMulticodeCachingEnabled":
+                self?.getMulticodeCachingEnabled(result)
+            case "getMulticodeCachingDuration":
+                self?.getMulticodeCachingDuration(result)
+            case "isUpcEanDeblurEnabled":
+                self?.isUpcEanDeblurEnabled(result)
+            case "isMisshaped1DEnabled":
+                self?.isMisshaped1DEnabled(result)
+            case "isVINRestrictionsEnabled":
+                self?.isVINRestrictionsEnabled(result)
             case "setMaximumResultsCount":
                 self?.setMaximumResultsCount(call, result: result)
             case "getMaximumResultsCount":
@@ -212,10 +236,10 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setDuplicatesDelayMs(call, result: result)
             case "getDuplicatesDelayMs":
                 self?.getDuplicatesDelayMs(result)
-            case "setMulticodeCachingDuration":
-                self?.setMulticodeCachingDuration(call, result: result)
-            case "setMulticodeCachingEnabled":
-                self?.setMulticodeCachingEnabled(call, result: result)
+            case "isBarcodeThumbnailOnResultEnabled":
+                self?.isBarcodeThumbnailOnResultEnabled(result)
+            case "getThresholdBetweenDuplicatesScans":
+                self?.getThresholdBetweenDuplicatesScans(result)
             default:
                 break
             }
@@ -254,9 +278,8 @@ extension BarkoderPlatformView {
 }
 
 extension BarkoderPlatformView: BarkoderResultDelegate {
-    
-    public func scanningFinished(_ decoderResults: [DecoderResult], image: UIImage?) {
-        let barkoderResultsToJsonString = Util.barkoderResultsToJsonString(decoderResults, image: image)
+    public func scanningFinished(_ decoderResults: [DecoderResult], thumbnails: [UIImage]?, image: UIImage?) {
+        let barkoderResultsToJsonString = Util.barkoderResultsToJsonString(decoderResults, thumbnails: thumbnails, image: image)
         scanningResultsEventSink?(barkoderResultsToJsonString)
     }
     
@@ -736,6 +759,26 @@ extension BarkoderPlatformView {
                     decoderConfig.pdf417Micro.enabled = enabled
                 case Datamatrix:
                     decoderConfig.datamatrix.enabled = enabled
+                case Code25:
+                    decoderConfig.code25.enabled = enabled
+                case Interleaved25:
+                    decoderConfig.interleaved25.enabled = enabled
+                case ITF14:
+                    decoderConfig.itf14.enabled = enabled
+                case IATA25:
+                    decoderConfig.iata25.enabled = enabled
+                case Matrix25:
+                    decoderConfig.matrix25.enabled = enabled
+                case Datalogic25:
+                    decoderConfig.datalogic25.enabled = enabled
+                case COOP25:
+                    decoderConfig.coop25.enabled = enabled
+                case Code32:
+                    decoderConfig.code32.enabled = enabled
+                case Telepen:
+                    decoderConfig.telepen.enabled = enabled
+				case Dotcode:
+					decoderConfig.dotcode.enabled = enabled
                 default:
                     result(
                         FlutterError(
@@ -752,6 +795,24 @@ extension BarkoderPlatformView {
         }
     }
     
+    private func setMulticodeCachingEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let multicodeCachingEnabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.setMulticodeCachingEnabled(multicodeCachingEnabled)
+        
+        result(nil)
+    }
+    
+    private func setMulticodeCachingDuration(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let multicodeCachingDuration = call.arguments as? Int else {
+            return
+        }
+        
+        barkoderView.config?.setMulticodeCachingDuration(multicodeCachingDuration)
+    }
+
     private func setMaximumResultsCount(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let index = call.arguments as? UInt32 else {
             return
@@ -762,6 +823,14 @@ extension BarkoderPlatformView {
         result(nil)
     }
     
+    private func setBarcodeThumbnailOnResultEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.barcodeThumbnailOnResult = enabled
+    }
+
     private func setDuplicatesDelayMs(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let index = call.arguments as? UInt32 else {
             return
@@ -772,26 +841,44 @@ extension BarkoderPlatformView {
         result(nil)
     }
     
-    private func setMulticodeCachingDuration(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let index = call.arguments as? UInt32 else {
+    private func setThresholdBetweenDuplicatesScans(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let thresholdBetweenDuplicatesScans = call.arguments as? Int else {
             return
         }
+        
+        barkoderView.config?.thresholdBetweenDuplicatesScans = thresholdBetweenDuplicatesScans
 
-        barkoderView.config?.setMulticodeCachingDuration(Int(index))
+        result(nil)
+    }
+    
+    private func setUpcEanDeblurEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.upcEanDeblur = enabled
+    }
+    
+    private func setMisshaped1DEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.enableMisshaped1D = enabled
         
         result(nil)
     }
     
-    private func setMulticodeCachingEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    private func setEnableVINRestrictions(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let enabled = call.arguments as? Bool else {
             return
         }
-
-        barkoderView.config?.setMulticodeCachingEnabled(enabled)
+        
+        barkoderView.config?.decoderConfig?.enableVINRestrictions = enabled
         
         result(nil)
     }
-              
+                  
 }
 
 // MARK: - Getters
@@ -1012,6 +1099,26 @@ extension BarkoderPlatformView {
             result(decoderConfig.pdf417Micro.enabled)
         case Datamatrix:
             result(decoderConfig.datamatrix.enabled)
+        case Code25:
+            result(decoderConfig.code25.enabled)
+        case Interleaved25:
+            result(decoderConfig.interleaved25.enabled)
+        case ITF14:
+            result(decoderConfig.itf14.enabled)
+        case IATA25:
+            result(decoderConfig.iata25.enabled)
+        case Matrix25:
+            result(decoderConfig.matrix25.enabled)
+        case Datalogic25:
+            result(decoderConfig.datalogic25.enabled)
+        case COOP25:
+            result(decoderConfig.coop25.enabled)
+        case Code32:
+            result(decoderConfig.code32.enabled)
+        case Telepen:
+            result(decoderConfig.telepen.enabled)
+        case Dotcode:
+            result(decoderConfig.dotcode.enabled)
         default:
             result(
                 FlutterError(
@@ -1021,6 +1128,34 @@ extension BarkoderPlatformView {
                 )
             )
         }
+    }
+    
+    private func getMulticodeCachingEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.getMulticodeCachingEnabled())
+    }
+    
+    private func getMulticodeCachingDuration(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.getMulticodeCachingDuration())
+    }
+    
+    private func isUpcEanDeblurEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.upcEanDeblur)
+    }
+    
+    private func isMisshaped1DEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.enableMisshaped1D)
+    }
+    
+    private func isVINRestrictionsEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.enableVINRestrictions)
+    }
+    
+    private func isBarcodeThumbnailOnResultEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.barcodeThumbnailOnResult)
+    }
+
+    private func getThresholdBetweenDuplicatesScans(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.thresholdBetweenDuplicatesScans)
     }
     
 }

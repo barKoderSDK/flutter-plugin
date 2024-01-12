@@ -8,6 +8,7 @@ class BarkoderResult {
   String? characterSet;
   Map<String, dynamic>? extra;
   String? resultImageAsBase64;
+  String? resultThumbnailAsBase64;
 
   BarkoderResult(
       {required this.barcodeType,
@@ -16,7 +17,8 @@ class BarkoderResult {
       required this.textualData,
       this.characterSet,
       this.extra,
-      this.resultImageAsBase64});
+      this.resultImageAsBase64,
+      this.resultThumbnailAsBase64});
 
   BarkoderResult.fromJsonString(String jsonString) {
     Map<String, dynamic> resultMap = json.decode(jsonString);
@@ -28,11 +30,12 @@ class BarkoderResult {
     characterSet = resultMap['characterSet'];
     if (resultMap.containsKey('extra')) extra = json.decode(resultMap['extra']);
     resultImageAsBase64 = resultMap['resultImageAsBase64'];
+    resultThumbnailAsBase64 = resultMap['resultThumbnailAsBase64'];
   }
 
   @override
   String toString() {
-    return '{$barcodeType, $barcodeTypeName, $binaryDataAsBase64, $textualData, $characterSet, $extra, $resultImageAsBase64}';
+    return '{$barcodeType, $barcodeTypeName, $binaryDataAsBase64, $textualData, $characterSet, $extra, $resultImageAsBase64, $resultThumbnailAsBase64}';
   }
 }
 
@@ -54,7 +57,17 @@ enum BarcodeType {
   ean8,
   pdf417,
   pdf417Micro,
-  datamatrix
+  datamatrix,
+  code25,
+  interleaved25,
+  itf14,
+  iata25,
+  matrix25,
+  datalogic25,
+  coop25,
+  code32,
+  telepen,
+  dotcode
 }
 
 enum FormattingType { disabled, automatic, gs1, aamva }
@@ -109,6 +122,7 @@ class BarkoderConfig {
   BarkoderResolution? barkoderResolution;
   bool? beepOnSuccessEnabled;
   bool? vibrateOnSuccessEnabled;
+  bool? enableVINRestrictions;
   DekoderConfig? decoder;
 
   BarkoderConfig(
@@ -126,6 +140,7 @@ class BarkoderConfig {
       this.barkoderResolution,
       this.beepOnSuccessEnabled,
       this.vibrateOnSuccessEnabled,
+      this.enableVINRestrictions,
       this.decoder});
 
   Map<String, dynamic> toJson() {
@@ -144,6 +159,7 @@ class BarkoderConfig {
       "barkoderResolution": barkoderResolution?.index,
       "beepOnSuccessEnabled": beepOnSuccessEnabled,
       "vibrateOnSuccessEnabled": vibrateOnSuccessEnabled,
+      "enableVINRestrictions": enableVINRestrictions,
       "decoder": decoder?.toMap()
     };
 
@@ -171,7 +187,17 @@ class DekoderConfig {
   BarcodeConfig? ean8;
   BarcodeConfig? pdf417;
   BarcodeConfig? pdf417Micro;
-  BarcodeConfig? datamatrix;
+  DatamatrixBarcodeConfig? datamatrix;
+  BarcodeConfig? code25;
+  BarcodeConfig? interleaved25;
+  BarcodeConfig? itf14;
+  BarcodeConfig? iata25;
+  BarcodeConfig? matrix25;
+  BarcodeConfig? datalogic25;
+  BarcodeConfig? coop25;
+  BarcodeConfig? code32;
+  BarcodeConfig? telepen;
+  BarcodeConfig? dotcode;
   GeneralSettings? general;
 
   DekoderConfig(
@@ -193,6 +219,16 @@ class DekoderConfig {
       this.pdf417,
       this.pdf417Micro,
       this.datamatrix,
+      this.code25,
+      this.interleaved25,
+      this.itf14,
+      this.iata25,
+      this.matrix25,
+      this.datalogic25,
+      this.coop25,
+      this.code32,
+      this.telepen,
+      this.dotcode,
       this.general});
 
   Map<String, dynamic> toMap() {
@@ -215,6 +251,16 @@ class DekoderConfig {
       'PDF 417': pdf417?.toMap(),
       'PDF 417 Micro': pdf417Micro?.toMap(),
       'Datamatrix': datamatrix?.toMap(),
+      'Code 25': code25?.toMap(),
+      'Interleaved 2 of 5': interleaved25?.toMap(),
+      'ITF 14': itf14?.toMap(),
+      'IATA 25': iata25?.toMap(),
+      'Matrix 25': matrix25?.toMap(),
+      'Datalogic 25': datalogic25?.toMap(),
+      'COOP 25': coop25?.toMap(),
+      'Code 32': code32?.toMap(),   
+      'Telepen': telepen?.toMap(), 
+      'Dotcode': dotcode?.toMap(),
       'general': general?.toMap()
     };
 
@@ -351,6 +397,38 @@ class Code11BarcodeConfig {
       "minimumLength": _minLength,
       "maximumLength": _maxLength,
       "checksum": checksum?.index
+    };
+
+    filteredMap.removeWhere((key, value) => value == null);
+
+    return filteredMap;
+  }
+
+  setLengthRange(int minLength, int maxLength) {
+    _minLength = minLength;
+    _maxLength = maxLength;
+  }
+}
+
+class DatamatrixBarcodeConfig {
+  bool? enabled;
+  int? dpmMode;
+  int? _minLength;
+  int? _maxLength;
+
+  DatamatrixBarcodeConfig({this.enabled, this.dpmMode});
+
+  DatamatrixBarcodeConfig.setLengthRange(
+      {this.enabled, required minLength, required maxLength})
+      : _minLength = minLength,
+        _maxLength = maxLength;
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> filteredMap = {
+      "enabled": enabled,
+      "minimumLength": _minLength,
+      "maximumLength": _maxLength,
+      "dpmMode": dpmMode
     };
 
     filteredMap.removeWhere((key, value) => value == null);
