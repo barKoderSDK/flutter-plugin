@@ -1,0 +1,13 @@
+dartdoc:
+  nodoc: ['lib/sekret/*.dart']
+  favicon: "assets/favicon.ico"
+  footerText : ["assets/footertext.html"]
+  linkTo:
+    url: "https://docs.barkoder.com/en/v1/flutter-installation"
+  showUndocumentedCategories: true
+  ignore:
+    - ambiguous-doc-reference
+  errors:
+    - unresolved-doc-reference
+  warnings:
+    - tool-error
