@@ -1,3 +1,8 @@
+## 1.2.8
+
+* Updated barKoder SDK 1.2.8
+* Bug fixes and performance improvements
+
 ## 1.2.7
 
 * Updated barKoder SDK 1.2.7
