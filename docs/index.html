@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 8.0.3">
+  <meta name="description" content="barkoder_flutter API docs, for the Dart programming language.">
+  <title>barkoder_flutter - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://barkoder.com">barkoder_flutter package</a></li>
+  </ol>
+  <div class="self-name">barkoder_flutter</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="barkoder-barcode-scanner-sdk-for-flutter">barKoder Barcode Scanner SDK for Flutter</h1>
+<h2 id="add-an-enterprise-grade-barcode-scanning-engine-in-your-flutter-app">Add an enterprise-grade barcode scanning engine in your Flutter app</h2>
+<p>The barKoder SDK Flutter plugin grants an easy to use Flutter solution with a great interface that can be integrated in both iOS and Android apps.</p>
+<p>Integrating the <a href="https://barkoder.com/barcode-scanner-sdk">barKoder Barcode Scanner SDK</a> into your Enterprise or Consumer-facing mobile apps will instantly transform your user's smarphones and tablets into rugged barcode scanning devices without the need to procure and maintain expensive and sluggish hardware devices that have a very short life span.</p>
+<p>The barKoder barcode scanner SDK is a relatively new product in an established market, already developed to be as advanced if not more than other competitor API's. Its robust barcode reading engine can be used to read the content of the most widely used barcodes with lightning fast speed and unprecended recognition rate:</p>
+<p>1D - <a href="https://barkoder.com/barcode-types/codaba">Codabar</a>, <a href="https://barkoder.com/barcode-types/code-11">Code 11</a>, <a href="https://barkoder.com/barcode-types/code-25">Code 25</a>, <a href="https://barkoder.com/barcode-types/code-39">Code 39</a>, <a href="https://barkoder.com/barcode-types/code-93">Code 93</a>, <a href="https://barkoder.com/barcode-types/code-128">Code 128</a>, <a href="https://barkoder.com/barcode-types/ean-upc-code">EAN-8</a>, <a href="https://barkoder.com/barcode-types/ean-upc-code">EAN-13</a>, <a href="https://barkoder.com/barcode-types/code-25">Interleaved 2 of 5</a>, <a href="https://barkoder.com/barcode-types/code-25">ITF-14</a>, <a href="https://barkoder.com/barcode-types/msi-plessey">MSI Plessey</a>, Pharmacode, <a href="https://barkoder.com/barcode-types/telepen">Telepen</a>, <a href="https://barkoder.com/barcode-types/ean-upc-code">UPC-A</a> &amp; <a href="https://barkoder.com/barcode-types/ean-upc-code">UPC-E</a></p>
+<p>2D - <a href="https://barkoder.com/barcode-types/aztec">Aztec Code</a>, <a href="https://barkoder.com/barcode-types/aztec">Aztec Compact</a>, <a href="https://barkoder.com/barcode-types/data-matrix">Data Matrix</a>, <a href="https://barkoder.com/barcode-types/pdf417">PDF417</a>, <a href="https://barkoder.com/barcode-types/pdf417">Micro PDF417</a>, <a href="https://barkoder.com/barcode-types/dotcode">DotCode</a>, <a href="https://barkoder.com/barcode-types/qr-code">QR Code</a> &amp; <a href="https://barkoder.com/barcode-types/qr-code">Micro QR Code</a></p>
+<p>You can check out our free demo app Barcode Scanner by barKoder available both via <a href="https://apps.apple.com/us/app/barkoder-scanner/id6443715409?uo=2">Apple App Store</a> &amp; <a href="https://play.google.com/store/apps/details?id=com.barkoder.demoscanner">Google Play Store</a>.</p>
+<h3 id="installation--basic-usage">Installation &amp; Basic usage</h3>
+<h3 id="1-prepare-environment">1. Prepare environment</h3>
+<p>Install <a href="https://docs.flutter.dev/get-started/install">Flutter SDK</a> and setup your environment</p>
+<h3 id="2-add-our-flutter-package">2. Add our flutter package</h3>
+<p>To add the <strong>barkoder_flutter</strong> package to your project, you have two options. You can either use the <strong>barkoder_flutter</strong> package from <strong>pub.dev</strong> or from a local path.</p>
+<p>To use the package from <a href="https://pub.dev/packages/barkoder_flutter">pub.dev</a>, add the package name and version to your project's dependencies:</p>
+<pre class="language-dart"><code>dependencies:
+    flutter:
+      sdk: flutter
+  
+    barkoder_flutter: &lt;package version&gt;
+</code></pre>
+<p>If you prefer to use a local package, download the package from <a href="https://barkoder.com/repository">https://barkoder.com</a> and set the package path in your project's dependencies:</p>
+<pre class="language-dart"><code> dependencies:
+       flutter:
+         sdk: flutter
+     
+       barkoder_flutter:
+         path: &lt;package local path&gt;
+</code></pre>
+<h3 id="3-install-dependencies">3. Install dependencies</h3>
+<p>Run <strong>flutter pub get</strong> command in terminal to install the specified dependencies in your project</p>
+<h3 id="4-import-package">4. Import package</h3>
+<p>Import the <strong>barkoder_flutter</strong> package in your project with:</p>
+<pre class="language-dart"><code> import 'package:barkoder_flutter/barkoder_flutter.dart';
+</code></pre>
+<h3 id="5-barkoderview">5. BarkoderView</h3>
+<p>At this point the <strong>barkoder_flutter</strong> package is installed and imported in your project. Next step is to add the <strong>BarkoderView</strong> in your layout and set the <strong>licenseKey</strong> parameter and <strong>onBarkoderViewCreated</strong> callback.</p>
+<pre class="language-dart"><code> @override
+   Widget build(BuildContext context) {
+     return Scaffold(
+       ...,
+       body: BarkoderView(
+                 licenseKey: 'KEY',
+                 onBarkoderViewCreated: _onBarkoderViewCreated),
+       ...
+     );
+</code></pre>
+<p>The license key is a string that concists of alphanumerical characters. See section <a href="#8-licensing">Section 8</a> to learn how to get a valid license.</p>
+<h3 id="6-ready-to-scan-event">6. Ready to Scan Event</h3>
+<p>Inside <strong>_onBarkoderViewCreated</strong> callback function the SDK is fully initialized and ready for configuration or to start the scanning process</p>
+<pre class="language-dart"><code> void _onBarkoderViewCreated(barkoder) {
+   _barkoder = barkoder;
+
+   _barkoder.setBarcodeTypeEnabled(BarcodeType.qr, true);
+   _barkoder.setRegionOfInterestVisible(true);
+ 
+   ...
+ }
+
+ void _scanPressed() {
+   _barkoder.startScanning((result) {
+     // The result from successful scan is received here
+   });
+ }
+</code></pre>
+<p>For the complete usage of the <strong>barkoder_flutter</strong> plugin please check our sample.</p>
+<h3 id="7-camera-permissions">7. Camera permissions</h3>
+<p>Our SDK requires camera permission to be granted in order to use scanning features. For Android, the permission is set in the manifest from the plugin. For iOS you need to specify camera permission in <strong>Info.plist</strong> file inside your project</p>
+<pre class="language-dart"><code>  &lt;key&gt;NSCameraUsageDescription&lt;/key&gt;
+ &lt;string&gt;Camera permission&lt;/string&gt;
+</code></pre>
+<h3 id="8-licensing">8. Licensing</h3>
+<p>The SDK will scan barcodes even without a valid license; however all results will be randomly masked with (*) Asterisk characters. By using our software you are agreeing to our <a href="https://barkoder.com/EULA">End User License Agreement</a>. To obtain a valid license, one should create an account <a href="https://barkoder.com/register">here</a> and either get a trial license (to test the software out) or procure a production license that can be used within a live app.</p>
+<h2 id="full-documentation">Full Documentation</h2>
+<p>The most up to date documentation about the barkoder-flutter plugin as well as info on other platforms and frameworks that we support can be found at <a href="https://docs.barkoder.com/en/v1/flutter-installation">https://docs.barkoder.com/en/v1/flutter-installation</a></p>
+<h2 id="trial-license">Trial License</h2>
+<p>If you run the barKoder Barcode Scanner SDK without a valid trial or production license, all results upon successful barcode scans will be partially masked by asterisks (*). You can get a trial license simply by <a href="https://barkoder.com/register">registering on the barKoder Portal</a> and utilizing the self-service for <a href="https://barkoder.com/spr/new">Evaluation License Generation</a>! Each trial license will be good for an initial duration of 30 days and can be deployed to up to 50 devices. For any custom requirements, contact our sales team via <a href="mailto:sales@barkoder.com">sales@barkoder.com</a></p>
+<p>Note that a trial license is only supposed to be utilized in a development or staging environment. IF you decide to publish a trial license along with your app to the App Store, Play Store or any public store we won't be held accountable for any potential consequences.</p>
+<h2 id="free-developer-support">Free Developer Support</h2>
+<p>Our support is completely free for integration or testing purposes and granted through the <a href="https://barkoder.com/login">barKoder Developer Portal</a>. After registering and logging into your account, you only need to submit a <a href="https://barkoder.com/issues">Support Issue</a>. Alternatively, you can contact us by email via <a href="mailto:support@barkoder.com">support@barkoder.com</a></p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="barkoder_flutter">
+  <span class="name"><a href="barkoder_flutter/barkoder_flutter-library.html">barkoder_flutter</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="barkoder_flutter_models">
+  <span class="name"><a href="barkoder_flutter_models/barkoder_flutter_models-library.html">barkoder_flutter_models</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="barkoder_flutter_view">
+  <span class="name"><a href="barkoder_flutter_view/barkoder_flutter_view-library.html">barkoder_flutter_view</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://barkoder.com">barkoder_flutter package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">barkoder_flutter</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="barkoder_flutter/barkoder_flutter-library.html">barkoder_flutter</a></li>
+      <li><a href="barkoder_flutter_models/barkoder_flutter_models-library.html">barkoder_flutter_models</a></li>
+      <li><a href="barkoder_flutter_view/barkoder_flutter_view-library.html">barkoder_flutter_view</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    barkoder_flutter
+      1.2.5
+  </span>
+
+  | <a style="text-decoration: underline;" href="https://barkoder.com">barkoder.com</a> | <a style="text-decoration: underline;" href="https://docs.barkoder.com">docs.barkoder.com</a>
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
