@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the setMulticodeCachingDuration method from the Barkoder class, for the Dart programming language.">
-  <title>setMulticodeCachingDuration method - Barkoder class - barkoder_flutter library - Dart API</title>
+  <meta name="description" content="API docs for the setDatamatrixDpmModeEnabled method from the Barkoder class, for the Dart programming language.">
+  <title>setDatamatrixDpmModeEnabled method - Barkoder class - barkoder_flutter library - Dart API</title>
 
 
   
@@ -31,9 +31,9 @@
     <li><a href="../../index.html">barkoder_flutter</a></li>
     <li><a href="../../barkoder_flutter/barkoder_flutter-library.html">barkoder_flutter</a></li>
     <li><a href="../../barkoder_flutter/Barkoder-class.html">Barkoder</a></li>
-    <li class="self-crumb">setMulticodeCachingDuration method</li>
+    <li class="self-crumb">setDatamatrixDpmModeEnabled method</li>
   </ol>
-  <div class="self-name">setMulticodeCachingDuration</div>
+  <div class="self-name">setDatamatrixDpmModeEnabled</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -57,14 +57,14 @@
       data-above-sidebar="barkoder_flutter&#47;Barkoder-class-sidebar.html"
       data-below-sidebar="">
       <div>
-<h1><span class="kind-method">setMulticodeCachingDuration</span> method 
+<h1><span class="kind-method">setDatamatrixDpmModeEnabled</span> method 
 </h1></div>
 
     <section class="multi-line-signature">
       
 
 <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
-<span class="name ">setMulticodeCachingDuration</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="setMulticodeCachingDuration-param-multicodeCachingDuration"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">multicodeCachingDuration</span></span></li>
+<span class="name ">setDatamatrixDpmModeEnabled</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="setDatamatrixDpmModeEnabled-param-enabled"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enabled</span></span></li>
 </ol>)
 
       
@@ -76,15 +76,14 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; setMulticodeCachingDuration(int multicodeCachingDuration) {
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; setDatamatrixDpmModeEnabled(bool enabled) {
   if (_isBarkoderViewNotMounted) {
     return Future.error(PlatformException(
         code: BarkoderErrors.barkoderViewNotMounted,
         message: BarkoderErrors.barkodeViewNotMountedDesc));
   }
 
-  return _methodChannel.invokeMethod(
-      &#39;setMulticodeCachingDuration&#39;, multicodeCachingDuration);
+  return _methodChannel.invokeMethod(&#39;setDatamatrixDpmModeEnabled&#39;, enabled);
 }</code></pre>
 </section>
 
@@ -103,7 +102,7 @@
     <li><a href="../../index.html">barkoder_flutter</a></li>
     <li><a href="../../barkoder_flutter/barkoder_flutter-library.html">barkoder_flutter</a></li>
     <li><a href="../../barkoder_flutter/Barkoder-class.html">Barkoder</a></li>
-    <li class="self-crumb">setMulticodeCachingDuration method</li>
+    <li class="self-crumb">setDatamatrixDpmModeEnabled method</li>
 </ol>
 
 
