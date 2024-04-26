@@ -71,6 +71,15 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Sets the resolution for barcode scanning.</p>
+<p><code>resolution</code>: The BarkoderResolution enum value to set.</p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">BarkoderResolution resolution = BarkoderResolution.HIGH;
+await _barkoder.setBarkoderResolution(resolution);
+print('Barkoder resolution set to: $resolution');
+</code></pre>
+</section>
 
 
     

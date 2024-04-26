@@ -71,6 +71,16 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Checks if a specific barcode type is enabled.</p>
+<p><code>type</code>: The BarcodeType to check.</p>
+<p>Returns a <a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a> that completes with a boolean indicating whether the specified barcode type is enabled.</p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">BarcodeType type = BarcodeType.code128;
+bool isEnabled = await _barkoder.isBarcodeTypeEnabled(type);
+print('Barcode type $type is enabled: $isEnabled');
+</code></pre>
+</section>
 
 
     

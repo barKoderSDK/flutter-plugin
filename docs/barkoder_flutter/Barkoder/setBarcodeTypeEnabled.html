@@ -72,6 +72,17 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Sets whether a specific barcode type is enabled.</p>
+<p><code>type</code>: The BarcodeType to enable or disable.
+<code>enabled</code>: A boolean indicating whether to enable or disable the specified barcode type.</p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">BarcodeType type = BarcodeType.code128;
+bool isEnabled = true;
+_barkoder.setBarcodeTypeEnabled(type, isEnabled);
+print('Barcode type $type set to enabled: $isEnabled');
+</code></pre>
+</section>
 
 
     

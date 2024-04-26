@@ -71,6 +71,16 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Retrieves the length range of a specific barcode type.</p>
+<p><code>type</code>: The BarcodeType to retrieve the length range for.</p>
+<p>Returns a <a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a> that completes with a List<int> representing the minimum and maximum length of the specified barcode type.</int></p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">BarcodeType type = BarcodeType.code128;
+List&lt;int&gt; lengthRange = await _barkoder.getBarcodeTypeLengthRange(type);
+print('Length range of barcode type $type: $lengthRange');
+</code></pre>
+</section>
 
 
     

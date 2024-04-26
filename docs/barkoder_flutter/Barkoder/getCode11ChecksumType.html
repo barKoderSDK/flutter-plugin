@@ -73,23 +73,31 @@
 </section>
 
 
+<section class="desc markdown">
+  <p>Retrieves the Code11 checksum type.</p>
+<p>Returns a <a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a> that completes with a Code11ChecksumType enum value representing the checksum type used for Code11 barcodes.</p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">Code11ChecksumType checksumType = await _barkoder.getCode11ChecksumType;
+print('Code11 checksum type: $checksumType');
+</code></pre>
+</section>
 
 
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;Code11ChecksumType&gt; get getCode11ChecksumType async {
-  if (_isBarkoderViewNotMounted) {
-    return Future.error(PlatformException(
-        code: BarkoderErrors.barkoderViewNotMounted,
-        message: BarkoderErrors.barkodeViewNotMountedDesc));
-  }
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
 
-  return await _methodChannel
-      .invokeMethod(&#39;getCode11ChecksumType&#39;)
-      .then((index) {
-    return Code11ChecksumType.values[index];
-  });
-}</code></pre>
+    return await _methodChannel
+        .invokeMethod(&#39;getCode11ChecksumType&#39;)
+        .then((index) {
+      return Code11ChecksumType.values[index];
+    });
+  }</code></pre>
 </section>
 
 </section>

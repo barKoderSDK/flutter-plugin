@@ -74,6 +74,21 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Sets the region of interest (ROI) for barcode scanning within the camera preview.</p>
+<p><code>left</code>: The left coordinate of the ROI.
+<code>top</code>: The top coordinate of the ROI.
+<code>width</code>: The width of the ROI in percentage.
+<code>height</code>: The height of the ROI in percentage.</p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">double left = 10.0;
+double top = 10.0;
+double width = 80.0;
+double height = 8.0;
+_barkoder.setRegionOfInterest(left, top, width, height);
+print('Region of interest set');
+</code></pre>
+</section>
 
 
     

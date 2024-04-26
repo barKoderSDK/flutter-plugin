@@ -73,6 +73,19 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Sets the length range for the specified barcode type.</p>
+<p><code>type</code>: The BarcodeType to set the length range for.
+<code>min</code>: The minimum length for the barcode type.
+<code>max</code>: The maximum length for the barcode type.</p>
+<p>Example usage:</p>
+<pre class="language-dart"><code class="language-dart">BarcodeType type = BarcodeType.code128;
+int minLength = 6;
+int maxLength = 20;
+await _barkoder.setBarcodeTypeLengthRange(type, minLength, maxLength);
+print('Length range set for barcode type $type: min=$minLength, max=$maxLength');
+</code></pre>
+</section>
 
 
     
