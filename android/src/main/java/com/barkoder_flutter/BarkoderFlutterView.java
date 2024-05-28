@@ -305,6 +305,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setEnableVINRestrictions":
                 setEnableVINRestrictions((boolean) call.arguments, result);
                 break;
+            case "setDatamatrixDpmModeEnabled":
+                setDatamatrixDpmModeEnabled((boolean) call.arguments, result);
+                break;
+            case "setEnableMisshaped1DEnabled":
+                setEnableMisshaped1DEnabled((boolean) call.arguments, result);
+                break;
             case "isMisshaped1DEnabled":
                 isMisshaped1DEnabled(result);
                 break;
@@ -319,6 +325,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "getThresholdBetweenDuplicatesScans":
                 getThresholdBetweenDuplicatesScans(result);
+                break;
+            case "getMulticodeCachingEnabled":
+                getMulticodeCachingEnabled(result);
+                break;
+            case "getMulticodeCachingDuration":
+                getMulticodeCachingDuration(result);
                 break;
             case "configureBarkoder": //UNTIL THIS ONE TESTED
                 configureBarkoder((String) call.arguments, result);
@@ -817,6 +829,19 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(null);
     }
 
+    private void setDatamatrixDpmModeEnabled(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().Datamatrix.enabled = enabled;
+        bkdView.config.getDecoderConfig().Datamatrix.dpmMode = enabled;
+
+        methodResult.success(null);
+    }
+
+    private void setEnableMisshaped1DEnabled(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().enableMisshaped1D = enabled;
+
+        methodResult.success(null);
+    }
+
     private void isMisshaped1DEnabled(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.getDecoderConfig().enableMisshaped1D);
     }
@@ -835,6 +860,14 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void getThresholdBetweenDuplicatesScans(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.getThresholdBetweenDuplicatesScans());
+    }
+
+    private void getMulticodeCachingEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(BarkoderConfig.IsMulticodeCachingEnabled());
+    }
+
+    private void getMulticodeCachingDuration(MethodChannel.Result methodResult) {
+        methodResult.success(BarkoderConfig.GetMulticodeCachingDuration());
     }
 
     private void configureBarkoder(String barkoderConfigAsJsonString, MethodChannel.Result methodResult) {

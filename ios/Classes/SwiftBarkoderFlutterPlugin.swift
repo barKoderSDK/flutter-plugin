@@ -240,6 +240,12 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.isBarcodeThumbnailOnResultEnabled(result)
             case "getThresholdBetweenDuplicatesScans":
                 self?.getThresholdBetweenDuplicatesScans(result)
+            case "getBarkoderResolution":
+                self?.getBarkoderResolution(result)
+            case "setDatamatrixDpmModeEnabled":
+                self?.setDatamatrixDpmModeEnabled(call, result: result)
+            case "setEnableMisshaped1DEnabled":
+                self?.setEnableMisshaped1DEnabled(call, result: result)
             default:
                 break
             }
@@ -878,7 +884,28 @@ extension BarkoderPlatformView {
         
         result(nil)
     }
-                  
+
+    private func setDatamatrixDpmModeEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.datamatrix.enabled = enabled
+        barkoderView.config?.decoderConfig?.datamatrix.dpmMode = enabled ? 1 : 0
+        
+        result(nil)
+    }
+
+    private func setEnableMisshaped1DEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.enableMisshaped1D = enabled
+        
+        result(nil)
+    }
+     
 }
 
 // MARK: - Getters
@@ -1156,6 +1183,10 @@ extension BarkoderPlatformView {
 
     private func getThresholdBetweenDuplicatesScans(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.thresholdBetweenDuplicatesScans)
+    }
+
+    private func getBarkoderResolution(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.barkoderResolution.rawValue)
     }
     
 }
