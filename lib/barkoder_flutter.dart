@@ -26,7 +26,7 @@ class Barkoder {
     _isBarkoderViewNotMounted = true;
   }
 
-  /// Retrieves the maximum zoom factor.
+  /// Retrieves the maximum available zoom factor for the device's camera.
   ///
   /// Returns a [Future] that completes with the maximum zoom factor.
   ///
@@ -47,7 +47,7 @@ class Barkoder {
         .then((zoomFactor) => zoomFactor as double);
   }
 
-  /// Sets the zoom factor.
+  /// Sets the zoom factor for the device's camera, adjusting the level of zoom during barcode scanning.
   ///
   /// [zoomFactor]: The zoom factor to set.
   ///
@@ -67,7 +67,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setZoomFactor', zoomFactor);
   }
 
-  /// Checks if the flash is available.
+  /// Checks whether the device has a built-in flash (torch) that can be used for illumination during barcode scanning.
   ///
   /// Returns a [Future] that completes with a boolean indicating whether the flash is available.
   ///
@@ -88,7 +88,7 @@ class Barkoder {
         .then((isAvailable) => isAvailable as bool);
   }
 
-  /// Sets whether the flash is enabled.
+  /// Enables or disables the device's flash (torch) for illumination during barcode scanning.
   ///
   /// [enabled]: A boolean indicating whether to enable the flash.
   ///
@@ -125,7 +125,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('startCamera');
   }
 
-  /// Starts the scanning process.
+  /// Initiates the barcode scanning process, allowing the application to detect and decode barcodes from the device's camera feed.
   ///
   /// [resultsCallback]: A function to handle the scanning results.
   ///
@@ -151,7 +151,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('startScanning');
   }
 
-  /// Stops the scanning process.
+  /// Halts the barcode scanning process, stopping the camera from capturing and processing barcode information.
   ///
   /// Example usage:
   /// ```dart
@@ -169,7 +169,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('stopScanning');
   }
 
-  /// Pauses the scanning process.
+  /// Temporarily suspends the barcode scanning process, pausing the camera feed without completely stopping the scanning session.
   ///
   /// Example usage:
   /// ```dart
@@ -187,11 +187,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('pauseScanning');
   }
 
-//endregion BarkoderView APIs
-
-//region BarkoderConfig APIs
-
-  /// Retrieves the color of the location line in hexadecimal format.
+  /// Retrieves the hexadecimal color code representing the line color used to indicate the location of detected barcodes.
   ///
   /// Returns a [Future] that completes with the color of the location line in hexadecimal format.
   ///
@@ -210,7 +206,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getLocationLineColorHex');
   }
 
-  /// Sets the color of the location line.
+  /// Sets the color of the lines used to indicate the location of detected barcodes on the camera feed.
   ///
   /// [hexColor]: The color to set for the location line in hexadecimal format.
   ///
@@ -230,7 +226,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setLocationLineColor', hexColor);
   }
 
-  /// Retrieves the width of the location line.
+  /// Retrieves the current width setting for the lines indicating the location of detected barcodes on the camera feed.
   ///
   /// Returns a [Future] that completes with the width of the location line.
   ///
@@ -249,7 +245,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getLocationLineWidth');
   }
 
-  /// Sets the width of the location line.
+  /// Sets the width of the lines indicating the location of detected barcodes on the camera feed.
   ///
   /// [lineWidth]: The width to set for the location line.
   ///
@@ -269,7 +265,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setLocationLineWidth', lineWidth);
   }
 
-  /// Retrieves the color of the region of interest (ROI) line in hexadecimal format.
+  /// Retrieves the hexadecimal color code representing the line color of the Region of Interest (ROI) on the camera preview.
   ///
   /// Returns a [Future] that completes with the color of the ROI line in hexadecimal format.
   ///
@@ -288,7 +284,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getRoiLineColorHex');
   }
 
-  /// Sets the color of the region of interest (ROI) line.
+  /// Sets the width of the lines outlining the Region of Interest (ROI) for barcode scanning on the camera feed.
   ///
   /// [hexColor]: The color to set for the ROI line in hexadecimal format.
   ///
@@ -308,7 +304,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setRoiLineColor', hexColor);
   }
 
-  /// Retrieves the width of the region of interest (ROI) line.
+  /// Retrieves the current width setting for the lines outlining the Region of Interest (ROI) on the camera preview.
   ///
   /// Returns a [Future] that completes with the width of the ROI line.
   ///
@@ -347,7 +343,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setRoiLineWidth', lineWidth);
   }
 
-  /// Retrieves the background color of the region of interest (ROI) overlay in hexadecimal format.
+  /// Retrieves the hexadecimal color code representing the background color of the overlay within the Region of Interest (ROI) on the camera preview.
   ///
   /// Returns a [Future] that completes with the background color of the ROI overlay in hexadecimal format.
   ///
@@ -366,7 +362,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getRoiOverlayBackgroundColorHex');
   }
 
-  /// Sets the background color of the region of interest (ROI) overlay.
+  /// Sets the background color of the overlay within the Region of Interest (ROI) for barcode scanning on the camera feed.
   ///
   /// [hexColor]: The color to set for the ROI overlay background in hexadecimal format.
   ///
@@ -406,7 +402,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isCloseSessionOnResultEnabled');
   }
 
-  /// Sets whether to enable closing the session on result.
+  /// Enables or disables the automatic closing of the scanning session upon detecting a barcode result.
   ///
   /// [enabled]: A boolean indicating whether to enable closing the session on result.
   ///
@@ -446,7 +442,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isImageResultEnabled');
   }
 
-  /// Sets whether image result is enabled.
+  /// Enables or disables the capturing and processing of image data when a barcode is successfully detected.
   ///
   /// [enabled]: A boolean indicating whether to enable image result.
   ///
@@ -485,7 +481,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isLocationInImageResultEnabled');
   }
 
-  /// Sets whether location in image result is enabled.
+  /// Enables or disables the inclusion of barcode location information within the image data result.
   ///
   /// [enabled]: A boolean indicating whether to enable location in image result.
   ///
@@ -529,7 +525,7 @@ class Barkoder {
     });
   }
 
-  /// Sets the region of interest (ROI) for barcode scanning within the camera preview.
+  /// Defines the Region of Interest (ROI) on the camera preview for barcode scanning, specifying an area where the application focuses on detecting barcodes.
   ///
   /// [left]: The left coordinate of the ROI.
   /// [top]: The top coordinate of the ROI.
@@ -615,7 +611,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isLocationInPreviewEnabled');
   }
 
-  /// Sets whether location in preview is enabled.
+  /// Enables or disables the display of barcode location information on the camera preview.
   ///
   /// [enabled]: A boolean indicating whether to enable location in preview.
   ///
@@ -654,7 +650,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isPinchToZoomEnabled');
   }
 
-  /// Sets whether pinch to zoom is enabled.
+  /// Enables or disables the pinch-to-zoom feature for adjusting the zoom level during barcode scanning.
   ///
   /// [enabled]: A boolean indicating whether to enable pinch to zoom.
   ///
@@ -693,7 +689,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isRegionOfInterestVisible');
   }
 
-  /// Sets the visibility of the region of interest (ROI) overlay for barcode scanning.
+  /// Sets the visibility of the Region of Interest (ROI) on the camera preview.
   ///
   /// [visible]: A boolean indicating whether to make the ROI visible.
   ///
@@ -713,7 +709,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setRegionOfInterestVisible', visible);
   }
 
-  /// Gets the resolution for barcode scanning.
+  /// Retrieves the resolution for barcode scanning.
   ///
   /// Returns a [Future] that completes with a BarkoderResolution enum value.
   ///
@@ -757,7 +753,7 @@ class Barkoder {
         'setBarkoderResolution', resolution.index);
   }
 
-  /// Gets the value indicating whether a beep sound is played on successful barcode scanning.
+  /// Retrieves the value indicating whether a beep sound is played on successful barcode scanning.
   ///
   /// Returns a [Future] that completes with a boolean indicating whether beep on success is enabled.
   ///
@@ -776,7 +772,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isBeepOnSuccessEnabled');
   }
 
-  /// Enables or disables the beep sound on successful barcode scanning.
+  /// Enables or disables the audible beep sound upon successfully decoding a barcode.
   ///
   /// [enabled]: A boolean indicating whether to enable beep on success.
   ///
@@ -796,7 +792,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setBeepOnSuccessEnabled', enabled);
   }
 
-  /// Gets the value indicating whether vibration is enabled on successful barcode scanning.
+  /// Retrieves the value indicating whether vibration is enabled on successful barcode scanning.
   ///
   /// Returns a [Future] that completes with a boolean indicating whether vibrate on success is enabled.
   ///
@@ -815,7 +811,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isVibrateOnSuccessEnabled');
   }
 
-  /// Enables or disables the vibration on successful barcode scanning.
+  /// Enables or disables the device vibration upon successfully decoding a barcode..
   ///
   /// [enabled]: A boolean indicating whether to enable vibrate on success.
   ///
@@ -1162,7 +1158,7 @@ class Barkoder {
         'setMsiChecksumType', checksumType.index);
   }
 
-  /// Gets the checksum type for Code 39 barcodes.
+  /// Retrieves the checksum type for Code 39 barcodes.
   ///
   /// Returns a [Future] that completes with a Code39ChecksumType enum value representing the checksum type used for Code39 barcodes.
   ///
@@ -1250,7 +1246,7 @@ class Barkoder {
         'setCode11ChecksumType', checksumType.index);
   }
 
-  /// Gets the character set used for encoding.
+  /// Retrieves the character set used for encoding barcode data.
   ///
   /// Returns a [Future] that completes with a String representing the encoding character set.
   ///
@@ -1289,7 +1285,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setEncodingCharacterSet', characterSet);
   }
 
-  /// Gets the decoding speed for barcode scanning.
+  /// Retrieves the current decoding speed setting for barcode scanning.
   ///
   /// Returns a [Future] that completes with a DecodingSpeed enum value representing the decoding speed.
   ///
@@ -1330,7 +1326,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setDecodingSpeed', decodingSpeed.index);
   }
 
-  /// Gets the formatting type for barcode scanning.
+  /// Retrieves the formatting type used for presenting decoded barcode data.
   ///
   /// Returns a [Future] that completes with a FormattingType enum value representing the formatting type.
   ///
@@ -1391,7 +1387,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getVersion');
   }
 
-  /// Gets the value indicating whether deblurring is enabled for UPC/EAN barcodes.
+  /// Retrieves the value indicating whether deblurring is enabled for UPC/EAN barcodes.
   ///
   /// Returns a [Future] that completes with a boolean indicating whether UPC/EAN deblur is enabled.
   ///
@@ -1410,7 +1406,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isUpcEanDeblurEnabled');
   }
 
-  /// Sets whether the deblurring feature for UPC/EAN barcodes is enabled..
+  /// Sets whether the deblurring feature for UPC/EAN barcodes is enabled.
   ///
   /// [enabled]: A boolean indicating whether to enable or disable UPC/EAN deblur.
   ///
@@ -1451,7 +1447,7 @@ class Barkoder {
         'setMaximumResultsCount', maximumResultsCount);
   }
 
-  /// Gets the maximum number of results to be returned from barcode scanning at once.
+  /// Retrieves the maximum number of results to be returned from barcode scanning at once.
   ///
   /// Returns a [Future] that completes with a double representing the maximum number of results to be returned.
   ///
@@ -1530,7 +1526,7 @@ class Barkoder {
     return _methodChannel.invokeMethod('setMisshaped1DEnabled', enabled);
   }
 
-  /// Gets the delay in milliseconds for considering duplicate barcodes during scanning.
+  /// Retrieves the delay in milliseconds for considering duplicate barcodes during scanning.
   ///
   /// Returns a [Future] that completes with an integer representing the delay in milliseconds for detecting duplicate scans.
   ///
@@ -1588,6 +1584,7 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isVINRestrictionsEnabled');
   }
 
+  /// Sets whether the Direct Part Marking (DPM) mode for Datamatrix barcodes is enabled.
   Future<void> setDatamatrixDpmModeEnabled(bool enabled) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -1607,8 +1604,6 @@ class Barkoder {
 
     return _methodChannel.invokeMethod('setEnableMisshaped1DEnabled', enabled);
   }
-
-//endregion Barkoder APIs
 
   /// Configures the Barkoder functionality based on the provided configuration.
   ///
