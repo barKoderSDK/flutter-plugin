@@ -258,8 +258,8 @@ class DekoderConfig {
       'Matrix 25': matrix25?.toMap(),
       'Datalogic 25': datalogic25?.toMap(),
       'COOP 25': coop25?.toMap(),
-      'Code 32': code32?.toMap(),   
-      'Telepen': telepen?.toMap(), 
+      'Code 32': code32?.toMap(),
+      'Telepen': telepen?.toMap(),
       'Dotcode': dotcode?.toMap(),
       'general': general?.toMap()
     };
@@ -468,8 +468,7 @@ class GeneralSettings {
       this.maximumResultsCount,
       this.duplicatesDelayMs,
       this.multicodeCachingDuration,
-      this.multicodeCachingEnabled
-      });
+      this.multicodeCachingEnabled});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> filteredMap = {

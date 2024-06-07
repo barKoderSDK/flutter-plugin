@@ -1,3 +1,21 @@
+## 1.3.1
+* Updated barKoder SDK 1.3.1
+* Updated code documentation
+
+## 1.2.10
+* Updated barKoder SDK 1.2.10
+* Bug fixes and performance improvements
+
+## 1.2.8
+
+* Updated barKoder SDK 1.2.8
+* Bug fixes and performance improvements
+
+## 1.2.7
+
+* Updated barKoder SDK 1.2.7
+* Bug fixes and performance improvements
+
 ## 1.2.5
 
 * Updated barKoder SDK 1.2.5
