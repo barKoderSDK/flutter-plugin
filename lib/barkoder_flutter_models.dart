@@ -9,6 +9,10 @@ class BarkoderResult {
   Map<String, dynamic>? extra;
   String? resultImageAsBase64;
   String? resultThumbnailAsBase64;
+  String? mainImageAsBase64;
+  String? documentImageAsBase64;
+  String? signatureImageAsBase64;
+  String? pictureImageAsBase64;
 
   BarkoderResult(
       {required this.barcodeType,
@@ -18,12 +22,17 @@ class BarkoderResult {
       this.characterSet,
       this.extra,
       this.resultImageAsBase64,
-      this.resultThumbnailAsBase64});
+      this.resultThumbnailAsBase64,
+      this.mainImageAsBase64,
+      this.documentImageAsBase64,
+      this.signatureImageAsBase64,
+      this.pictureImageAsBase64});
 
   BarkoderResult.fromJsonString(String jsonString) {
     Map<String, dynamic> resultMap = json.decode(jsonString);
 
-    barcodeType = BarcodeType.values[resultMap['barcodeType']];
+    int barcodeTypeIndex = resultMap['barcodeType'];
+    barcodeType = BarcodeType.fromInt(barcodeTypeIndex);
     barcodeTypeName = resultMap['barcodeTypeName'];
     binaryDataAsBase64 = resultMap['binaryDataAsBase64'];
     textualData = resultMap['textualData'];
@@ -31,6 +40,10 @@ class BarkoderResult {
     if (resultMap.containsKey('extra')) extra = json.decode(resultMap['extra']);
     resultImageAsBase64 = resultMap['resultImageAsBase64'];
     resultThumbnailAsBase64 = resultMap['resultThumbnailAsBase64'];
+    mainImageAsBase64 = resultMap['mainImageAsBase64'];
+    documentImageAsBase64 = resultMap['documentImageAsBase64'];
+    signatureImageAsBase64 = resultMap['signatureImageAsBase64'];
+    pictureImageAsBase64 = resultMap['pictureImageAsBase64'];
   }
 
   @override
@@ -40,34 +53,43 @@ class BarkoderResult {
 }
 
 enum BarcodeType {
-  aztec,
-  aztecCompact,
-  qr,
-  qrMicro,
-  code128,
-  code93,
-  code39,
-  codabar,
-  code11,
-  msi,
-  upcA,
-  upcE,
-  upcE1,
-  ean13,
-  ean8,
-  pdf417,
-  pdf417Micro,
-  datamatrix,
-  code25,
-  interleaved25,
-  itf14,
-  iata25,
-  matrix25,
-  datalogic25,
-  coop25,
-  code32,
-  telepen,
-  dotcode
+  aztec(0),
+  aztecCompact(1),
+  qr(2),
+  qrMicro(3),
+  code128(4),
+  code93(5),
+  code39(6),
+  codabar(7),
+  code11(8),
+  msi(9),
+  upcA(10),
+  upcE(11),
+  upcE1(12),
+  ean13(13),
+  ean8(14),
+  pdf417(15),
+  pdf417Micro(16),
+  datamatrix(17),
+  code25(18),
+  interleaved25(19),
+  itf14(20),
+  iata25(21),
+  matrix25(22),
+  datalogic25(23),
+  coop25(24),
+  code32(25),
+  telepen(26),
+  dotcode(27),
+  idDocument(29);
+
+  final int value;
+  const BarcodeType(this.value);
+
+  static BarcodeType fromInt(int value) {
+    return BarcodeType.values.firstWhere((e) => e.value == value,
+        orElse: () => throw RangeError('Invalid barcodeType value: $value'));
+  }
 }
 
 enum FormattingType { disabled, automatic, gs1, aamva }
@@ -198,6 +220,7 @@ class DekoderConfig {
   BarcodeConfig? code32;
   BarcodeConfig? telepen;
   BarcodeConfig? dotcode;
+  BarcodeConfig? idDocument;
   GeneralSettings? general;
 
   DekoderConfig(
@@ -229,6 +252,7 @@ class DekoderConfig {
       this.code32,
       this.telepen,
       this.dotcode,
+      this.idDocument,
       this.general});
 
   Map<String, dynamic> toMap() {
@@ -261,6 +285,7 @@ class DekoderConfig {
       'Code 32': code32?.toMap(),
       'Telepen': telepen?.toMap(),
       'Dotcode': dotcode?.toMap(),
+      'ID Document': idDocument?.toMap(),
       'general': general?.toMap()
     };
 

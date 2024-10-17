@@ -1,3 +1,8 @@
+## 1.5.2
+* Implemented barKoder SDK 1.5.2
+* "ID Document" (MRZ) has been added as a new symbology
+* Images from MRZ scan added in results
+
 ## 1.3.1
 * Updated barKoder SDK 1.3.1
 * Updated code documentation

@@ -38,6 +38,31 @@ class Util {
         if let thumbnail = thumbnails?.first?.pngData() {
             resultJson["resultThumbnailAsBase64"] = thumbnail.base64EncodedString()
         }
+
+        if let images = decoderResult.images {
+            for image in images {
+                switch image.name {
+                case "main":
+                    if let imageData = image.image.pngData() {
+                        resultJson["mainImageAsBase64"] = imageData.base64EncodedString()
+                    }
+                case "document":
+                    if let imageData = image.image.pngData() {
+                        resultJson["documentImageAsBase64"] = imageData.base64EncodedString()
+                    }
+                case "signature":
+                    if let imageData = image.image.pngData() {
+                        resultJson["signatureImageAsBase64"] = imageData.base64EncodedString()
+                    }
+                case "picture":
+                    if let imageData = image.image.pngData() {
+                        resultJson["pictureImageAsBase64"] = imageData.base64EncodedString()
+                    }
+                default:
+                    break
+                }
+            }
+        }
         
         do {
             let jsonData = try JSONSerialization.data(

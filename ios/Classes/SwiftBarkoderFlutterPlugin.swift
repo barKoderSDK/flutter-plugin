@@ -785,6 +785,8 @@ extension BarkoderPlatformView {
                     decoderConfig.telepen.enabled = enabled
 				case Dotcode:
 					decoderConfig.dotcode.enabled = enabled
+                case IDDocument:
+                    decoderConfig.idDocument.enabled = enabled
                 default:
                     result(
                         FlutterError(
@@ -1146,6 +1148,8 @@ extension BarkoderPlatformView {
             result(decoderConfig.telepen.enabled)
         case Dotcode:
             result(decoderConfig.dotcode.enabled)
+        case IDDocument:
+            result(decoderConfig.idDocument.enabled)
         default:
             result(
                 FlutterError(

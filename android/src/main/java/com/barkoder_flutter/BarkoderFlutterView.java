@@ -559,7 +559,7 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         bkdView.startScanning((results, thumbnails, resultImage) -> {
             EventChannel.EventSink sink = scanningResultsEventSinkRef.get();
             if (sink != null)
-                sink.success(Util.barkoderResultsToJsonString(results, resultImage));
+                sink.success(Util.barkoderResultsToJsonString(results, thumbnails, resultImage));
         });
 
         methodResult.success(null);
