@@ -144,9 +144,13 @@ class Barkoder {
     }
 
     _clearScanningResultsStreamSubscription();
-    _scanningResultsStreamSubscription = _scanningResultsStream.listen(
-        (result) =>
-            resultsCallback.call(BarkoderResult.fromJsonString(result)));
+    _scanningResultsStreamSubscription =
+        _scanningResultsStream.listen((result) {
+      BarkoderResult barkoderResult =
+          BarkoderResult.fromJson(json.decode(result));
+      resultsCallback(
+          barkoderResult); // Pass the BarkoderResult to the callback
+    });
 
     return _methodChannel.invokeMethod('startScanning');
   }
@@ -185,6 +189,38 @@ class Barkoder {
 
     _clearScanningResultsStreamSubscription();
     return _methodChannel.invokeMethod('pauseScanning');
+  }
+
+  /// Scan from base64 image string.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.scanImage((result) {
+  ///   _updateState(result, false);
+  /// });
+  /// print('Scan image called');
+  /// ```
+  Future<void> scanImage(
+    void Function(BarkoderResult) resultsCallback,
+    String base64image,
+  ) async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    _clearScanningResultsStreamSubscription();
+    _scanningResultsStreamSubscription =
+        _scanningResultsStream.listen((result) {
+      BarkoderResult barkoderResult =
+          BarkoderResult.fromJson(json.decode(result));
+      resultsCallback(
+          barkoderResult); // Pass the BarkoderResult to the callback
+    });
+
+    await _methodChannel.invokeMethod('scanImage', base64image);
   }
 
   /// Retrieves the hexadecimal color code representing the line color used to indicate the location of detected barcodes.
@@ -1584,6 +1620,25 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isVINRestrictionsEnabled');
   }
 
+  /// Retrieves whether Direct Part Marking (DPM) mode for Datamatrix barcodes is enabled
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether Direct Part Marking (DPM) mode for Datamatrix barcodes is enabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = await _barkoder.isDatamatrixDpmModeEnabled;
+  /// print('DPM mode for Datamatrix barcodes enabled: $isEnabled');
+  /// ```
+  Future<bool> get isDatamatrixDpmModeEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isDatamatrixDpmModeEnabled');
+  }
+
   /// Sets whether the Direct Part Marking (DPM) mode for Datamatrix barcodes is enabled.
   Future<void> setDatamatrixDpmModeEnabled(bool enabled) {
     if (_isBarkoderViewNotMounted) {
@@ -1593,6 +1648,66 @@ class Barkoder {
     }
 
     return _methodChannel.invokeMethod('setDatamatrixDpmModeEnabled', enabled);
+  }
+
+  /// Retrieves whether Direct Part Marking (DPM) mode for QR barcodes is enabled
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether Direct Part Marking (DPM) mode for QR barcodes is enabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = await _barkoder.isQrDpmModeEnabled;
+  /// print('DPM mode for QR barcodes enabled: $isEnabled');
+  /// ```
+  Future<bool> get isQrDpmModeEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isQrDpmModeEnabled');
+  }
+
+  /// Sets whether the Direct Part Marking (DPM) mode for QR barcodes is enabled.
+  Future<void> setQrDpmModeEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setQrDpmModeEnabled', enabled);
+  }
+
+  /// Retrieves whether Direct Part Marking (DPM) mode for QR Micro barcodes is enabled
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether Direct Part Marking (DPM) mode for QR Micro barcodes is enabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = await _barkoder.isQrMicroDpmModeEnabled;
+  /// print('DPM mode for QR Micro barcodes enabled: $isEnabled');
+  /// ```
+  Future<bool> get isQrMicroDpmModeEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isQrMicroDpmModeEnabled');
+  }
+
+  /// Sets whether the Direct Part Marking (DPM) mode for QR Micro barcodes is enabled.
+  Future<void> setQrMicroDpmModeEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setQrMicroDpmModeEnabled', enabled);
   }
 
   Future<void> setEnableMisshaped1DEnabled(bool enabled) {
@@ -1628,6 +1743,38 @@ class Barkoder {
 
     return _methodChannel.invokeMethod(
         'configureBarkoder', jsonEncode(barkoderConfig));
+  }
+
+  /// Retrieves whether Master checksum is enabled when scanning ID Documents
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether Master checksum is enabled when scanning ID Documents.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = await _barkoder.isIdDocumentMasterChecksumEnabled;
+  /// print('ID Documents master checksum is required(enabled): $isEnabled');
+  /// ```
+  Future<bool> get isIdDocumentMasterChecksumEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel
+        .invokeMethod('isIdDocumentMasterChecksumEnabled');
+  }
+
+  /// Sets whether Master checksum should be requiered when scanning ID Documents.
+  Future<void> setIdDocumentMasterChecksumEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setIdDocumentMasterChecksumEnabled', enabled);
   }
 
   void _clearScanningResultsStreamSubscription() {

@@ -142,6 +142,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setFormattingType(call, result: result)
             case "startScanning":
                 self?.startScanning(result)
+            case "scanImage":
+                self?.scanImage(call, result: result)
             case "setBarcodeTypeEnabled":
                 self?.setBarcodeTypeEnabled(call, result: result)
             case "setMulticodeCachingEnabled":
@@ -244,8 +246,22 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.getBarkoderResolution(result)
             case "setDatamatrixDpmModeEnabled":
                 self?.setDatamatrixDpmModeEnabled(call, result: result)
+            case "isDatamatrixDpmModeEnabled":
+                self?.isDatamatrixDpmModeEnabled(result)
+            case "setQrDpmModeEnabled":
+                self?.setQrDpmModeEnabled(call, result: result)
+            case "isQrDpmModeEnabled":
+                self?.isQrDpmModeEnabled(result)
+            case "setQrMicroDpmModeEnabled":
+                self?.setQrMicroDpmModeEnabled(call, result: result)
+            case "isQrMicroDpmModeEnabled":
+                self?.isQrMicroDpmModeEnabled(result)
             case "setEnableMisshaped1DEnabled":
                 self?.setEnableMisshaped1DEnabled(call, result: result)
+            case "setIdDocumentMasterChecksumEnabled":
+                self?.setIdDocumentMasterChecksumEnabled(call, result: result)
+            case "isIdDocumentMasterChecksumEnabled":
+                self?.isIdDocumentMasterChecksumEnabled(result)
             default:
                 break
             }
@@ -892,8 +908,27 @@ extension BarkoderPlatformView {
             return
         }
         
-        barkoderView.config?.decoderConfig?.datamatrix.enabled = enabled
         barkoderView.config?.decoderConfig?.datamatrix.dpmMode = enabled ? 1 : 0
+        
+        result(nil)
+    }
+    
+    private func setQrDpmModeEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.qr.dpmMode = enabled ? 1 : 0
+        
+        result(nil)
+    }
+    
+    private func setQrMicroDpmModeEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.qrMicro.dpmMode = enabled ? 1 : 0
         
         result(nil)
     }
@@ -904,6 +939,37 @@ extension BarkoderPlatformView {
         }
         
         barkoderView.config?.decoderConfig?.enableMisshaped1D = enabled
+        
+        result(nil)
+    }
+    
+    private func setIdDocumentMasterChecksumEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.idDocument.masterChecksum = StandardChecksum(rawValue: enabled == true ? 1 : 0)
+        
+        result(nil)
+    }
+    
+    private func scanImage(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        
+        guard let base64Image = call.arguments as? String else {
+            return
+        }
+        
+        guard let imageData = Data(base64Encoded: base64Image, options: .ignoreUnknownCharacters) else {
+            return
+        }
+        
+        guard let image = UIImage(data: imageData) else {
+            return
+        }
+        
+        guard let config = barkoderView.config else { return }
+        
+        BarkoderHelper.scanImage(image, bkdConfig: config, resultDelegate: self)
         
         result(nil)
     }
@@ -1193,5 +1259,20 @@ extension BarkoderPlatformView {
         result(barkoderView.config?.barkoderResolution.rawValue)
     }
     
+    private func isDatamatrixDpmModeEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.datamatrix.dpmMode == 1 ? true : false)
+    }
+    
+    private func isQrDpmModeEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.qr.dpmMode == 1 ? true : false)
+    }
+    
+    private func isQrMicroDpmModeEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.qrMicro.dpmMode == 1 ? true : false)
+    }
+    
+    private func isIdDocumentMasterChecksumEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.idDocument.masterChecksum.rawValue == 1 ? true : false)
+    }
+    
 }
-

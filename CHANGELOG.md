@@ -1,3 +1,19 @@
+## 1.5.6
+* Updated barKoder SDK 1.5.6
+* Improvements for scanImage
+* Now it returns multiple results
+* Added dpmMode functions for QR and QR Micro barcodes
+* Added ID Document master checksum enabled function
+* Code128 safe area fix
+
+## 1.5.5
+* Updated barKoder SDK 1.5.5
+* Bug fixes and performance improvements
+
+## 1.5.3
+* Updated barKoder SDK 1.5.3
+* Added scanImage
+
 ## 1.5.2
 * Implemented barKoder SDK 1.5.2
 * "ID Document" (MRZ) has been added as a new symbology

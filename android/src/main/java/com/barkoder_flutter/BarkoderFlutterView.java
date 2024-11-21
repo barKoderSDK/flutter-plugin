@@ -2,6 +2,8 @@ package com.barkoder_flutter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 
 import com.barkoder.Barkoder;
@@ -113,6 +115,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "pauseScanning":
                 pauseScanning(result);
+                break;
+            case "scanImage":
+                scanImage((String) call.arguments, result);
                 break;
             case "getLocationLineColorHex":
                 getLocationLineColorHex(result);
@@ -308,6 +313,21 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setDatamatrixDpmModeEnabled":
                 setDatamatrixDpmModeEnabled((boolean) call.arguments, result);
                 break;
+            case "isDatamatrixDpmModeEnabled":
+                isDatamatrixDpmModeEnabled(result);
+                break;
+            case "setQrDpmModeEnabled":
+                setQrDpmModeEnabled((boolean) call.arguments, result);
+                break;
+            case "isQrDpmModeEnabled":
+                isQrDpmModeEnabled(result);
+                break;
+            case "setQrMicroDpmModeEnabled":
+                setQrMicroDpmModeEnabled((boolean) call.arguments, result);
+                break;
+            case "isQrMicroDpmModeEnabled":
+                isQrMicroDpmModeEnabled(result);
+                break;
             case "setEnableMisshaped1DEnabled":
                 setEnableMisshaped1DEnabled((boolean) call.arguments, result);
                 break;
@@ -334,6 +354,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "configureBarkoder": //UNTIL THIS ONE TESTED
                 configureBarkoder((String) call.arguments, result);
+                break;
+            case "setIdDocumentMasterChecksumEnabled":
+                setIdDocumentMasterChecksumEnabled((boolean) call.arguments, result);
+                break;
+            case "isIdDocumentMasterChecksumEnabled":
+                isIdDocumentMasterChecksumEnabled(result);
                 break;
             default:
                 result.notImplemented();
@@ -830,14 +856,31 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
     }
 
     private void setDatamatrixDpmModeEnabled(boolean enabled, MethodChannel.Result methodResult) {
-        bkdView.config.getDecoderConfig().Datamatrix.enabled = enabled;
         bkdView.config.getDecoderConfig().Datamatrix.dpmMode = enabled;
+
+        methodResult.success(null);
+    }
+
+    private void setQrDpmModeEnabled(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().QR.dpmMode = enabled;
+
+        methodResult.success(null);
+    }
+
+    private void setQrMicroDpmModeEnabled(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().QRMicro.dpmMode = enabled;
 
         methodResult.success(null);
     }
 
     private void setEnableMisshaped1DEnabled(boolean enabled, MethodChannel.Result methodResult) {
         bkdView.config.getDecoderConfig().enableMisshaped1D = enabled;
+
+        methodResult.success(null);
+    }
+
+    private void setIdDocumentMasterChecksumEnabled(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().IDDocument.masterChecksumType = Barkoder.StandardChecksumType.valueOf(enabled ? 1 : 0);
 
         methodResult.success(null);
     }
@@ -870,6 +913,22 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(BarkoderConfig.GetMulticodeCachingDuration());
     }
 
+    private void isDatamatrixDpmModeEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().Datamatrix.dpmMode);
+    }
+
+    private void isQrDpmModeEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().QR.dpmMode);
+    }
+
+    private void isQrMicroDpmModeEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().QRMicro.dpmMode);
+    }
+
+    private void isIdDocumentMasterChecksumEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().IDDocument.masterChecksumType.ordinal() == 1);
+    }
+
     private void configureBarkoder(String barkoderConfigAsJsonString, MethodChannel.Result methodResult) {
         try {
             JSONObject configAsJson = new JSONObject(barkoderConfigAsJsonString);
@@ -897,6 +956,31 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         } catch (Exception ex) {
             sendErrorResult(BarkoderFlutterErrors.BARKODER_CONFIG_IS_NOT_VALID, ex.getMessage(), methodResult);
         }
+    }
+
+    private void scanImage(String base64image, MethodChannel.Result methodResult) {
+        SoftReference<EventChannel.EventSink> scanningResultsEventSinkRef = new SoftReference<>(scanningResultsEventSink);
+
+        // Decode the base64 image string into a byte array using android.util.Base64
+        byte[] imageData = android.util.Base64.decode(base64image, android.util.Base64.DEFAULT);
+        if (imageData == null) {
+            return; // If decoding fails, exit
+        }
+
+        // Create a Bitmap from the decoded byte array
+        Bitmap image = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        if (image == null) {
+            return;
+        }
+
+        // Call the BarkoderHelper's scanImage function with the image, config, and result delegate
+        BarkoderHelper.scanImage(image, bkdView.config, (results, thumbnails, resultImage) -> {
+            EventChannel.EventSink sink = scanningResultsEventSinkRef.get();
+            if (sink != null)
+                sink.success(Util.barkoderResultsToJsonString(results, thumbnails, resultImage));
+        }, this.bkdView.getContext());
+
+        methodResult.success(null);
     }
 
     //endregion Methods

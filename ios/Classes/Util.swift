@@ -11,73 +11,74 @@ import BarkoderSDK
 class Util {
     
     static func barkoderResultsToJsonString(_ decoderResults: [DecoderResult], thumbnails: [UIImage]?, image: UIImage?) -> String? {
-        guard let decoderResult = decoderResults.first else {
-            return nil
+        var resultsJsonArray = [[String: Any]]()
+        
+        // Process each decoder result separately
+        for decoderResult in decoderResults {
+            var resultJson = [String: Any]()
+            
+            resultJson["barcodeType"] = decoderResult.barcodeType.rawValue
+            resultJson["barcodeTypeName"] = decoderResult.barcodeTypeName
+            resultJson["binaryDataAsBase64"] = Data(decoderResult.binaryData).base64EncodedString()
+            resultJson["textualData"] = decoderResult.textualData
+            resultJson["characterSet"] = decoderResult.characterSet
+            
+            if let extraAsDictionary = decoderResult.extra as? [String: Any],
+               !extraAsDictionary.isEmpty,
+               let jsonData = try? JSONSerialization.data(withJSONObject: extraAsDictionary, options: []),
+               let jsonString = String(data: jsonData, encoding: .utf8) {
+                resultJson["extra"] = jsonString
+            }
+            
+            // Add mrzImages
+            if decoderResult.barcodeTypeName == "MRZ" {
+                if let images = decoderResult.images {
+                    var mrzImagesArray = [[String: Any]]()
+                    
+                    for image in images {
+                        if let imageName = image.name, let imageData = image.image.pngData() {
+                            switch imageName {
+                            case "main", "document", "signature", "picture":
+                                let imageInfo: [String: Any] = [
+                                    "name": imageName,
+                                    "base64": imageData.base64EncodedString()
+                                ]
+                                mrzImagesArray.append(imageInfo)
+                            default:
+                                break
+                            }
+                        }
+                    }
+                    resultJson["mrzImagesAsBase64"] = mrzImagesArray
+                }
+            }
+            
+            resultsJsonArray.append(resultJson)
         }
         
-        var resultJson = [String: Any]()
-
-        resultJson["barcodeType"] = decoderResult.barcodeType.rawValue
-        resultJson["barcodeTypeName"] = decoderResult.barcodeTypeName
-        resultJson["binaryDataAsBase64"] = Data(decoderResult.binaryData).base64EncodedString()
-        resultJson["textualData"] = decoderResult.textualData
-        resultJson["characterSet"] = decoderResult.characterSet
+        // Process thumbnails and main image outside the loop
+        var barkoderResultJson: [String: Any] = ["decoderResults": resultsJsonArray]
         
-        if let extraAsDictionary = decoderResult.extra as? [String: Any],
-           !extraAsDictionary.isEmpty,
-           let jsonData = try? JSONSerialization.data(withJSONObject: extraAsDictionary, options: []),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
-            resultJson["extra"] = jsonString
+        if let thumbnails = thumbnails {
+            let thumbnailsBase64Array = thumbnails.compactMap { thumbnail in
+                thumbnail.pngData()?.base64EncodedString()
+            }
+            barkoderResultJson["resultThumbnailsAsBase64"] = thumbnailsBase64Array
         }
         
         if let image = image,
            let imageData = image.pngData() {
-            resultJson["resultImageAsBase64"] = imageData.base64EncodedString()
+            barkoderResultJson["resultImageAsBase64"] = imageData.base64EncodedString()
         }
         
-        if let thumbnail = thumbnails?.first?.pngData() {
-            resultJson["resultThumbnailAsBase64"] = thumbnail.base64EncodedString()
-        }
-
-        if let images = decoderResult.images {
-            for image in images {
-                switch image.name {
-                case "main":
-                    if let imageData = image.image.pngData() {
-                        resultJson["mainImageAsBase64"] = imageData.base64EncodedString()
-                    }
-                case "document":
-                    if let imageData = image.image.pngData() {
-                        resultJson["documentImageAsBase64"] = imageData.base64EncodedString()
-                    }
-                case "signature":
-                    if let imageData = image.image.pngData() {
-                        resultJson["signatureImageAsBase64"] = imageData.base64EncodedString()
-                    }
-                case "picture":
-                    if let imageData = image.image.pngData() {
-                        resultJson["pictureImageAsBase64"] = imageData.base64EncodedString()
-                    }
-                default:
-                    break
-                }
-            }
-        }
-        
+        // Convert the final result to JSON
         do {
-            let jsonData = try JSONSerialization.data(
-                withJSONObject: resultJson,
-                options: JSONSerialization.WritingOptions()
-            ) as NSData
-            
-            let jsonString = NSString(data: jsonData as Data, encoding: String.Encoding.utf8.rawValue) as? String
-
-            return jsonString
-        } catch _ {
-            // TODO: - Handle error
+            let jsonData = try JSONSerialization.data(withJSONObject: barkoderResultJson, options: [])
+            return String(data: jsonData, encoding: .utf8)
+        } catch {
+            // Handle JSON encoding error
             return nil
         }
-
     }
     
     static func parseColor(hexColor: String) -> Int? {
