@@ -43,8 +43,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.paused) {
-      _barkoder.stopScanning();
-      _updateState(null, false);
+      // _barkoder.stopScanning();
+      // _updateState(null, false);
     }
   }
 

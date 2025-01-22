@@ -124,7 +124,10 @@ enum BarcodeType {
   code32,
   telepen,
   dotcode,
-  idDocument;
+  idDocument,
+  databar14,         
+  databarLimited,
+  databarExpanded;
 }
 
 enum FormattingType { disabled, automatic, gs1, aamva }
@@ -145,7 +148,7 @@ enum Code11ChecksumType { disabled, single, double }
 
 enum DecodingSpeed { fast, normal, slow, rigorous }
 
-enum BarkoderResolution { normal, high }
+enum BarkoderResolution { HD, FHD, UHD }
 
 class BarkoderErrors {
   static const String barkodeViewNotMountedDesc = "Barkoder is not mounted";
@@ -170,6 +173,10 @@ class BarkoderConfig {
   String? roiLineColor;
   double? roiLineWidth;
   String? roiOverlayBackgroundColor;
+  String? scanningIndicatorColor;
+  double? scanningIndicatorWidth;
+  int? scanningIndicatorAnimation;
+  bool? scanningIndicatorAlwaysVisible;
   bool? closeSessionOnResultEnabled;
   bool? imageResultEnabled;
   bool? locationInImageResultEnabled;
@@ -188,6 +195,10 @@ class BarkoderConfig {
       this.roiLineColor,
       this.roiLineWidth,
       this.roiOverlayBackgroundColor,
+      this.scanningIndicatorColor,
+      this.scanningIndicatorWidth,
+      this.scanningIndicatorAnimation,
+      this.scanningIndicatorAlwaysVisible,
       this.closeSessionOnResultEnabled,
       this.imageResultEnabled,
       this.locationInImageResultEnabled,
@@ -207,6 +218,10 @@ class BarkoderConfig {
       "roiLineColor": roiLineColor,
       "roiLineWidth": roiLineWidth,
       "roiOverlayBackgroundColor": roiOverlayBackgroundColor,
+      "scanningIndicatorColor": scanningIndicatorColor,
+      "scanningIndicatorWidth": scanningIndicatorWidth,
+      "scanningIndicatorAnimation": scanningIndicatorAnimation,
+      "scanningIndicatorAlwaysVisible": scanningIndicatorAlwaysVisible,
       "closeSessionOnResultEnabled": closeSessionOnResultEnabled,
       "imageResultEnabled": imageResultEnabled,
       "locationInImageResultEnabled": locationInImageResultEnabled,
@@ -256,6 +271,9 @@ class DekoderConfig {
   BarcodeConfig? telepen;
   BarcodeConfig? dotcode;
   IdDocumentBarcodeConfig? idDocument;
+  BarcodeConfig? databar14;         
+  BarcodeConfig? databarLimited;
+  BarcodeConfig? databarExpanded;
   GeneralSettings? general;
 
   DekoderConfig(
@@ -288,6 +306,9 @@ class DekoderConfig {
       this.telepen,
       this.dotcode,
       this.idDocument,
+      this.databar14,
+      this.databarLimited,
+      this.databarExpanded,
       this.general});
 
   Map<String, dynamic> toMap() {
@@ -321,6 +342,9 @@ class DekoderConfig {
       'Telepen': telepen?.toMap(),
       'Dotcode': dotcode?.toMap(),
       'ID Document': idDocument?.toMap(),
+      'Databar 14': databar14?.toMap(),
+      'Databar Limited': databarLimited?.toMap(),
+      'Databar Expanded': databarExpanded?.toMap(),
       'general': general?.toMap()
     };
 

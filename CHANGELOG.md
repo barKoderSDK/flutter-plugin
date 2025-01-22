@@ -1,3 +1,13 @@
+## 1.6.0
+* SDK 1.6.0
+* Added barcodes Databar 14, Databar Limited, Databar Expanded
+* setEnableComposite(int)
+* setDynamicExposure(intensity: Int)
+* setCentricFocusAndExposure(enabled: Bool)
+* Added UHD (4K) support
+* Added scanningIndicator functions
+* setCustomOption(string, int)
+
 ## 1.5.6
 * Updated barKoder SDK 1.5.6
 * Improvements for scanImage

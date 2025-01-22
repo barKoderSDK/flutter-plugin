@@ -262,6 +262,34 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setIdDocumentMasterChecksumEnabled(call, result: result)
             case "isIdDocumentMasterChecksumEnabled":
                 self?.isIdDocumentMasterChecksumEnabled(result)
+            case "setUPCEexpandToUPCA":
+                self?.setUPCEexpandToUPCA(call, result: result)
+            case "setUPCE1expandToUPCA":
+                self?.setUPCE1expandToUPCA(call, result: result)
+            case "setCustomOption":
+                self?.setCustomOption(call, result: result)
+            case "setScanningIndicatorColor":
+                self?.setScanningIndicatorColor(call, result: result)
+            case "getScanningIndicatorColorHex":
+                self?.getScanningIndicatorColorHex(result)
+            case "setScanningIndicatorWidth":
+                self?.setScanningIndicatorWidth(call, result: result)
+            case "getScanningIndicatorWidth":
+                self?.getScanningIndicatorWidth(result)
+            case "setScanningIndicatorAnimation":
+                self?.setScanningIndicatorAnimation(call, result: result)
+            case "getScanningIndicatorAnimation":
+                self?.getScanningIndicatorAnimation(result)
+            case "setScanningIndicatorAlwaysVisible":
+                self?.setScanningIndicatorAlwaysVisible(call, result: result)
+            case "isScanningIndicatorAlwaysVisible":
+                self?.isScanningIndicatorAlwaysVisible(result)
+            case "setDynamicExposure":
+                self?.setDynamicExposure(call, result: result)
+            case "setCentricFocusAndExposure":
+                self?.setCentricFocusAndExposure(call, result: result)
+            case "setEnableComposite":
+                self?.setEnableComposite(call, result: result)
             default:
                 break
             }
@@ -662,6 +690,10 @@ extension BarkoderPlatformView {
                 barkoderConfigAsDictionary?["roiOverlayBackgroundColor"] = Util.parseColor(hexColor: colorHexCode)
             }
             
+            if let colorHexCode = barkoderConfigAsDictionary?["scanningIndicatorColor"] as? String {
+                barkoderConfigAsDictionary?["scanningIndicatorColor"] = Util.parseColor(hexColor: colorHexCode)
+            }
+            
             let jsonData = try JSONSerialization.data(withJSONObject: barkoderConfigAsDictionary as Any, options: .prettyPrinted)
             
             let convertedBarkoderConfigAsString = String(data: jsonData, encoding: .utf8) ?? ""
@@ -803,6 +835,12 @@ extension BarkoderPlatformView {
 					decoderConfig.dotcode.enabled = enabled
                 case IDDocument:
                     decoderConfig.idDocument.enabled = enabled
+                case Databar14:
+                    decoderConfig.databar14.enabled = enabled
+                case DatabarLimited:
+                    decoderConfig.databarLimited.enabled = enabled
+                case DatabarExpanded:
+                    decoderConfig.databarExpanded.enabled = enabled
                 default:
                     result(
                         FlutterError(
@@ -970,6 +1008,108 @@ extension BarkoderPlatformView {
         guard let config = barkoderView.config else { return }
         
         BarkoderHelper.scanImage(image, bkdConfig: config, resultDelegate: self)
+        
+        result(nil)
+    }
+    
+    private func setUPCEexpandToUPCA(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.upcE.expandToUPCA = enabled
+        
+        result(nil)
+    }
+    
+    private func setUPCE1expandToUPCA(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.upcE1.expandToUPCA = enabled
+        
+        result(nil)
+    }
+    
+    private func setCustomOption(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let option = arguments["option"] as? String,
+              let value = arguments["value"] as? Int else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.setcustomOption(option, value: Int32(value))
+        
+        result(nil)
+    }
+    
+    private func setScanningIndicatorColor(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let hexColor = call.arguments as? String else {
+            return
+        }
+        
+        barkoderView.config?.scanningIndicatorColor = UIColor(hexString: hexColor, result: result)
+        
+        result(nil)
+    }
+    
+    private func setScanningIndicatorWidth(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let width = call.arguments as? Float else {
+            return
+        }
+        
+        barkoderView.config?.scanningIndicatorWidth = width
+        
+        result(nil)
+    }
+    
+    private func setScanningIndicatorAnimation(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let animation = call.arguments as? Int else {
+            return
+        }
+        
+        barkoderView.config?.scanningIndicatorAnimation = animation
+        
+        result(nil)
+    }
+    
+    private func setScanningIndicatorAlwaysVisible(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let visible = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.scanningIndicatorAlwaysVisible = visible
+        
+        result(nil)
+    }
+    
+    private func setDynamicExposure(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let dynamicExposure = call.arguments as? Int else {
+            return
+        }
+        
+        barkoderView.setDynamicExposure(dynamicExposure)
+        
+        result(nil)
+    }
+    
+    private func setCentricFocusAndExposure(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.setCentricFocusAndExposure(enabled)
+        
+        result(nil)
+    }
+    
+    private func setEnableComposite(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enableComposite = call.arguments as? Int else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.enableComposite = Int32(enableComposite)
         
         result(nil)
     }
@@ -1216,6 +1356,12 @@ extension BarkoderPlatformView {
             result(decoderConfig.dotcode.enabled)
         case IDDocument:
             result(decoderConfig.idDocument.enabled)
+        case Databar14:
+            result(decoderConfig.databar14.enabled)
+        case DatabarLimited:
+            result(decoderConfig.databarLimited.enabled)
+        case DatabarExpanded:
+            result(decoderConfig.databarExpanded.enabled)
         default:
             result(
                 FlutterError(
@@ -1273,6 +1419,22 @@ extension BarkoderPlatformView {
     
     private func isIdDocumentMasterChecksumEnabled(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.decoderConfig?.idDocument.masterChecksum.rawValue == 1 ? true : false)
+    }
+    
+    private func getScanningIndicatorColorHex(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.scanningIndicatorColor.toHex())
+    }
+    
+    private func getScanningIndicatorWidth(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.scanningIndicatorWidth)
+    }
+    
+    private func getScanningIndicatorAnimation(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.scanningIndicatorAnimation)
+    }
+    
+    private func isScanningIndicatorAlwaysVisible(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.scanningIndicatorAlwaysVisible)
     }
     
 }

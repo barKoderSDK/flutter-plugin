@@ -115,7 +115,7 @@ class Util {
             (int barcodeTypeOrdinal, Barkoder.Config decoderConfig) throws Exception {
 
         // If not founded exception is thrown
-        Barkoder.BarcodeType type = Barkoder.BarcodeType.valueOf(barcodeTypeOrdinal);
+        Barkoder.DecoderType type = Barkoder.DecoderType.valueOf(barcodeTypeOrdinal);
 
         switch (type) {
             case Aztec:
@@ -176,6 +176,12 @@ class Util {
                 return decoderConfig.Dotcode;
             case IDDocument:
                 return decoderConfig.IDDocument;
+            case Databar14:
+                return decoderConfig.Databar14;
+            case DatabarLimited:
+                return decoderConfig.DatabarLimited;
+            case DatabarExpanded:
+                return decoderConfig.DatabarExpanded;
         }
         return null;
     }

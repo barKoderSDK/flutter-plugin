@@ -361,6 +361,48 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "isIdDocumentMasterChecksumEnabled":
                 isIdDocumentMasterChecksumEnabled(result);
                 break;
+            case "setUPCEexpandToUPCA":
+                setUPCEexpandToUPCA((boolean) call.arguments, result);
+                break;
+            case "setUPCE1expandToUPCA":
+                setUPCE1expandToUPCA((boolean) call.arguments, result);
+                break;
+            case "setCustomOption":
+                setCustomOption(call.argument("option"), call.argument("value"), result);
+                break;
+            case "setScanningIndicatorColor":
+                setScanningIndicatorColor((String) call.arguments, result);
+                break;
+            case "getScanningIndicatorColorHex":
+                getScanningIndicatorColorHex(result);
+                break;
+            case "setScanningIndicatorWidth":
+                setScanningIndicatorWidth((double) call.arguments, result);
+                break;
+            case "getScanningIndicatorWidth":
+                getScanningIndicatorWidth(result);
+                break;
+            case "setScanningIndicatorAnimation":
+                setScanningIndicatorAnimation((int) call.arguments, result);
+                break;
+            case "getScanningIndicatorAnimation":
+                getScanningIndicatorAnimation(result);
+                break;
+            case "setScanningIndicatorAlwaysVisible":
+                setScanningIndicatorAlwaysVisible((boolean) call.arguments, result);
+                break;
+            case "isScanningIndicatorAlwaysVisible":
+                isScanningIndicatorAlwaysVisible(result);
+                break;
+            case "setDynamicExposure":
+                setDynamicExposure((int) call.arguments, result);
+                break;
+            case "setCentricFocusAndExposure":
+                setCentricFocusAndExposure((boolean) call.arguments, result);
+                break;
+            case "setEnableComposite":
+                setEnableComposite((int) call.arguments, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -885,6 +927,69 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(null);
     }
 
+    private void setUPCEexpandToUPCA(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().UpcE.expandToUPCA = enabled;
+
+        methodResult.success(null);
+    }
+
+    private void setUPCE1expandToUPCA(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().UpcE1.expandToUPCA = enabled;
+
+        methodResult.success(null);
+    }
+
+    private void setCustomOption(String option, int value, MethodChannel.Result methodResult) {
+        Barkoder.SetCustomOption(bkdView.config.getDecoderConfig(), option, value);
+
+        methodResult.success(null);
+    }
+
+    private void setScanningIndicatorColor(String hexColor, MethodChannel.Result methodResult) {
+        try {
+            bkdView.config.setScanningIndicatorColor(Util.hexColorToIntColor(hexColor));
+            methodResult.success(true);
+        } catch (IllegalArgumentException ex) {
+            sendErrorResult(BarkoderFlutterErrors.COLOR_NOT_SET, ex.getMessage(), methodResult);
+        }
+    }
+
+    private void setScanningIndicatorWidth(double width, MethodChannel.Result methodResult) {
+        bkdView.config.setScanningIndicatorWidth((float) width);
+
+        methodResult.success(null);
+    }
+
+    private void setScanningIndicatorAnimation(int animationType, MethodChannel.Result methodResult) {
+        bkdView.config.setScanningIndicatorAnimation(animationType);
+
+        methodResult.success(null);
+    }
+
+    private void setScanningIndicatorAlwaysVisible(boolean visible, MethodChannel.Result methodResult) {
+        bkdView.config.setScanningIndicatorAlwaysVisible(visible);
+
+        methodResult.success(null);
+    }
+
+    private void setDynamicExposure(int dynamicExposure, MethodChannel.Result methodResult) {
+        bkdView.setDynamicExposure(dynamicExposure);
+
+        methodResult.success(null);
+    }
+
+    private void setCentricFocusAndExposure(boolean value, MethodChannel.Result methodResult) {
+        bkdView.setCentricFocusAndExposure(value);
+
+        methodResult.success(null);
+    }
+
+    private void setEnableComposite(int value, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().enableComposite = value;
+
+        methodResult.success(null);
+    }
+
     private void isMisshaped1DEnabled(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.getDecoderConfig().enableMisshaped1D);
     }
@@ -929,6 +1034,24 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(bkdView.config.getDecoderConfig().IDDocument.masterChecksumType.ordinal() == 1);
     }
 
+    private void getScanningIndicatorColorHex(MethodChannel.Result methodResult) {
+        String hexColor = String.format("#%08X", bkdView.config.getScanningIndicatorColor());
+
+        methodResult.success(hexColor);
+    }
+
+    private void getScanningIndicatorWidth(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getScanningIndicatorWidth());
+    }
+
+    private void getScanningIndicatorAnimation(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getScanningIndicatorAnimation());
+    }
+
+    private void isScanningIndicatorAlwaysVisible(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.isScanningIndicatorAlwaysVisible());
+    }
+
     private void configureBarkoder(String barkoderConfigAsJsonString, MethodChannel.Result methodResult) {
         try {
             JSONObject configAsJson = new JSONObject(barkoderConfigAsJsonString);
@@ -948,6 +1071,11 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             if (configAsJson.has("locationLineColor")) {
                 String colorAsHex = configAsJson.getString("locationLineColor");
                 configAsJson.put("locationLineColor", Util.hexColorToIntColor(colorAsHex));
+            }
+
+            if (configAsJson.has("scanningIndicatorColor")) {
+                String colorAsHex = configAsJson.getString("scanningIndicatorColor");
+                configAsJson.put("scanningIndicatorColor", Util.hexColorToIntColor(colorAsHex));
             }
 
             BarkoderHelper.applyJsonToConfig(bkdView.config, configAsJson);

@@ -82,7 +82,8 @@ class Util {
     }
     
     static func parseColor(hexColor: String) -> Int? {
-        Int(hexColor.replacingOccurrences(of: "#", with: ""), radix: 16)
+        let hex = hexColor.replacingOccurrences(of: "#", with: "")
+        return Int("FF" + hex, radix: 16)
     }
     
 }

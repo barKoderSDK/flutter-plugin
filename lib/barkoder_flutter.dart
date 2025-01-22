@@ -1640,6 +1640,15 @@ class Barkoder {
   }
 
   /// Sets whether the Direct Part Marking (DPM) mode for Datamatrix barcodes is enabled.
+  ///
+  /// [enabled]: A boolean indicating whether to enable or disable DPM mode.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = true;
+  /// _barkoder.setDatamatrixDpmModeEnabled(isEnabled);
+  /// print('Datamatrix DPM mode enabled set to: $isEnabled');
+  /// ```
   Future<void> setDatamatrixDpmModeEnabled(bool enabled) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -1670,6 +1679,15 @@ class Barkoder {
   }
 
   /// Sets whether the Direct Part Marking (DPM) mode for QR barcodes is enabled.
+  ///
+  /// [enabled]: A boolean indicating whether to enable or disable DPM mode.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = true;
+  /// _barkoder.setQrDpmModeEnabled(isEnabled);
+  /// print('QR DPM mode enabled set to: $isEnabled');
+  /// ```
   Future<void> setQrDpmModeEnabled(bool enabled) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -1700,6 +1718,15 @@ class Barkoder {
   }
 
   /// Sets whether the Direct Part Marking (DPM) mode for QR Micro barcodes is enabled.
+  ///
+  /// [enabled]: A boolean indicating whether to enable or disable DPM mode.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = true;
+  /// _barkoder.setQrMicroDpmModeEnabled(isEnabled);
+  /// print('QR Micro DPM mode enabled set to: $isEnabled');
+  /// ```
   Future<void> setQrMicroDpmModeEnabled(bool enabled) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -1710,6 +1737,16 @@ class Barkoder {
     return _methodChannel.invokeMethod('setQrMicroDpmModeEnabled', enabled);
   }
 
+  /// Sets whether the detection of misshaped 1D barcodes is enabled.
+  ///
+  /// [enabled]: A boolean indicating whether to enable/disable the detection of misshaped 1D barcodes.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = true;
+  /// _barkoder.setEnableMisshaped1DEnabled(isEnabled);
+  /// print('Misshaped 1D barcode detection enabled set to: $isEnabled');
+  /// ```
   Future<void> setEnableMisshaped1DEnabled(bool enabled) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -1765,7 +1802,16 @@ class Barkoder {
         .invokeMethod('isIdDocumentMasterChecksumEnabled');
   }
 
-  /// Sets whether Master checksum should be requiered when scanning ID Documents.
+  /// Sets whether Master checksum should be required when scanning ID Documents.
+  ///
+  /// [enabled]: A boolean indicating whether to enable or disable Master checksum.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = true;
+  /// _barkoder.setIdDocumentMasterChecksumEnabled(isEnabled);
+  /// print('Master checksum enabled set to: $isEnabled');
+  /// ```
   Future<void> setIdDocumentMasterChecksumEnabled(bool enabled) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
@@ -1775,6 +1821,282 @@ class Barkoder {
 
     return _methodChannel.invokeMethod(
         'setIdDocumentMasterChecksumEnabled', enabled);
+  }
+
+  /// Sets whether the UPC-E barcodes should be expanded to UPC-A format.
+  ///
+  /// [enabled]: A boolean indicating whether to enable the expansion for UPC-E barcodes.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool expandToUPCA = true;
+  /// _barkoder.setUPCEexpandToUPCA(expandToUPCA);
+  /// print('UPC-E expansion to UPC-A enabled: $expandToUPCA');
+  /// ```
+  Future<void> setUPCEexpandToUPCA(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setUPCEexpandToUPCA', enabled);
+  }
+
+  /// Sets whether the UPC-E1 barcodes should be expanded to UPC-A format.
+  ///
+  /// [enabled]: A boolean indicating whether to enable the expansion for UPC-E1 barcodes.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool expandToUPCA = true;
+  /// _barkoder.setUPCE1expandToUPCA(expandToUPCA);
+  /// print('UPC-E1 expansion to UPC-A enabled: $expandToUPCA');
+  /// ```
+  Future<void> setUPCE1expandToUPCA(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setUPCE1expandToUPCA', enabled);
+  }
+
+  /// Setting a custom option.
+  ///
+  /// [string]: A string value.
+  /// [int]: An integer value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setCustomOption('optionKey', 1);
+  /// print('Custom option set.');
+  /// ```
+  Future<void> setCustomOption(String option, int value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel
+        .invokeMethod('setCustomOption', {'option': option, 'value': value});
+  }
+
+  /// Retrieves the hexadecimal color code representing the line color of the scanning indicator on the camera preview.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String indicatorColor = await _barkoder.getScanningIndicatorColorHex();
+  /// print('Scanning indicator color: $indicatorColor');
+  /// ```
+  Future<String> get getScanningIndicatorColorHex async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getScanningIndicatorColorHex');
+  }
+
+  /// Sets the color of the lines outlining the scanning indicator for barcode scanning on the camera feed.
+  ///
+  /// [hexColor]: The hexadecimal representation of the color.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String indicatorColor = '#FF0000'; // Red color
+  /// _barkoder.setScanningIndicatorColor(indicatorColor);
+  /// print('Scanning indicator color set to: $indicatorColor');
+  /// ```
+  Future<void> setScanningIndicatorColor(String hexColor) async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod(
+        'setScanningIndicatorColor', hexColor);
+  }
+
+  /// Retrieves the current width setting for the scanning indicator on the camera preview.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double indicatorWidth = await _barkoder.getScanningIndicatorWidth();
+  /// print('Scanning indicator width: $indicatorWidth');
+  /// ```
+  Future<double> get getScanningIndicatorWidth async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getScanningIndicatorWidth');
+  }
+
+  /// Sets the width of the scanning indicator for barcode scanning on the camera feed.
+  ///
+  /// [lineWidth]: The width of the scanning indicator to set.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double indicatorWidth = 3.0;
+  /// _barkoder.setScanningIndicatorWidth(indicatorWidth);
+  /// print('Scanning indicator width set to: $indicatorWidth');
+  /// ```
+  Future<void> setScanningIndicatorWidth(double lineWidth) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setScanningIndicatorWidth', lineWidth);
+  }
+
+  /// Retrieves the current animation setting for the scanning indicator on the camera preview.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int animation = await _barkoder.getScanningIndicatorAnimation();
+  /// print('Scanning indicator animation: $animation');
+  /// ```
+  Future<int> get getScanningIndicatorAnimation async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getScanningIndicatorAnimation');
+  }
+
+  /// Sets the animation of the scanning indicator for barcode scanning on the camera feed.
+  ///
+  /// [animation]: The animation of the scanning indicator to set.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int animation = 1;
+  /// _barkoder.setScanningIndicatorAnimation(animation);
+  /// print('Scanning indicator animation set to: $animation');
+  /// ```
+  Future<void> setScanningIndicatorAnimation(int animation) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setScanningIndicatorAnimation', animation);
+  }
+
+  /// Retrieves if the scanning indicator is set to be always visible on the camera preview.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool alwaysVisible = await _barkoder.isScanningIndicatorAlwaysVisible;
+  /// print('Scanning indicator always visible: $alwaysVisible');
+  /// ```
+  Future<bool> get isScanningIndicatorAlwaysVisible async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel
+        .invokeMethod('isScanningIndicatorAlwaysVisible');
+  }
+
+  /// Sets the scanning indicator to be always shown on the camera feed.
+  ///
+  /// [value]: A boolean indicating whether the scanning indicator should always remain visible.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool alwaysVisible = true;
+  /// _barkoder.setScanningIndicatorAlwaysVisible(alwaysVisible);
+  /// print('Scanning indicator always visible: $alwaysVisible');
+  /// ```
+  Future<void> setScanningIndicatorAlwaysVisible(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setScanningIndicatorAlwaysVisible', value);
+  }
+
+  /// Sets the camera's exposure dynamically based on the provided intensity, cycling through predefined compensation values.
+  ///
+  /// [value]: The integer value for the exposure intensity.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int dynamicExposure = 4;
+  /// _barkoder.setDynamicExposure(dynamicExposure);
+  /// print('Camera dynamic exposure: $dynamicExposure');
+  /// ```
+  Future<void> setDynamicExposure(int dynamicExposure) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setDynamicExposure', dynamicExposure);
+  }
+
+  /// Sets the camera to use the center of the viewfinder for focus and exposure.
+  ///
+  /// [value]: A boolean indicating whether the center of the viewfinder should be used.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool value = true;
+  /// _barkoder.setCentricFocusAndExposure(value);
+  /// print('Centric focus and exposure: $value');
+  /// ```
+  Future<void> setCentricFocusAndExposure(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setCentricFocusAndExposure', value);
+  }
+
+  /// Sets wheter Composite Mode should be enabled when scanning.
+  ///
+  /// [value]: The integer value if composite mode should be enabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int value = 1;
+  /// _barkoder.setEnableComposite(value);
+  /// print('Enable composite: $value');
+  /// ```
+  Future<void> setEnableComposite(int dynamicExposure) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setEnableComposite', dynamicExposure);
   }
 
   void _clearScanningResultsStreamSubscription() {
