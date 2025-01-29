@@ -2099,6 +2099,27 @@ class Barkoder {
         'setEnableComposite', dynamicExposure);
   }
 
+  /// Enable or disable video stabilization for smoother video capture.
+  ///
+  /// [value]: A boolean indicating whether video stabilization should be enabled/disabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool value = true;
+  /// _barkoder.setVideoStabilization(value);
+  /// print('Video stabilization: $value');
+  /// ```
+  Future<void> setVideoStabilization(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setVideoStabilization', value);
+  }
+
   void _clearScanningResultsStreamSubscription() {
     _scanningResultsStreamSubscription?.cancel();
     _scanningResultsStreamSubscription = null;

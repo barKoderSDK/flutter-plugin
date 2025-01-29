@@ -290,6 +290,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setCentricFocusAndExposure(call, result: result)
             case "setEnableComposite":
                 self?.setEnableComposite(call, result: result)
+            case "setVideoStabilization":
+                self?.setVideoStabilization(call, result: result)
             default:
                 break
             }
@@ -1110,6 +1112,16 @@ extension BarkoderPlatformView {
         }
         
         barkoderView.config?.decoderConfig?.enableComposite = Int32(enableComposite)
+        
+        result(nil)
+    }
+    
+    private func setVideoStabilization(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.setVideoStabilization(enabled)
         
         result(nil)
     }

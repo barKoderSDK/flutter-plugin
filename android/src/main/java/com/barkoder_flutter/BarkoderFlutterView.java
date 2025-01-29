@@ -403,6 +403,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setEnableComposite":
                 setEnableComposite((int) call.arguments, result);
                 break;
+            case "setVideoStabilization":
+                setVideoStabilization((boolean) call.arguments, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -986,6 +989,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void setEnableComposite(int value, MethodChannel.Result methodResult) {
         bkdView.config.getDecoderConfig().enableComposite = value;
+
+        methodResult.success(null);
+    }
+
+    private void setVideoStabilization(boolean value, MethodChannel.Result methodResult) {
+        bkdView.setVideoStabilization(value);
 
         methodResult.success(null);
     }

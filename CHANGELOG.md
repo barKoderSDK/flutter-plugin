@@ -1,3 +1,8 @@
+## 1.6.1
+* Updated barKoder SDK 1.6.1
+* Resolved camera-related issue on certain devices
+* Added setVideoStabilization function
+
 ## 1.6.0
 * SDK 1.6.0
 * Added barcodes Databar 14, Databar Limited, Databar Expanded
