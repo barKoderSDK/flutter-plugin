@@ -148,6 +148,8 @@ enum Code11ChecksumType { disabled, single, double }
 
 enum DecodingSpeed { fast, normal, slow, rigorous }
 
+enum BarkoderCameraPosition { BACK, FRONT }
+
 enum BarkoderResolution { HD, FHD, UHD }
 
 class BarkoderErrors {

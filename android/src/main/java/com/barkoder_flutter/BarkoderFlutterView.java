@@ -12,6 +12,7 @@ import com.barkoder.BarkoderHelper;
 import com.barkoder.BarkoderLog;
 import com.barkoder.BarkoderView;
 import com.barkoder.enums.BarkoderResolution;
+import com.barkoder.enums.BarkoderCameraPosition;
 
 import org.json.JSONObject;
 
@@ -405,6 +406,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "setVideoStabilization":
                 setVideoStabilization((boolean) call.arguments, result);
+                break;
+            case "setCamera":
+                setCamera((int) call.arguments, result);
                 break;
             default:
                 result.notImplemented();
@@ -995,6 +999,18 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void setVideoStabilization(boolean value, MethodChannel.Result methodResult) {
         bkdView.setVideoStabilization(value);
+
+        methodResult.success(null);
+    }
+
+    private void setCamera(int value, MethodChannel.Result methodResult) {
+        if (value < 0 || value >= BarkoderCameraPosition.values().length) {
+            sendErrorResult(BarkoderFlutterErrors.INVALID_CAMERA_POSITION, BarkoderFlutterErrors.INVALID_CAMERA_POSITION.getErrorMessage(), methodResult);
+            return;
+        }
+
+        BarkoderCameraPosition cameraPosition = BarkoderCameraPosition.values()[value];
+        bkdView.setCamera(cameraPosition);
 
         methodResult.success(null);
     }

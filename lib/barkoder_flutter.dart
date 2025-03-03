@@ -2088,7 +2088,7 @@ class Barkoder {
   /// _barkoder.setEnableComposite(value);
   /// print('Enable composite: $value');
   /// ```
-  Future<void> setEnableComposite(int dynamicExposure) {
+  Future<void> setEnableComposite(int value) {
     if (_isBarkoderViewNotMounted) {
       return Future.error(PlatformException(
           code: BarkoderErrors.barkoderViewNotMounted,
@@ -2096,7 +2096,7 @@ class Barkoder {
     }
 
     return _methodChannel.invokeMethod(
-        'setEnableComposite', dynamicExposure);
+        'setEnableComposite', value);
   }
 
   /// Enable or disable video stabilization for smoother video capture.
@@ -2118,6 +2118,27 @@ class Barkoder {
 
     return _methodChannel.invokeMethod(
         'setVideoStabilization', value);
+  }
+
+  /// Sets the camera to be used for scanning (back/front)
+  ///
+  /// [value]: The value which camera should be used.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// BarkoderCameraPosition cameraPosition = BarkoderCameraPosition.BACK;
+  /// _barkoder.setCamera(cameraPosition);
+  /// print('Barkoder camera position set to: $cameraPosition');
+  /// ```
+  Future<void> setCamera(BarkoderCameraPosition value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setCamera', value.index);
   }
 
   void _clearScanningResultsStreamSubscription() {

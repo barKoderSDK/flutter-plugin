@@ -292,6 +292,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setEnableComposite(call, result: result)
             case "setVideoStabilization":
                 self?.setVideoStabilization(call, result: result)
+            case "setCamera":
+                self?.setCamera(call, result: result)
             default:
                 break
             }
@@ -1122,6 +1124,24 @@ extension BarkoderPlatformView {
         }
         
         barkoderView.setVideoStabilization(enabled)
+        
+        result(nil)
+    }
+    
+    private func setCamera(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Int,
+        let cameraPosition = BarkoderView.BarkoderCameraPosition(rawValue: value) else {
+            result(
+                FlutterError(
+                    code: BarkoderFlutterErrors.INVALID_CAMERA_POSITION.errorCode,
+                    message: BarkoderFlutterErrors.INVALID_CAMERA_POSITION.errorMessage,
+                    details: nil
+                )
+            )
+            return
+        }
+        
+        barkoderView.setCamera(cameraPosition)
         
         result(nil)
     }

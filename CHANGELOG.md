@@ -1,3 +1,8 @@
+## 1.6.2
+* Updated barKoder SDK 1.6.2
+* Camera Switching Option
+* Bug fixes and performance improvements
+
 ## 1.6.1
 * Updated barKoder SDK 1.6.1
 * Resolved camera-related issue on certain devices
