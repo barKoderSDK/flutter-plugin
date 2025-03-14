@@ -1,6 +1,6 @@
 name: barkoder_flutter
 description: Flutter support for Barkoder - a Barcode Scanner SDK for the modern enterprise.
-version: 1.6.2
+version: 1.6.3
 homepage: https://barkoder.com
 
 environment:

@@ -127,10 +127,17 @@ enum BarcodeType {
   idDocument,
   databar14,         
   databarLimited,
-  databarExpanded;
+  databarExpanded,
+  postalIMB,
+  postnet,
+  planet,
+  australianPost,
+  royalMail,
+  kix,
+  japanesePost;
 }
 
-enum FormattingType { disabled, automatic, gs1, aamva }
+enum FormattingType { disabled, automatic, gs1, aamva, sadl }
 
 enum MsiChecksumType {
   disabled,
@@ -276,6 +283,13 @@ class DekoderConfig {
   BarcodeConfig? databar14;         
   BarcodeConfig? databarLimited;
   BarcodeConfig? databarExpanded;
+  BarcodeConfig? postalIMB;
+  BarcodeConfig? postnet;
+  BarcodeConfig? planet;
+  BarcodeConfig? australianPost;
+  BarcodeConfig? royalMail;
+  BarcodeConfig? kix;
+  BarcodeConfig? japanesePost;
   GeneralSettings? general;
 
   DekoderConfig(
@@ -311,6 +325,13 @@ class DekoderConfig {
       this.databar14,
       this.databarLimited,
       this.databarExpanded,
+      this.postalIMB,
+      this.postnet,
+      this.planet,
+      this.australianPost,
+      this.royalMail,
+      this.kix,
+      this.japanesePost,
       this.general});
 
   Map<String, dynamic> toMap() {
@@ -347,6 +368,13 @@ class DekoderConfig {
       'Databar 14': databar14?.toMap(),
       'Databar Limited': databarLimited?.toMap(),
       'Databar Expanded': databarExpanded?.toMap(),
+      'Postal IMB': postalIMB?.toMap(),
+      'Postnet': postnet?.toMap(),
+      'Planet': planet?.toMap(),
+      'Australian Post': australianPost?.toMap(),
+      'Royal Mail': royalMail?.toMap(),
+      'KIX': kix?.toMap(),
+      'Japanese Post': japanesePost?.toMap(),
       'general': general?.toMap()
     };
 

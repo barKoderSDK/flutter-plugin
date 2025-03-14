@@ -845,6 +845,20 @@ extension BarkoderPlatformView {
                     decoderConfig.databarLimited.enabled = enabled
                 case DatabarExpanded:
                     decoderConfig.databarExpanded.enabled = enabled
+                case PostalIMB:
+                    decoderConfig.postalIMB.enabled = enabled
+                case Postnet:
+                    decoderConfig.postnet.enabled = enabled
+                case Planet:
+                    decoderConfig.planet.enabled = enabled
+                case AustralianPost:
+                    decoderConfig.australianPost.enabled = enabled
+                case RoyalMail:
+                    decoderConfig.royalMail.enabled = enabled
+                case KIX:
+                    decoderConfig.kix.enabled = enabled
+                case JapanesePost:
+                    decoderConfig.japanesePost.enabled = enabled
                 default:
                     result(
                         FlutterError(
@@ -1394,6 +1408,20 @@ extension BarkoderPlatformView {
             result(decoderConfig.databarLimited.enabled)
         case DatabarExpanded:
             result(decoderConfig.databarExpanded.enabled)
+        case PostalIMB:
+            result(decoderConfig.postalIMB.enabled)
+        case Postnet:
+            result(decoderConfig.postnet.enabled)
+        case Planet:
+            result(decoderConfig.planet.enabled)
+        case AustralianPost:
+            result(decoderConfig.australianPost.enabled)
+        case RoyalMail:
+            result(decoderConfig.royalMail.enabled)
+        case KIX:
+            result(decoderConfig.kix.enabled)
+        case JapanesePost:
+            result(decoderConfig.japanesePost.enabled)
         default:
             result(
                 FlutterError(
