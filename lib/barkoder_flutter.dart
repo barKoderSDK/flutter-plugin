@@ -191,6 +191,42 @@ class Barkoder {
     return _methodChannel.invokeMethod('pauseScanning');
   }
 
+  /// Freezes the current AR scanning session by capturing a still image from the camera feed.
+  /// Use only when AR mode is enabled to temporarily freeze the view while keeping overlays visible.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// await _barkoder.freezeScanning();
+  /// print('Scanning frozen');
+  /// ```
+  Future<void> freezeScanning() {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('freezeScanning');
+  }
+
+  /// Unfreezes the AR scanning session by removing the still image and reactivating the camera and overlays.
+  /// Use only when AR mode is enabled to restore the live AR view and continue scanning.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// await _barkoder.unfreezeScanning();
+  /// print('Scanning unfrozen');
+  /// ```
+  Future<void> unfreezeScanning() {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('unfreezeScanning');
+  }
+
   /// Scan from base64 image string.
   ///
   /// Example usage:
@@ -1521,27 +1557,6 @@ class Barkoder {
     return await _methodChannel.invokeMethod('isMisshaped1DEnabled');
   }
 
-  /// Sets the delay in milliseconds for considering duplicate barcodes during scanning.
-  ///
-  /// [duplicatesDelayMs]: The delay in milliseconds for detecting duplicate scans.
-  ///
-  /// Example usage:
-  /// ```dart
-  /// int delayMs = 500; // 500 milliseconds
-  /// _barkoder.setDuplicatesDelayMs(delayMs);
-  /// print('Duplicates detection delay set to: $delayMs milliseconds');
-  /// ```
-  Future<void> setDuplicatesDelayMs(int duplicatesDelayMs) {
-    if (_isBarkoderViewNotMounted) {
-      return Future.error(PlatformException(
-          code: BarkoderErrors.barkoderViewNotMounted,
-          message: BarkoderErrors.barkodeViewNotMountedDesc));
-    }
-
-    return _methodChannel.invokeMethod(
-        'setDuplicatesDelayMs', duplicatesDelayMs);
-  }
-
   /// Sets whether the detection of misshaped 1D barcodes is enabled.
   ///
   /// [enabled]: A boolean indicating whether to enable or disable misshaped 1D barcodes.
@@ -1560,25 +1575,6 @@ class Barkoder {
     }
 
     return _methodChannel.invokeMethod('setMisshaped1DEnabled', enabled);
-  }
-
-  /// Retrieves the delay in milliseconds for considering duplicate barcodes during scanning.
-  ///
-  /// Returns a [Future] that completes with an integer representing the delay in milliseconds for detecting duplicate scans.
-  ///
-  /// Example usage:
-  /// ```dart
-  /// int delayMs = await _barkoder.getDuplicatesDelayMs;
-  /// print('Duplicates detection delay: $delayMs milliseconds');
-  /// ```
-  Future<int> get getDuplicatesDelayMs async {
-    if (_isBarkoderViewNotMounted) {
-      return Future.error(PlatformException(
-          code: BarkoderErrors.barkoderViewNotMounted,
-          message: BarkoderErrors.barkodeViewNotMountedDesc));
-    }
-
-    return await _methodChannel.invokeMethod('getDuplicatesDelayMs');
   }
 
   /// Sets whether Vehicle Identification Number (VIN) restrictions are enabled.
@@ -2139,6 +2135,751 @@ class Barkoder {
 
     return _methodChannel.invokeMethod(
         'setCamera', value.index);
+  }
+
+  /// Enables or disables showing duplicate barcode locations on the preview overlay.
+  ///
+  /// [value]: A boolean indicating whether to show duplicate barcode locations.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setShowDuplicatesLocations(true);
+  /// ```
+  Future<void> setShowDuplicatesLocations(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setShowDuplicatesLocations', value);
+  }
+
+  /// Sets the AR mode used for barcode scanning visualization.
+  ///
+  /// [value]: The AR mode to set.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARMode(BarkoderARMode.interactive);
+  /// ```
+  Future<void> setARMode(BarkoderARMode value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARMode', value.index);
+  }
+
+  /// Sets the delay (in milliseconds) after which a detected AR result is considered expired and removed.
+  ///
+  /// [value]: Delay duration in milliseconds.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARResultDisappearanceDelayMs(800);
+  /// ```
+  Future<void> setARResultDisappearanceDelayMs(int value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARResultDisappearanceDelayMs', value);
+  }
+
+  /// Sets the speed at which barcode location overlays transition positions.
+  ///
+  /// [value]: The speed value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARLocationTransitionSpeed(0.3);
+  /// ```
+  Future<void> setARLocationTransitionSpeed(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARLocationTransitionSpeed', value);
+  }
+
+  /// Sets the refresh mode for the AR overlay on the camera preview.
+  ///
+  /// [value]: The AR overlay refresh mode to set.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setAROverlayRefresh(BarkoderAROverlayRefresh.smooth);
+  /// ```
+  Future<void> setAROverlayRefresh(BarkoderAROverlayRefresh value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setAROverlayRefresh', value.index);
+  }
+
+  /// Sets the color used for drawing the overlay around selected barcodes in AR mode.
+  ///
+  /// [value]: The color in hexadecimal format.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARSelectedLocationColor('#00FF00');
+  /// ```
+  Future<void> setARSelectedLocationColor(String value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARSelectedLocationColor', value);
+  }
+
+  /// Sets the color used for drawing the overlay around non-selected barcodes in AR mode.
+  ///
+  /// [value]: The color in hexadecimal format.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARNonSelectedLocationColor('#FF0000');
+  /// ```
+  Future<void> setARNonSelectedLocationColor(String value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARNonSelectedLocationColor', value);
+  }
+
+  /// Sets the line width of the overlay for selected barcodes in AR mode.
+  ///
+  /// [value]: The width to set.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARSelectedLocationLineWidth(2.0);
+  /// ```
+  Future<void> setARSelectedLocationLineWidth(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARSelectedLocationLineWidth', value);
+  }
+
+  /// Sets the line width of the overlay for non-selected barcodes in AR mode.
+  ///
+  /// [value]: The width to set.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARNonSelectedLocationLineWidth(1.0);
+  /// ```
+  Future<void> setARNonSelectedLocationLineWidth(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARNonSelectedLocationLineWidth', value);
+  }
+
+  /// Sets the style of location overlays drawn around detected barcodes.
+  ///
+  /// [value]: The location type style to use.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARLocationType(BarkoderARLocationType.tight);
+  /// ```
+  Future<void> setARLocationType(BarkoderARLocationType value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARLocationType', value.index);
+  }
+
+  /// Enables or disables the ability to freeze/unfreeze scanning via double-tap gesture in AR mode.
+  ///
+  /// [enabled]: Whether to enable the double-tap freeze feature.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARDoubleTapToFreezeEnabled(true);
+  /// ```
+  Future<void> setARDoubleTapToFreezeEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARDoubleTapToFreezeEnabled', enabled);
+  }
+
+  /// Sets the height of the header text label shown above the barcode in AR mode.
+  ///
+  /// [value]: Header height.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderHeight(24.0);
+  /// ```
+  Future<void> setARHeaderHeight(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderHeight', value);
+  }
+
+  /// Sets the condition under which the header text is shown above the barcode.
+  ///
+  /// [value]: The display mode for the AR header.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderShowMode(BarkoderARHeaderShowMode.onSelected);
+  /// ```
+  Future<void> setARHeaderShowMode(BarkoderARHeaderShowMode value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderShowMode', value.index);
+  }
+
+  /// Sets the maximum text height used for rendering AR header text.
+  ///
+  /// [value]: Maximum height.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderMaxTextHeight(22.0);
+  /// ```
+  Future<void> setARHeaderMaxTextHeight(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderMaxTextHeight', value);
+  }
+
+  /// Sets the minimum text height used for rendering AR header text.
+  ///
+  /// [value]: Minimum height.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderMinTextHeight(12.0);
+  /// ```
+  Future<void> setARHeaderMinTextHeight(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderMinTextHeight', value);
+  }
+
+  /// Sets the text color of the header when the barcode is in a selected state.
+  ///
+  /// [value]: The color in hexadecimal format.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderTextColorSelected('#FFFFFF');
+  /// ```
+  Future<void> setARHeaderTextColorSelected(String value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderTextColorSelected', value);
+  }
+
+  /// Sets the text color of the header when the barcode is not selected.
+  ///
+  /// [value]: The color in hexadecimal format.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderTextColorNonSelected('#AAAAAA');
+  /// ```
+  Future<void> setARHeaderTextColorNonSelected(String value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderTextColorNonSelected', value);
+  }
+
+  /// Sets the horizontal margin applied to the header text in AR mode, creating equal padding on both sides.
+  ///
+  /// [value]: Horizontal margin.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderHorizontalTextMargin(8.0);
+  /// ```
+  Future<void> setARHeaderHorizontalTextMargin(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderHorizontalTextMargin', value);
+  }
+
+  /// Sets the vertical margin applied to the header text in AR mode, creating equal padding on both sides.
+  ///
+  /// [value]: Vetical margin.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderVerticalTextMargin(4.0);
+  /// ```
+  Future<void> setARHeaderVerticalTextMargin(double value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderVerticalTextMargin', value);
+  }
+
+  /// Sets the format string for the AR header text above each barcode.
+  ///
+  /// [value]: Format string with placeholders (e.g., `[barcode_text]`).
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARHeaderTextFormat('[barcode_text] - [barcode_type]');
+  /// ```
+  Future<void> setARHeaderTextFormat(String value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARHeaderTextFormat', value);
+  }
+
+  /// Retrieves whether showing duplicate barcode locations in the AR view is enabled.
+  ///
+  /// Returns a [Future] that completes with a [bool] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool showDuplicates = await _barkoder.getShowDuplicatesLocations();
+  /// print('Show duplicates locations: $showDuplicates');
+  /// ```
+  Future<bool> getShowDuplicatesLocations() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getShowDuplicatesLocations');
+  }
+
+    /// Retrieves the current AR mode used for barcode scanning.
+  ///
+  /// Returns a [Future] that completes with a [BarkoderARMode] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// BarkoderARMode mode = await _barkoder.getARMode();
+  /// print('Current AR Mode: $mode');
+  /// ```
+  Future<BarkoderARMode> getARMode() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    final index = await _methodChannel.invokeMethod('getARMode');
+    return BarkoderARMode.values[index];
+  }
+
+  /// Retrieves the delay after which AR results disappear once detected.
+  ///
+  /// Returns a [Future] that completes with an [int] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int delay = await _barkoder.getARResultDisappearanceDelayMs();
+  /// print('AR result disappearance delay: $delay ms');
+  /// ```
+  Future<int> getARResultDisappearanceDelayMs() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARResultDisappearanceDelayMs');
+  }
+
+  /// Retrieves the transition speed for AR barcode location overlays.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double speed = await _barkoder.getARLocationTransitionSpeed();
+  /// print('AR transition speed: $speed');
+  /// ```
+  Future<double> getARLocationTransitionSpeed() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARLocationTransitionSpeed');
+  }
+
+  /// Retrieves the AR overlay refresh mode.
+  ///
+  /// Returns a [Future] that completes with a [BarkoderAROverlayRefresh] enum value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// var mode = await _barkoder.getAROverlayRefresh();
+  /// print('AR overlay refresh mode: $mode');
+  /// ```
+  Future<BarkoderAROverlayRefresh> getAROverlayRefresh() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    final index = await _methodChannel.invokeMethod('getAROverlayRefresh');
+    return BarkoderAROverlayRefresh.values[index];
+  }
+
+  /// Retrieves the color used for selected barcode overlays in AR mode.
+  ///
+  /// Returns a [Future] that completes with a [String] hex color.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String color = await _barkoder.getARSelectedLocationColor();
+  /// print('Selected location color: $color');
+  /// ```
+  Future<String> getARSelectedLocationColor() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARSelectedLocationColor');
+  }
+
+  /// Retrieves the color used for non-selected barcode overlays in AR mode.
+  ///
+  /// Returns a [Future] that completes with a [String] hex color.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String color = await _barkoder.getARNonSelectedLocationColor();
+  /// print('Non-selected location color: $color');
+  /// ```
+  Future<String> getARNonSelectedLocationColor() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARNonSelectedLocationColor');
+  }
+
+  /// Retrieves the line width for selected barcode overlays in AR mode.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double width = await _barkoder.getARSelectedLocationLineWidth();
+  /// print('Selected line width: $width');
+  /// ```
+  Future<double> getARSelectedLocationLineWidth() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARSelectedLocationLineWidth');
+  }
+
+  /// Retrieves the line width for non-selected barcode overlays in AR mode.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double width = await _barkoder.getARNonSelectedLocationLineWidth();
+  /// print('Non-selected line width: $width');
+  /// ```
+  Future<double> getARNonSelectedLocationLineWidth() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARNonSelectedLocationLineWidth');
+  }
+
+  /// Retrieves the style of AR location overlays (tight, bounding box, none).
+  ///
+  /// Returns a [Future] that completes with a [BarkoderARLocationType] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// var type = await _barkoder.getARLocationType();
+  /// print('AR location type: $type');
+  /// ```
+  Future<BarkoderARLocationType> getARLocationType() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    final index = await _methodChannel.invokeMethod('getARLocationType');
+    return BarkoderARLocationType.values[index];
+  }
+
+  /// Checks whether double-tap to freeze is enabled in AR mode.
+  ///
+  /// Returns a [Future] that completes with a [bool] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool enabled = await _barkoder.isARDoubleTapToFreezeEnabled();
+  /// print('Double tap to freeze: $enabled');
+  /// ```
+  Future<bool> isARDoubleTapToFreezeEnabled() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('isARDoubleTapToFreezeEnabled');
+  }
+
+    /// Retrieves the header height above barcode in AR mode.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double height = await _barkoder.getARHeaderHeight();
+  /// print('AR header height: $height');
+  /// ```
+  Future<double> getARHeaderHeight() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderHeight');
+  }
+
+  /// Retrieves the header display mode (always, on selected, never).
+  ///
+  /// Returns a [Future] that completes with a [BarkoderARHeaderShowMode] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// var mode = await _barkoder.getARHeaderShowMode();
+  /// print('AR header show mode: $mode');
+  /// ```
+  Future<BarkoderARHeaderShowMode> getARHeaderShowMode() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    final index = await _methodChannel.invokeMethod('getARHeaderShowMode');
+    return BarkoderARHeaderShowMode.values[index];
+  }
+
+  /// Retrieves the maximum text height for AR headers.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double maxHeight = await _barkoder.getARHeaderMaxTextHeight();
+  /// print('Max text height: $maxHeight');
+  /// ```
+  Future<double> getARHeaderMaxTextHeight() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderMaxTextHeight');
+  }
+
+  /// Retrieves the minimum text height for AR headers.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double minHeight = await _barkoder.getARHeaderMinTextHeight();
+  /// print('Min text height: $minHeight');
+  /// ```
+  Future<double> getARHeaderMinTextHeight() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderMinTextHeight');
+  }
+
+  /// Retrieves the header text color for selected barcodes.
+  ///
+  /// Returns a [Future] that completes with a [String] hex color.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String color = await _barkoder.getARHeaderTextColorSelected();
+  /// print('Header selected text color: $color');
+  /// ```
+  Future<String> getARHeaderTextColorSelected() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderTextColorSelected');
+  }
+
+  /// Retrieves the header text color for non-selected barcodes.
+  ///
+  /// Returns a [Future] that completes with a [String] hex color.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String color = await _barkoder.getARHeaderTextColorNonSelected();
+  /// print('Header non-selected text color: $color');
+  /// ```
+  Future<String> getARHeaderTextColorNonSelected() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderTextColorNonSelected');
+  }
+
+  /// Retrieves the horizontal margin for AR header text.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double margin = await _barkoder.getARHeaderHorizontalTextMargin();
+  /// print('Header horizontal margin: $margin');
+  /// ```
+  Future<double> getARHeaderHorizontalTextMargin() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderHorizontalTextMargin');
+  }
+
+  /// Retrieves the vertical margin for AR header text.
+  ///
+  /// Returns a [Future] that completes with a [double] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double margin = await _barkoder.getARHeaderVerticalTextMargin();
+  /// print('Header vertical margin: $margin');
+  /// ```
+  Future<double> getARHeaderVerticalTextMargin() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderVerticalTextMargin');
+  }
+
+  /// Retrieves the format string used for AR header text.
+  ///
+  /// Returns a [Future] that completes with a [String] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String format = await _barkoder.getARHeaderTextFormat();
+  /// print('Header text format: $format');
+  /// ```
+  Future<String> getARHeaderTextFormat() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+    return await _methodChannel.invokeMethod('getARHeaderTextFormat');
   }
 
   void _clearScanningResultsStreamSubscription() {

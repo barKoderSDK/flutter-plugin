@@ -98,6 +98,10 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.stopScanning(result)
             case "pauseScanning":
                 self?.pauseScanning(result)
+            case "freezeScanning":
+                self?.freezeScanning(result)
+            case "unfreezeScanning":
+                self?.unfreezeScanning(result)
             case "setLocationLineColor":
                 self?.setLocationLineColor(call, result: result)
             case "setLocationLineWidth":
@@ -234,10 +238,6 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setMaximumResultsCount(call, result: result)
             case "getMaximumResultsCount":
                 self?.getMaximumResultsCount(result)
-            case "setDuplicatesDelayMs":
-                self?.setDuplicatesDelayMs(call, result: result)
-            case "getDuplicatesDelayMs":
-                self?.getDuplicatesDelayMs(result)
             case "isBarcodeThumbnailOnResultEnabled":
                 self?.isBarcodeThumbnailOnResultEnabled(result)
             case "getThresholdBetweenDuplicatesScans":
@@ -294,6 +294,86 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setVideoStabilization(call, result: result)
             case "setCamera":
                 self?.setCamera(call, result: result)
+            case "setShowDuplicatesLocations":
+                self?.setShowDuplicatesLocations(call, result: result)
+            case "setARMode":
+                self?.setARMode(call, result: result)
+            case "setARResultDisappearanceDelayMs":
+                self?.setARResultDisappearanceDelayMs(call, result: result)
+            case "setARLocationTransitionSpeed":
+                self?.setARLocationTransitionSpeed(call, result: result)
+            case "setAROverlayRefresh":
+                self?.setAROverlayRefresh(call, result: result)
+            case "setARSelectedLocationColor":
+                self?.setARSelectedLocationColor(call, result: result)
+            case "setARNonSelectedLocationColor":
+                self?.setARNonSelectedLocationColor(call, result: result)
+            case "setARSelectedLocationLineWidth":
+                self?.setARSelectedLocationLineWidth(call, result: result)
+            case "setARNonSelectedLocationLineWidth":
+                self?.setARNonSelectedLocationLineWidth(call, result: result)
+            case "setARLocationType":
+                self?.setARLocationType(call, result: result)
+            case "setARDoubleTapToFreezeEnabled":
+                self?.setARDoubleTapToFreezeEnabled(call, result: result)
+            case "setARHeaderHeight":
+                self?.setARHeaderHeight(call, result: result)
+            case "setARHeaderShowMode":
+                self?.setARHeaderShowMode(call, result: result)
+            case "setARHeaderMaxTextHeight":
+                self?.setARHeaderMaxTextHeight(call, result: result)
+            case "setARHeaderMinTextHeight":
+                self?.setARHeaderMinTextHeight(call, result: result)
+            case "setARHeaderTextColorSelected":
+                self?.setARHeaderTextColorSelected(call, result: result)
+            case "setARHeaderTextColorNonSelected":
+                self?.setARHeaderTextColorNonSelected(call, result: result)
+            case "setARHeaderHorizontalTextMargin":
+                self?.setARHeaderHorizontalTextMargin(call, result: result)
+            case "setARHeaderVerticalTextMargin":
+                self?.setARHeaderVerticalTextMargin(call, result: result)
+            case "setARHeaderTextFormat":
+                self?.setARHeaderTextFormat(call, result: result)
+            case "getShowDuplicatesLocations":
+                self?.getShowDuplicatesLocations(result)
+            case "getARMode":
+                self?.getARMode(result)
+            case "getARResultDisappearanceDelayMs":
+                self?.getARResultDisappearanceDelayMs(result)
+            case "getARLocationTransitionSpeed":
+                self?.getARLocationTransitionSpeed(result)
+            case "getAROverlayRefresh":
+                self?.getAROverlayRefresh(result)
+            case "getARSelectedLocationColor":
+                self?.getARSelectedLocationColor(result)
+            case "getARNonSelectedLocationColor":
+                self?.getARNonSelectedLocationColor(result)
+            case "getARSelectedLocationLineWidth":
+                self?.getARSelectedLocationLineWidth(result)
+            case "getARNonSelectedLocationLineWidth":
+                self?.getARNonSelectedLocationLineWidth(result)
+            case "getARLocationType":
+                self?.getARLocationType(result)
+            case "isARDoubleTapToFreezeEnabled":
+                self?.isARDoubleTapToFreezeEnabled(result)
+            case "getARHeaderHeight":
+                self?.getARHeaderHeight(result)
+            case "getARHeaderShowMode":
+                self?.getARHeaderShowMode(result)
+            case "getARHeaderMaxTextHeight":
+                self?.getARHeaderMaxTextHeight(result)
+            case "getARHeaderMinTextHeight":
+                self?.getARHeaderMinTextHeight(result)
+            case "getARHeaderTextColorSelected":
+                self?.getARHeaderTextColorSelected(result)
+            case "getARHeaderTextColorNonSelected":
+                self?.getARHeaderTextColorNonSelected(result)
+            case "getARHeaderHorizontalTextMargin":
+                self?.getARHeaderHorizontalTextMargin(result)
+            case "getARHeaderVerticalTextMargin":
+                self?.getARHeaderVerticalTextMargin(result)
+            case "getARHeaderTextFormat":
+                self?.getARHeaderTextFormat(result)
             default:
                 break
             }
@@ -377,6 +457,18 @@ extension BarkoderPlatformView {
     
     private func pauseScanning(_ result: @escaping FlutterResult) {
         barkoderView.pauseScanning()
+        
+        result(nil)
+    }
+    
+    private func freezeScanning(_ result: @escaping FlutterResult) {
+        barkoderView.freezeScanning()
+        
+        result(nil)
+    }
+    
+    private func unfreezeScanning(_ result: @escaping FlutterResult) {
+        barkoderView.unfreezeScanning()
         
         result(nil)
     }
@@ -698,6 +790,22 @@ extension BarkoderPlatformView {
                 barkoderConfigAsDictionary?["scanningIndicatorColor"] = Util.parseColor(hexColor: colorHexCode)
             }
             
+            if let colorHexCode = barkoderConfigAsDictionary?["selectedLocationColor"] as? String {
+                barkoderConfigAsDictionary?["selectedLocationColor"] = Util.parseColor(hexColor: colorHexCode)
+            }
+
+            if let colorHexCode = barkoderConfigAsDictionary?["nonSelectedLocationColor"] as? String {
+                barkoderConfigAsDictionary?["nonSelectedLocationColor"] = Util.parseColor(hexColor: colorHexCode)
+            }
+
+            if let colorHexCode = barkoderConfigAsDictionary?["headerTextColorSelected"] as? String {
+                barkoderConfigAsDictionary?["headerTextColorSelected"] = Util.parseColor(hexColor: colorHexCode)
+            }
+
+            if let colorHexCode = barkoderConfigAsDictionary?["headerTextColorNonSelected"] as? String {
+                barkoderConfigAsDictionary?["headerTextColorNonSelected"] = Util.parseColor(hexColor: colorHexCode)
+            }
+            
             let jsonData = try JSONSerialization.data(withJSONObject: barkoderConfigAsDictionary as Any, options: .prettyPrinted)
             
             let convertedBarkoderConfigAsString = String(data: jsonData, encoding: .utf8) ?? ""
@@ -909,16 +1017,6 @@ extension BarkoderPlatformView {
         }
         
         barkoderView.config?.barcodeThumbnailOnResult = enabled
-    }
-
-    private func setDuplicatesDelayMs(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let index = call.arguments as? UInt32 else {
-            return
-        }
-
-        barkoderView.config?.decoderConfig?.duplicatesDelayMs = Int32(index)
-        
-        result(nil)
     }
     
     private func setThresholdBetweenDuplicatesScans(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -1159,6 +1257,170 @@ extension BarkoderPlatformView {
         
         result(nil)
     }
+    
+    private func setShowDuplicatesLocations(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Bool else { return }
+        
+        barkoderView.config?.showDuplicatesLocations = value
+        
+        result(nil)
+    }
+
+    private func setARMode(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let index = call.arguments as? Int,
+              let mode = BarkoderARMode(rawValue: index) else { return }
+        
+        barkoderView.config?.arConfig.arMode = mode
+        
+        result(nil)
+    }
+
+    private func setARResultDisappearanceDelayMs(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Int else { return }
+        
+        barkoderView.config?.arConfig.resultDisappearanceDelayMs = value
+        
+        result(nil)
+    }
+
+    private func setARLocationTransitionSpeed(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.locationTransitionSpeed = value
+        
+        result(nil)
+    }
+
+    private func setAROverlayRefresh(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let index = call.arguments as? Int,
+              let refresh = BarkoderAROverlayRefresh(rawValue: index) else { return }
+        
+        barkoderView.config?.arConfig.overlayRefresh = refresh
+        
+        result(nil)
+    }
+
+    private func setARSelectedLocationColor(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let hex = call.arguments as? String else { return }
+        
+        barkoderView.config?.arConfig.selectedLocationColor = UIColor(hexString: hex, result: result)
+        
+        result(nil)
+    }
+
+    private func setARNonSelectedLocationColor(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let hex = call.arguments as? String else { return }
+        
+        barkoderView.config?.arConfig.nonSelectedLocationColor = UIColor(hexString: hex, result: result)
+        
+        result(nil)
+    }
+
+    private func setARSelectedLocationLineWidth(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let width = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.selectedLocationLineWidth = width
+        
+        result(nil)
+    }
+
+    private func setARNonSelectedLocationLineWidth(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let width = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.nonSelectedLocationLineWidth = width
+        
+        result(nil)
+    }
+
+    private func setARLocationType(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let index = call.arguments as? Int,
+              let type = BarkoderARLocationType(rawValue: index) else { return }
+        
+        barkoderView.config?.arConfig.locationType = type
+        
+        result(nil)
+    }
+
+    private func setARDoubleTapToFreezeEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else { return }
+
+        barkoderView.config?.arConfig.doubleTapToFreezeEnabled = enabled
+        
+        result(nil)
+    }
+
+    private func setARHeaderHeight(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let height = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.headerHeight = height
+        
+        result(nil)
+    }
+
+    private func setARHeaderShowMode(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let index = call.arguments as? Int,
+              let mode = BarkoderARHeaderShowMode(rawValue: index) else { return }
+        
+        barkoderView.config?.arConfig.headerShowMode = mode
+        
+        result(nil)
+    }
+
+    private func setARHeaderMaxTextHeight(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.headerMaxTextHeight = value
+        
+        result(nil)
+    }
+
+    private func setARHeaderMinTextHeight(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.headerMinTextHeight = value
+        
+        result(nil)
+    }
+
+    private func setARHeaderTextColorSelected(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let hex = call.arguments as? String else { return }
+        
+        barkoderView.config?.arConfig.headerTextColorSelected = UIColor(hexString: hex, result: result)
+        
+        result(nil)
+    }
+
+    private func setARHeaderTextColorNonSelected(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let hex = call.arguments as? String else { return }
+        
+        barkoderView.config?.arConfig.headerTextColorNonSelected = UIColor(hexString: hex, result: result)
+        
+        result(nil)
+    }
+
+    private func setARHeaderHorizontalTextMargin(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.headerHorizontalTextMargin = value
+        
+        result(nil)
+    }
+
+    private func setARHeaderVerticalTextMargin(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Float else { return }
+        
+        barkoderView.config?.arConfig.headerVerticalTextMargin = value
+        
+        result(nil)
+    }
+
+    private func setARHeaderTextFormat(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? String else { return }
+        
+        barkoderView.config?.arConfig.headerTextFormat = value
+        
+        result(nil)
+    }
      
 }
 
@@ -1320,10 +1582,6 @@ extension BarkoderPlatformView {
     
     private func getMaximumResultsCount(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.decoderConfig?.maximumResultsCount)
-    }
-    
-    private func getDuplicatesDelayMs(_ result: @escaping FlutterResult) {
-        result(barkoderView.config?.decoderConfig?.duplicatesDelayMs)
     }
     
     private func isBarcodeTypeEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -1495,6 +1753,86 @@ extension BarkoderPlatformView {
     
     private func isScanningIndicatorAlwaysVisible(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.scanningIndicatorAlwaysVisible)
+    }
+    
+    private func getShowDuplicatesLocations(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.showDuplicatesLocations)
+    }
+    
+    private func getARMode(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.arMode.rawValue)
+    }
+
+    private func getARResultDisappearanceDelayMs(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.resultDisappearanceDelayMs)
+    }
+
+    private func getARLocationTransitionSpeed(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.locationTransitionSpeed)
+    }
+
+    private func getAROverlayRefresh(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.overlayRefresh.rawValue)
+    }
+
+    private func getARSelectedLocationColor(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.selectedLocationColor.toHex())
+    }
+
+    private func getARNonSelectedLocationColor(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.nonSelectedLocationColor.toHex())
+    }
+
+    private func getARSelectedLocationLineWidth(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.selectedLocationLineWidth)
+    }
+
+    private func getARNonSelectedLocationLineWidth(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.nonSelectedLocationLineWidth)
+    }
+
+    private func getARLocationType(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.locationType.rawValue)
+    }
+
+    private func isARDoubleTapToFreezeEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.doubleTapToFreezeEnabled)
+    }
+
+    private func getARHeaderHeight(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerHeight)
+    }
+
+    private func getARHeaderShowMode(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerShowMode.rawValue)
+    }
+
+    private func getARHeaderMaxTextHeight(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerMaxTextHeight)
+    }
+
+    private func getARHeaderMinTextHeight(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerMinTextHeight)
+    }
+
+    private func getARHeaderTextColorSelected(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerTextColorSelected.toHex())
+    }
+
+    private func getARHeaderTextColorNonSelected(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerTextColorNonSelected.toHex())
+    }
+
+    private func getARHeaderHorizontalTextMargin(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerHorizontalTextMargin)
+    }
+
+    private func getARHeaderVerticalTextMargin(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerVerticalTextMargin)
+    }
+
+    private func getARHeaderTextFormat(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.headerTextFormat)
     }
     
 }

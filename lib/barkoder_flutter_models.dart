@@ -159,6 +159,14 @@ enum BarkoderCameraPosition { BACK, FRONT }
 
 enum BarkoderResolution { HD, FHD, UHD }
 
+enum BarkoderARMode { off, interactiveDisabled, interactiveEnabled, nonInteractive }
+
+enum BarkoderAROverlayRefresh { smooth, normal }
+
+enum BarkoderARLocationType { none, tight, boundingBox }
+
+enum BarkoderARHeaderShowMode { never, always, onSelected }
+
 class BarkoderErrors {
   static const String barkodeViewNotMountedDesc = "Barkoder is not mounted";
   static const String barkoderViewNotMounted = "0";
@@ -197,6 +205,7 @@ class BarkoderConfig {
   bool? vibrateOnSuccessEnabled;
   bool? enableVINRestrictions;
   DekoderConfig? decoder;
+  BarkoderARConfig? arConfig;
 
   BarkoderConfig(
       {this.locationLineColor,
@@ -218,7 +227,8 @@ class BarkoderConfig {
       this.beepOnSuccessEnabled,
       this.vibrateOnSuccessEnabled,
       this.enableVINRestrictions,
-      this.decoder});
+      this.decoder,
+      this.arConfig});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> filteredConfigAsJson = {
@@ -241,7 +251,8 @@ class BarkoderConfig {
       "beepOnSuccessEnabled": beepOnSuccessEnabled,
       "vibrateOnSuccessEnabled": vibrateOnSuccessEnabled,
       "enableVINRestrictions": enableVINRestrictions,
-      "decoder": decoder?.toMap()
+      "decoder": decoder?.toMap(),
+      "arConfig": arConfig?.toJson(),
     };
 
     filteredConfigAsJson.removeWhere((key, value) => value == null);
@@ -381,6 +392,77 @@ class DekoderConfig {
     filteredMap.removeWhere((key, value) => value == null);
 
     return filteredMap;
+  }
+}
+
+class BarkoderARConfig {
+  BarkoderARMode? arMode;
+  int? resultDisappearanceDelayMs;
+  double? locationTransitionSpeed;
+  BarkoderAROverlayRefresh? overlayRefresh;
+  String? selectedLocationColor;
+  String? nonSelectedLocationColor;
+  double? selectedLocationLineWidth;
+  double? nonSelectedLocationLineWidth;
+  BarkoderARLocationType? locationType;
+  bool? doubleTapToFreezeEnabled;
+  double? headerHeight;
+  BarkoderARHeaderShowMode? headerShowMode;
+  double? headerMaxTextHeight;
+  double? headerMinTextHeight;
+  String? headerTextColorSelected;
+  String? headerTextColorNonSelected;
+  double? headerHorizontalTextMargin;
+  double? headerVerticalTextMargin;
+  String? headerTextFormat;
+
+  BarkoderARConfig({
+    this.arMode,
+    this.resultDisappearanceDelayMs,
+    this.locationTransitionSpeed,
+    this.overlayRefresh,
+    this.selectedLocationColor,
+    this.nonSelectedLocationColor,
+    this.selectedLocationLineWidth,
+    this.nonSelectedLocationLineWidth,
+    this.locationType,
+    this.doubleTapToFreezeEnabled,
+    this.headerHeight,
+    this.headerShowMode,
+    this.headerMaxTextHeight,
+    this.headerMinTextHeight,
+    this.headerTextColorSelected,
+    this.headerTextColorNonSelected,
+    this.headerHorizontalTextMargin,
+    this.headerVerticalTextMargin,
+    this.headerTextFormat,
+  });
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {
+      "arMode": arMode?.index,
+      "resultDisappearanceDelayMs": resultDisappearanceDelayMs,
+      "locationTransitionSpeed": locationTransitionSpeed,
+      "overlayRefresh": overlayRefresh?.index,
+      "selectedLocationColor": selectedLocationColor,
+      "nonSelectedLocationColor": nonSelectedLocationColor,
+      "selectedLocationLineWidth": selectedLocationLineWidth,
+      "nonSelectedLocationLineWidth": nonSelectedLocationLineWidth,
+      "locationType": locationType?.index,
+      "doubleTapToFreezeEnabled": doubleTapToFreezeEnabled,
+      "headerHeight": headerHeight,
+      "headerShowMode": headerShowMode?.index,
+      "headerMaxTextHeight": headerMaxTextHeight,
+      "headerMinTextHeight": headerMinTextHeight,
+      "headerTextColorSelected": headerTextColorSelected,
+      "headerTextColorNonSelected": headerTextColorNonSelected,
+      "headerHorizontalTextMargin": headerHorizontalTextMargin,
+      "headerVerticalTextMargin": headerVerticalTextMargin,
+      "headerTextFormat": headerTextFormat,
+    };
+
+    json.removeWhere((key, value) => value == null);
+    return json;
   }
 }
 
@@ -586,7 +668,6 @@ class GeneralSettings {
   FormattingType? formattingType;
   String? encodingCharacterSet;
   int? maximumResultsCount;
-  int? duplicatesDelayMs;
   int? multicodeCachingDuration;
   bool? multicodeCachingEnabled;
 
@@ -600,7 +681,6 @@ class GeneralSettings {
       this.formattingType,
       this.encodingCharacterSet,
       this.maximumResultsCount,
-      this.duplicatesDelayMs,
       this.multicodeCachingDuration,
       this.multicodeCachingEnabled});
 
@@ -615,7 +695,6 @@ class GeneralSettings {
       "formattingType": formattingType?.index,
       "encodingCharacterSet": encodingCharacterSet,
       "maximumResultsCount": maximumResultsCount,
-      "duplicatesDelayMs": duplicatesDelayMs,
       "multicodeCachingDuration": multicodeCachingDuration,
       "multicodeCachingEnabled": multicodeCachingEnabled
     };

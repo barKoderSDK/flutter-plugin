@@ -11,8 +11,12 @@ import com.barkoder.BarkoderConfig;
 import com.barkoder.BarkoderHelper;
 import com.barkoder.BarkoderLog;
 import com.barkoder.BarkoderView;
+import com.barkoder.enums.BarkoderARHeaderShowMode;
+import com.barkoder.enums.BarkoderARLocationType;
+import com.barkoder.enums.BarkoderARMode;
 import com.barkoder.enums.BarkoderResolution;
 import com.barkoder.enums.BarkoderCameraPosition;
+import com.barkoder.overlaymanager.BarkoderAROverlayRefresh;
 
 import org.json.JSONObject;
 
@@ -116,6 +120,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "pauseScanning":
                 pauseScanning(result);
+                break;
+            case "freezeScanning":
+                freezeScanning(result);
+                break;
+            case "unfreezeScanning":
+                unfreezeScanning(result);
                 break;
             case "scanImage":
                 scanImage((String) call.arguments, result);
@@ -284,12 +294,6 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "getMaximumResultsCount":
                 getMaximumResultsCount(result);
                 break;
-            case "setDuplicatesDelayMs":
-                setDuplicatesDelayMs((int) call.arguments, result);
-                break;
-            case "getDuplicatesDelayMs":
-                getDuplicatesDelayMs(result);
-                break;
             case "setMulticodeCachingDuration":
                 setMulticodeCachingDuration((int) call.arguments, result);
                 break;
@@ -409,6 +413,126 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "setCamera":
                 setCamera((int) call.arguments, result);
+                break;
+            case "setShowDuplicatesLocations":
+                setShowDuplicatesLocations((boolean) call.arguments, result);
+                break;
+            case "setARMode":
+                setARMode((int) call.arguments, result);
+                break;
+            case "setARResultDisappearanceDelayMs":
+                setARResultDisappearanceDelayMs((int) call.arguments, result);
+                break;
+            case "setARLocationTransitionSpeed":
+                setARLocationTransitionSpeed((double) call.arguments, result);
+                break;
+            case "setAROverlayRefresh":
+                setAROverlayRefresh((int) call.arguments, result);
+                break;
+            case "setARSelectedLocationColor":
+                setARSelectedLocationColor((String) call.arguments, result);
+                break;
+            case "setARNonSelectedLocationColor":
+                setARNonSelectedLocationColor((String) call.arguments, result);
+                break;
+            case "setARSelectedLocationLineWidth":
+                setARSelectedLocationLineWidth((double) call.arguments, result);
+                break;
+            case "setARNonSelectedLocationLineWidth":
+                setARNonSelectedLocationLineWidth((double) call.arguments, result);
+                break;
+            case "setARLocationType":
+                setARLocationType((int) call.arguments, result);
+                break;
+            case "setARDoubleTapToFreezeEnabled":
+                setARDoubleTapToFreezeEnabled((boolean) call.arguments, result);
+                break;
+            case "setARHeaderHeight":
+                setARHeaderHeight((double) call.arguments, result);
+                break;
+            case "setARHeaderShowMode":
+                setARHeaderShowMode((int) call.arguments, result);
+                break;
+            case "setARHeaderMaxTextHeight":
+                setARHeaderMaxTextHeight((double) call.arguments, result);
+                break;
+            case "setARHeaderMinTextHeight":
+                setARHeaderMinTextHeight((double) call.arguments, result);
+                break;
+            case "setARHeaderTextColorSelected":
+                setARHeaderTextColorSelected((String) call.arguments, result);
+                break;
+            case "setARHeaderTextColorNonSelected":
+                setARHeaderTextColorNonSelected((String) call.arguments, result);
+                break;
+            case "setARHeaderHorizontalTextMargin":
+                setARHeaderHorizontalTextMargin((double) call.arguments, result);
+                break;
+            case "setARHeaderVerticalTextMargin":
+                setARHeaderVerticalTextMargin((double) call.arguments, result);
+                break;
+            case "setARHeaderTextFormat":
+                setARHeaderTextFormat((String) call.arguments, result);
+                break;
+            case "getShowDuplicatesLocations":
+                getShowDuplicatesLocations(result);
+                break;
+            case "getARMode":
+                getARMode(result);
+                break;
+            case "getARResultDisappearanceDelayMs":
+                getARResultDisappearanceDelayMs(result);
+                break;
+            case "getARLocationTransitionSpeed":
+                getARLocationTransitionSpeed(result);
+                break;
+            case "getAROverlayRefresh":
+                getAROverlayRefresh(result);
+                break;
+            case "getARSelectedLocationColor":
+                getARSelectedLocationColor(result);
+                break;
+            case "getARNonSelectedLocationColor":
+                getARNonSelectedLocationColor(result);
+                break;
+            case "getARSelectedLocationLineWidth":
+                getARSelectedLocationLineWidth(result);
+                break;
+            case "getARNonSelectedLocationLineWidth":
+                getARNonSelectedLocationLineWidth(result);
+                break;
+            case "getARLocationType":
+                getARLocationType(result);
+                break;
+            case "isARDoubleTapToFreezeEnabled":
+                isARDoubleTapToFreezeEnabled(result);
+                break;
+            case "getARHeaderHeight":
+                getARHeaderHeight(result);
+                break;
+            case "getARHeaderShowMode":
+                getARHeaderShowMode(result);
+                break;
+            case "getARHeaderMaxTextHeight":
+                getARHeaderMaxTextHeight(result);
+                break;
+            case "getARHeaderMinTextHeight":
+                getARHeaderMinTextHeight(result);
+                break;
+            case "getARHeaderTextColorSelected":
+                getARHeaderTextColorSelected(result);
+                break;
+            case "getARHeaderTextColorNonSelected":
+                getARHeaderTextColorNonSelected(result);
+                break;
+            case "getARHeaderHorizontalTextMargin":
+                getARHeaderHorizontalTextMargin(result);
+                break;
+            case "getARHeaderVerticalTextMargin":
+                getARHeaderVerticalTextMargin(result);
+                break;
+            case "getARHeaderTextFormat":
+                getARHeaderTextFormat(result);
                 break;
             default:
                 result.notImplemented();
@@ -618,6 +742,18 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void pauseScanning(MethodChannel.Result methodResult) {
         bkdView.pauseScanning();
+
+        methodResult.success(null);
+    }
+
+    private void freezeScanning(MethodChannel.Result methodResult) {
+        bkdView.freezeScanning();
+
+        methodResult.success(null);
+    }
+
+    private void unfreezeScanning(MethodChannel.Result methodResult) {
+        bkdView.unfreezeScanning();
 
         methodResult.success(null);
     }
@@ -848,20 +984,6 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(bkdView.config.getDecoderConfig().maximumResultsCount);
     }
 
-    private void setDuplicatesDelayMs(int duplicatesDelayMs, MethodChannel.Result methodResult) {
-        try {
-            bkdView.config.getDecoderConfig().duplicatesDelayMs = duplicatesDelayMs;
-            
-            methodResult.success(null);
-        } catch (Exception ex) {
-            sendErrorResult(BarkoderFlutterErrors.DUPLICATES_DELAY_NOT_FOUNDED, ex.getMessage(), methodResult);
-        }
-    }
-
-    private void getDuplicatesDelayMs(MethodChannel.Result methodResult) {
-        methodResult.success(bkdView.config.getDecoderConfig().duplicatesDelayMs);
-    }
-
     private void setMulticodeCachingDuration(int multicodeCachingDuration, MethodChannel.Result methodResult) {
         BarkoderConfig.SetMulticodeCachingDuration(multicodeCachingDuration);
 
@@ -1015,6 +1137,194 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(null);
     }
 
+    private void setShowDuplicatesLocations(boolean value, MethodChannel.Result result) {
+        bkdView.config.setShowDuplicatesLocations(value);
+        result.success(null);
+    }
+
+    private void setARMode(int value, MethodChannel.Result result) {
+        BarkoderARMode arMode = BarkoderARMode.values()[value];
+        bkdView.config.getArConfig().setARModeEnabled(arMode);
+        result.success(null);
+    }
+
+    private void setARResultDisappearanceDelayMs(int value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setResultDisappearanceDelayMs(value);
+        result.success(null);
+    }
+
+    private void setARLocationTransitionSpeed(double value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setLocationTransitionSpeed((float) value);
+        result.success(null);
+    }
+
+    private void setAROverlayRefresh(int value, MethodChannel.Result result) {
+        BarkoderAROverlayRefresh refresh = BarkoderAROverlayRefresh.values()[value];
+        bkdView.config.getArConfig().setOverlayRefresh(refresh);
+        result.success(null);
+    }
+
+    private void setARSelectedLocationColor(String hexColor, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setSelectedLocationColor(Util.hexColorToIntColor(hexColor));
+        result.success(null);
+    }
+
+    private void setARNonSelectedLocationColor(String hexColor, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setNonSelectedLocationColor(Util.hexColorToIntColor(hexColor));
+        result.success(null);
+    }
+
+    private void setARSelectedLocationLineWidth(double width, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setSelectedLocationLineWidth((float) width);
+        result.success(null);
+    }
+
+    private void setARNonSelectedLocationLineWidth(double width, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setNonSelectedLocationLineWidth((float) width);
+        result.success(null);
+    }
+
+    private void setARLocationType(int value, MethodChannel.Result result) {
+        BarkoderARLocationType locationType = BarkoderARLocationType.values()[value];
+        bkdView.config.getArConfig().setLocationType(locationType);
+        result.success(null);
+    }
+
+    private void setARDoubleTapToFreezeEnabled(boolean enabled, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setDoubleTapToFreezeEnabled(enabled);
+        result.success(null);
+    }
+
+    private void setARHeaderHeight(double value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderHeight((float) value);
+        result.success(null);
+    }
+
+    private void setARHeaderShowMode(int value, MethodChannel.Result result) {
+        BarkoderARHeaderShowMode showMode = BarkoderARHeaderShowMode.values()[value];
+        bkdView.config.getArConfig().setHeaderShowMode(showMode);
+        result.success(null);
+    }
+
+    private void setARHeaderMaxTextHeight(double value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderMaxTextHeight((float) value);
+        result.success(null);
+    }
+
+    private void setARHeaderMinTextHeight(double value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderMinTextHeight((float) value);
+        result.success(null);
+    }
+
+    private void setARHeaderTextColorSelected(String hexColor, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderTextColorSelected(Util.hexColorToIntColor(hexColor));
+        result.success(null);
+    }
+
+    private void setARHeaderTextColorNonSelected(String hexColor, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderTextColorNonSelected(Util.hexColorToIntColor(hexColor));
+        result.success(null);
+    }
+
+    private void setARHeaderHorizontalTextMargin(double value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderHorizontalTextMargin((float) value);
+        result.success(null);
+    }
+
+    private void setARHeaderVerticalTextMargin(double value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderVerticalTextMargin((float) value);
+        result.success(null);
+    }
+
+    private void setARHeaderTextFormat(String value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setHeaderTextFormat(value);
+        result.success(null);
+    }
+
+    private void getShowDuplicatesLocations(MethodChannel.Result result) {
+        result.success(bkdView.config.getShowDuplicatesLocations());
+    }
+
+    private void getARMode(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getARMode().ordinal());
+    }
+
+    private void getARResultDisappearanceDelayMs(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getResultDisappearanceDelayMs());
+    }
+
+    private void getARLocationTransitionSpeed(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getLocationTransitionSpeed());
+    }
+
+    private void getAROverlayRefresh(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getOverlayRefresh().ordinal());
+    }
+
+    private void getARSelectedLocationColor(MethodChannel.Result result) {
+        String hexColor = String.format("#%08X", bkdView.config.getArConfig().getSelectedLocationColor());
+        result.success(hexColor);
+    }
+
+    private void getARNonSelectedLocationColor(MethodChannel.Result result) {
+        String hexColor = String.format("#%08X", bkdView.config.getArConfig().getNonSelectedLocationColor());
+        result.success(hexColor);
+    }
+
+    private void getARSelectedLocationLineWidth(MethodChannel.Result result) {
+        result.success((float) bkdView.config.getArConfig().getSelectedLocationLineWidth());
+    }
+
+    private void getARNonSelectedLocationLineWidth(MethodChannel.Result result) {
+        result.success((float) bkdView.config.getArConfig().getNonSelectedLocationLineWidth());
+    }
+
+    private void getARLocationType(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getLocationType().ordinal());
+    }
+
+    private void isARDoubleTapToFreezeEnabled(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().isDoubleTapToFreezeEnabled());
+    }
+
+    private void getARHeaderHeight(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getHeaderHeight());
+    }
+
+    private void getARHeaderShowMode(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getHeaderShowMode().ordinal());
+    }
+
+    private void getARHeaderMaxTextHeight(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getHeaderMaxTextHeight());
+    }
+
+    private void getARHeaderMinTextHeight(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getHeaderMinTextHeight());
+    }
+
+    private void getARHeaderTextColorSelected(MethodChannel.Result result) {
+        String hexColor = String.format("#%08X", bkdView.config.getArConfig().getHeaderTextColorSelected());
+        result.success(hexColor);
+    }
+
+    private void getARHeaderTextColorNonSelected(MethodChannel.Result result) {
+        String hexColor = String.format("#%08X", bkdView.config.getArConfig().getHeaderTextColorNonSelected());
+        result.success(hexColor);
+    }
+
+    private void getARHeaderHorizontalTextMargin(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getHeaderHorizontalTextMargin());
+    }
+
+    private void getARHeaderVerticalTextMargin(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getHeaderVerticalTextMargin());
+    }
+
+    private void getARHeaderTextFormat(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getHeaderTextFormat());
+    }
+
     private void isMisshaped1DEnabled(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.getDecoderConfig().enableMisshaped1D);
     }
@@ -1101,6 +1411,26 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             if (configAsJson.has("scanningIndicatorColor")) {
                 String colorAsHex = configAsJson.getString("scanningIndicatorColor");
                 configAsJson.put("scanningIndicatorColor", Util.hexColorToIntColor(colorAsHex));
+            }
+
+            if (configAsJson.has("selectedLocationColor")) {
+                String colorAsHex = configAsJson.getString("selectedLocationColor");
+                configAsJson.put("selectedLocationColor", Util.hexColorToIntColor(colorAsHex));
+            }
+
+            if (configAsJson.has("nonSelectedLocationColor")) {
+                String colorAsHex = configAsJson.getString("nonSelectedLocationColor");
+                configAsJson.put("nonSelectedLocationColor", Util.hexColorToIntColor(colorAsHex));
+            }
+
+            if (configAsJson.has("headerTextColorSelected")) {
+                String colorAsHex = configAsJson.getString("headerTextColorSelected");
+                configAsJson.put("headerTextColorSelected", Util.hexColorToIntColor(colorAsHex));
+            }
+
+            if (configAsJson.has("headerTextColorNonSelected")) {
+                String colorAsHex = configAsJson.getString("headerTextColorNonSelected");
+                configAsJson.put("headerTextColorNonSelected", Util.hexColorToIntColor(colorAsHex));
             }
 
             BarkoderHelper.applyJsonToConfig(bkdView.config, configAsJson);

@@ -1,3 +1,8 @@
+## 1.6.4
+* Updated barKoder SDK 1.6.4
+* AR Mode: Real-time scanning of multiple items with smart AR overlays highlighting relevant barcodes. No setup required. It enables advanced AR customization, including behavior modes, overlay styling, gesture controls, and headers.
+* Enhanced accuracy and precision for 1D/2D barcode detection and QR Micro code recognition.
+
 ## 1.6.3
 * Updated barKoder SDK 1.6.3
 * Added Postal barcodes
