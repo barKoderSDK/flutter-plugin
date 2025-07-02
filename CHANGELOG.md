@@ -1,3 +1,14 @@
+## 1.6.5
+* Updated barKoder SDK 1.6.5
+* Added MaxiCode recognition support
+* AR Mode now returns thumbnails and image with overlay
+* Added getCurrentZoomFactor method
+* MSI Plessey decoding improvement
+* OCR performance improvement (up to 200%)
+* AAMVA parser specifications updates
+* Significant performance improvement for QR Code and Aztec (up to 800%)
+* Overall barcode scanning performance improvement (up to 200%)
+
 ## 1.6.4
 * Updated barKoder SDK 1.6.4
 * AR Mode: Real-time scanning of multiple items with smart AR overlays highlighting relevant barcodes. No setup required. It enables advanced AR customization, including behavior modes, overlay styling, gesture controls, and headers.

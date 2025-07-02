@@ -100,6 +100,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "getMaxZoomFactor":
                 getMaxZoomFactor(result);
                 break;
+            case "getCurrentZoomFactor":
+                getCurrentZoomFactor(result);
+                break;
             case "setZoomFactor":
                 setZoomFactor((double) call.arguments, result);
                 break;
@@ -231,6 +234,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "getVersion":
                 getVersion(result);
+                break;
+            case "getLibVersion":
+                getLibVersion(result);
                 break;
             case "showLogMessages":
                 showLogMessages((boolean) call.arguments, result);
@@ -447,6 +453,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setARDoubleTapToFreezeEnabled":
                 setARDoubleTapToFreezeEnabled((boolean) call.arguments, result);
                 break;
+            case "setARImageResultEnabled":
+                setARImageResultEnabled((boolean) call.arguments, result);
+                break;
+            case "setARBarcodeThumbnailOnResultEnabled":
+                setARBarcodeThumbnailOnResultEnabled((boolean) call.arguments, result);
+                break;
             case "setARHeaderHeight":
                 setARHeaderHeight((double) call.arguments, result);
                 break;
@@ -507,6 +519,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "isARDoubleTapToFreezeEnabled":
                 isARDoubleTapToFreezeEnabled(result);
                 break;
+            case "isARImageResultEnabled":
+                isARImageResultEnabled(result);
+                break;
+            case "isARBarcodeThumbnailOnResultEnabled":
+                isARBarcodeThumbnailOnResultEnabled(result);
+                break;
             case "getARHeaderHeight":
                 getARHeaderHeight(result);
                 break;
@@ -543,6 +561,10 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void getVersion(MethodChannel.Result methodResult) {
         methodResult.success(Barkoder.GetVersion());
+    }
+
+    private void getLibVersion(MethodChannel.Result methodResult) {
+        methodResult.success(Barkoder.GetLibVersion());
     }
 
     private void setVibrateOnSuccessEnabled(boolean enabled, MethodChannel.Result methodResult) {
@@ -800,6 +822,10 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void getMaxZoomFactor(MethodChannel.Result methodResult) {
         bkdView.getMaxZoomFactor(methodResult::success);
+    }
+
+    private void getCurrentZoomFactor(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.getCurrentZoomFactor());
     }
 
     private void showLogMessages(boolean show, MethodChannel.Result methodResult) {
@@ -1195,6 +1221,16 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         result.success(null);
     }
 
+    private void setARImageResultEnabled(boolean enabled, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setImageResultEnabled(enabled);
+        result.success(null);
+    }
+
+    private void setARBarcodeThumbnailOnResultEnabled(boolean enabled, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setBarcodeThumbnailOnResultEnabled(enabled);
+        result.success(null);
+    }
+
     private void setARHeaderHeight(double value, MethodChannel.Result result) {
         bkdView.config.getArConfig().setHeaderHeight((float) value);
         result.success(null);
@@ -1285,6 +1321,14 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void isARDoubleTapToFreezeEnabled(MethodChannel.Result result) {
         result.success(bkdView.config.getArConfig().isDoubleTapToFreezeEnabled());
+    }
+
+    private void isARImageResultEnabled(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().isImageResultEnabled());
+    }
+
+    private void isARBarcodeThumbnailOnResultEnabled(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().isBarcodeThumbnailOnResultEnabled());
     }
 
     private void getARHeaderHeight(MethodChannel.Result result) {

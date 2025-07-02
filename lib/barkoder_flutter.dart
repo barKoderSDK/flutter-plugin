@@ -47,6 +47,27 @@ class Barkoder {
         .then((zoomFactor) => zoomFactor as double);
   }
 
+  /// Retrieves the current zoom factor for the device's camera.
+  ///
+  /// Returns a [Future] that completes with the current zoom factor.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// double currentZoom = await getCurrentZoomFactor();
+  /// print('Current zoom factor: $currentZoom');
+  /// ```
+  Future<double> getCurrentZoomFactor() {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel
+        .invokeMethod('getCurrentZoomFactor')
+        .then((zoomFactor) => zoomFactor as double);
+  }
+
   /// Sets the zoom factor for the device's camera, adjusting the level of zoom during barcode scanning.
   ///
   /// [zoomFactor]: The zoom factor to set.
@@ -1440,14 +1461,14 @@ class Barkoder {
         'setFormattingType', formattingType.index);
   }
 
-  /// Retrieves the version of the Barkoder library.
+  /// Retrieves the version of the Barkoder SDK.
   ///
-  /// Returns a [Future] that completes with a String representing the version of the Barkoder library.
+  /// Returns a [Future] that completes with a String representing the version of the Barkoder SDK.
   ///
   /// Example usage:
   /// ```dart
   /// String version = await _barkoder.getVersion;
-  /// print('Barkoder library version: $version');
+  /// print('Barkoder SDK version: $version');
   /// ```
   Future<String> get getVersion async {
     if (_isBarkoderViewNotMounted) {
@@ -1457,6 +1478,25 @@ class Barkoder {
     }
 
     return await _methodChannel.invokeMethod('getVersion');
+  }
+
+  /// Retrieves the version of the Barkoder library.
+  ///
+  /// Returns a [Future] that completes with a String representing the version of the Barkoder library.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String libVersion = await _barkoder.getLibVersion;
+  /// print('Barkoder library version: $libVersion');
+  /// ```
+  Future<String> get getLibVersion async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getLibVersion');
   }
 
   /// Retrieves the value indicating whether deblurring is enabled for UPC/EAN barcodes.
@@ -2346,6 +2386,47 @@ class Barkoder {
     return _methodChannel.invokeMethod('setARDoubleTapToFreezeEnabled', enabled);
   }
 
+  /// Enables or disables the capturing and processing of image data when a barcode is selected for AR mode.
+  ///
+  /// [enabled]: A boolean indicating whether to enable image result.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool arImageResultEnabled = true;
+  /// _barkoder.setARImageResultEnabled(arImageResultEnabled);
+  /// print('AR Image result enabled: $arImageResultEnabled');
+  /// ```
+  Future<void> setARImageResultEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setARImageResultEnabled', enabled);
+  }
+
+  /// Enables or disables the barcode thumbnail on result for AR mode.
+  ///
+  /// [enabled]: A boolean indicating whether to enable barcode thumbnail on result.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool arThumbnailEnabled = true;
+  /// await _barkoder.setARBarcodeThumbnailOnResultEnabled(arThumbnailEnabled);
+  /// print('AR Barcode thumbnail on result enabled: $arThumbnailEnabled');
+  /// ```
+  Future<void> setARBarcodeThumbnailOnResultEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setARBarcodeThumbnailOnResultEnabled', enabled);
+  }
+
   /// Sets the height of the header text label shown above the barcode in AR mode.
   ///
   /// [value]: Header height.
@@ -2717,6 +2798,45 @@ class Barkoder {
         message: BarkoderErrors.barkodeViewNotMountedDesc));
     }
     return await _methodChannel.invokeMethod('isARDoubleTapToFreezeEnabled');
+  }
+
+  /// Retrieves whether image result is enabled for AR mode.
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether image result is enabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool arImageResultEnabled = await _barkoder.isARImageResultEnabled;
+  /// print('AR Image result enabled: $arImageResultEnabled');
+  /// ```
+  Future<bool> get isARImageResultEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isARImageResultEnabled');
+  }
+
+  /// Retrieves whether barcode thumbnail on result is enabled for AR mode.
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether barcode thumbnail on result is enabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool arThumbnailEnabled = await _barkoder.isARBarcodeThumbnailOnResultEnabled;
+  /// print('AR Barcode thumbnail on result enabled: $arThumbnailEnabled');
+  /// ```
+  Future<bool> get isARBarcodeThumbnailOnResultEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel
+        .invokeMethod('isARBarcodeThumbnailOnResultEnabled');
   }
 
     /// Retrieves the header height above barcode in AR mode.

@@ -134,7 +134,8 @@ enum BarcodeType {
   australianPost,
   royalMail,
   kix,
-  japanesePost;
+  japanesePost,
+  maxiCode;
 }
 
 enum FormattingType { disabled, automatic, gs1, aamva, sadl }
@@ -301,6 +302,7 @@ class DekoderConfig {
   BarcodeConfig? royalMail;
   BarcodeConfig? kix;
   BarcodeConfig? japanesePost;
+  BarcodeConfig? maxiCode;
   GeneralSettings? general;
 
   DekoderConfig(
@@ -343,6 +345,7 @@ class DekoderConfig {
       this.royalMail,
       this.kix,
       this.japanesePost,
+      this.maxiCode,
       this.general});
 
   Map<String, dynamic> toMap() {
@@ -386,6 +389,7 @@ class DekoderConfig {
       'Royal Mail': royalMail?.toMap(),
       'KIX': kix?.toMap(),
       'Japanese Post': japanesePost?.toMap(),
+      'MaxiCode': maxiCode?.toMap(),
       'general': general?.toMap()
     };
 
@@ -406,6 +410,8 @@ class BarkoderARConfig {
   double? nonSelectedLocationLineWidth;
   BarkoderARLocationType? locationType;
   bool? doubleTapToFreezeEnabled;
+  bool? imageResultEnabled;
+  bool? barcodeThumbnailOnResult;
   double? headerHeight;
   BarkoderARHeaderShowMode? headerShowMode;
   double? headerMaxTextHeight;
@@ -427,6 +433,8 @@ class BarkoderARConfig {
     this.nonSelectedLocationLineWidth,
     this.locationType,
     this.doubleTapToFreezeEnabled,
+    this.imageResultEnabled,
+    this.barcodeThumbnailOnResult,
     this.headerHeight,
     this.headerShowMode,
     this.headerMaxTextHeight,
@@ -450,6 +458,8 @@ class BarkoderARConfig {
       "nonSelectedLocationLineWidth": nonSelectedLocationLineWidth,
       "locationType": locationType?.index,
       "doubleTapToFreezeEnabled": doubleTapToFreezeEnabled,
+      "imageResultEnabled": imageResultEnabled,
+      "barcodeThumbnailOnResult": barcodeThumbnailOnResult,
       "headerHeight": headerHeight,
       "headerShowMode": headerShowMode?.index,
       "headerMaxTextHeight": headerMaxTextHeight,

@@ -184,6 +184,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.isVibrateOnSuccessEnabled(result)
             case "getVersion":
                 self?.getVersion(result)
+            case "getLibVersion":
+                self?.getLibVersion(result)
             case "getLocationLineColorHex":
                 self?.getLocationLineColorHex(result)
             case "getRoiLineColorHex":
@@ -192,6 +194,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.getRoiOverlayBackgroundColorHex(result)
             case "getMaxZoomFactor":
                 self?.getMaxZoomFactor(result)
+            case "getCurrentZoomFactor":
+                self?.getCurrentZoomFactor(result)
             case "getLocationLineWidth":
                 self?.getLocationLineWidth(result)
             case "getRoiLineWidth":
@@ -316,6 +320,10 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setARLocationType(call, result: result)
             case "setARDoubleTapToFreezeEnabled":
                 self?.setARDoubleTapToFreezeEnabled(call, result: result)
+            case "setARImageResultEnabled":
+                self?.setARImageResultEnabled(call, result: result)
+            case "setARBarcodeThumbnailOnResultEnabled":
+                self?.setARBarcodeThumbnailOnResultEnabled(call, result: result)
             case "setARHeaderHeight":
                 self?.setARHeaderHeight(call, result: result)
             case "setARHeaderShowMode":
@@ -356,6 +364,10 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.getARLocationType(result)
             case "isARDoubleTapToFreezeEnabled":
                 self?.isARDoubleTapToFreezeEnabled(result)
+            case "isARImageResultEnabled":
+                self?.isARImageResultEnabled(result)
+            case "isARBarcodeThumbnailOnResultEnabled":
+                self?.isARBarcodeThumbnailOnResultEnabled(result)
             case "getARHeaderHeight":
                 self?.getARHeaderHeight(result)
             case "getARHeaderShowMode":
@@ -967,6 +979,8 @@ extension BarkoderPlatformView {
                     decoderConfig.kix.enabled = enabled
                 case JapanesePost:
                     decoderConfig.japanesePost.enabled = enabled
+                case MaxiCode:
+                    decoderConfig.maxiCode.enabled = enabled
                 default:
                     result(
                         FlutterError(
@@ -1348,6 +1362,22 @@ extension BarkoderPlatformView {
         
         result(nil)
     }
+    
+    private func setARImageResultEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else { return }
+
+        barkoderView.config?.arConfig.imageResultEnabled = enabled
+        
+        result(nil)
+    }
+    
+    private func setARBarcodeThumbnailOnResultEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else { return }
+
+        barkoderView.config?.arConfig.barcodeThumbnailOnResult = enabled
+        
+        result(nil)
+    }
 
     private func setARHeaderHeight(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let height = call.arguments as? Float else { return }
@@ -1469,6 +1499,10 @@ extension BarkoderPlatformView {
     private func getVersion(_ result: @escaping FlutterResult) {
         result(iBarkoder.GetVersion())
     }
+    
+    private func getLibVersion(_ result: @escaping FlutterResult) {
+        result(iBarkoder.getLibVersion())
+    }
 
     private func getLocationLineColorHex(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.locationLineColor.toHex())
@@ -1486,6 +1520,10 @@ extension BarkoderPlatformView {
         barkoderView.getMaxZoomFactor { maxZoomFactor in
             result(maxZoomFactor)
         }
+    }
+    
+    private func getCurrentZoomFactor(_ result: @escaping FlutterResult) {
+        result(barkoderView.getCurrentZoomFactor())
     }
     
     private func getLocationLineWidth(_ result: @escaping FlutterResult) {
@@ -1680,6 +1718,8 @@ extension BarkoderPlatformView {
             result(decoderConfig.kix.enabled)
         case JapanesePost:
             result(decoderConfig.japanesePost.enabled)
+        case MaxiCode:
+            result(decoderConfig.maxiCode.enabled)
         default:
             result(
                 FlutterError(
@@ -1797,6 +1837,14 @@ extension BarkoderPlatformView {
 
     private func isARDoubleTapToFreezeEnabled(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.arConfig.doubleTapToFreezeEnabled)
+    }
+    
+    private func isARImageResultEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.imageResultEnabled)
+    }
+    
+    private func isARBarcodeThumbnailOnResultEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.barcodeThumbnailOnResult)
     }
 
     private func getARHeaderHeight(_ result: @escaping FlutterResult) {
