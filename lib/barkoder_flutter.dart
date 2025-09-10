@@ -248,6 +248,23 @@ class Barkoder {
     return _methodChannel.invokeMethod('unfreezeScanning');
   }
 
+  /// Captures the latest camera frame
+  ///
+  /// Example usage:
+  /// ```dart
+  /// await _barkoder.captureImage();
+  /// print('Image captured');
+  /// ```
+  Future<void> captureImage() {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('captureImage');
+  }
+
   /// Scan from base64 image string.
   ///
   /// Example usage:
@@ -2413,7 +2430,7 @@ class Barkoder {
   /// Example usage:
   /// ```dart
   /// bool arThumbnailEnabled = true;
-  /// await _barkoder.setARBarcodeThumbnailOnResultEnabled(arThumbnailEnabled);
+  /// _barkoder.setARBarcodeThumbnailOnResultEnabled(arThumbnailEnabled);
   /// print('AR Barcode thumbnail on result enabled: $arThumbnailEnabled');
   /// ```
   Future<void> setARBarcodeThumbnailOnResultEnabled(bool enabled) {
@@ -2425,6 +2442,63 @@ class Barkoder {
 
     return _methodChannel.invokeMethod(
         'setARBarcodeThumbnailOnResultEnabled', enabled);
+  }
+
+  /// Sets the maximum number of results allowed in a single AR scanning session.
+  ///
+  /// [value]: The maximum number of results.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARResultLimit(5);
+  /// ```
+  Future<void> setARResultLimit(int value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARResultLimit', value);
+  }
+
+  /// Sets whether scanning continues when the result limit is reached (only in `.interactiveDisabled` mode).
+  ///
+  /// [value]: A boolean indicating whether to continue scanning.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARContinueScanningOnLimit(true);
+  /// ```
+  Future<void> setARContinueScanningOnLimit(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARContinueScanningOnLimit', value);
+  }
+
+  /// Sets whether results are emitted only at AR session end (or when the limit is reached).
+  ///
+  /// [value]: A boolean indicating whether results are emitted only at the end of the session.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setAREmitResultsAtSessionEndOnly(true);
+  /// ```
+  Future<void> setAREmitResultsAtSessionEndOnly(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setAREmitResultsAtSessionEndOnly', value);
   }
 
   /// Sets the height of the header text label shown above the barcode in AR mode.
@@ -2839,7 +2913,58 @@ class Barkoder {
         .invokeMethod('isARBarcodeThumbnailOnResultEnabled');
   }
 
-    /// Retrieves the header height above barcode in AR mode.
+  /// Retrieves the maximum number of results allowed in a single AR scanning session.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int resultLimit = await _barkoder.getARResultLimit;
+  /// ```
+  Future<int> get getARResultLimit async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return await _methodChannel.invokeMethod('getARResultLimit');
+  }
+
+  /// Retrieves whether scanning continues when the result limit is reached (only in `.interactiveDisabled` mode).
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool continueScanning = await _barkoder.getARContinueScanningOnLimit;
+  /// ```
+  Future<bool> get getARContinueScanningOnLimit async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return await _methodChannel.invokeMethod('getARContinueScanningOnLimit');
+  }
+
+  /// Retrieves whether results are emitted only at AR session end (or when the limit is reached).
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool emitAtEnd = await _barkoder.getAREmitResultsAtSessionEndOnly;
+  /// ```
+  Future<bool> get getAREmitResultsAtSessionEndOnly async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return await _methodChannel.invokeMethod('getAREmitResultsAtSessionEndOnly');
+  }
+
+  /// Retrieves the header height above barcode in AR mode.
   ///
   /// Returns a [Future] that completes with a [double] value.
   ///

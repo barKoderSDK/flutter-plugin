@@ -412,6 +412,9 @@ class BarkoderARConfig {
   bool? doubleTapToFreezeEnabled;
   bool? imageResultEnabled;
   bool? barcodeThumbnailOnResult;
+  int? resultLimit;
+  bool? continueScanningOnLimit;
+  bool? emitResultsAtSessionEndOnly;
   double? headerHeight;
   BarkoderARHeaderShowMode? headerShowMode;
   double? headerMaxTextHeight;
@@ -435,6 +438,9 @@ class BarkoderARConfig {
     this.doubleTapToFreezeEnabled,
     this.imageResultEnabled,
     this.barcodeThumbnailOnResult,
+    this.resultLimit,
+    this.continueScanningOnLimit,
+    this.emitResultsAtSessionEndOnly,
     this.headerHeight,
     this.headerShowMode,
     this.headerMaxTextHeight,
@@ -460,6 +466,9 @@ class BarkoderARConfig {
       "doubleTapToFreezeEnabled": doubleTapToFreezeEnabled,
       "imageResultEnabled": imageResultEnabled,
       "barcodeThumbnailOnResult": barcodeThumbnailOnResult,
+      "resultLimit": resultLimit,
+      "continueScanningOnLimit": continueScanningOnLimit,
+      "emitResultsAtSessionEndOnly": emitResultsAtSessionEndOnly,
       "headerHeight": headerHeight,
       "headerShowMode": headerShowMode?.index,
       "headerMaxTextHeight": headerMaxTextHeight,

@@ -1,3 +1,19 @@
+## 1.6.6
+* Updated barKoder SDK 1.6.6
+* Added setARResultLimit method that sets a limit on the number of results per AR scanning session;
+* Added setARContinueScanningOnLimit option to continue scanning even after the limit is reached
+* Added setAREmitResultsAtSessionEndOnly option which can emit results only once at session end or when the limit is reached
+* New captureImage method that can be used to capture an image of the scanning frame
+* Added Centric Scan option (tuning the decoder to scan only in the centre of the screen)
+* Added image decrypting and retrieving option to our South African Driver's License parser
+* Several fixes regarding Code128 misreads
+* Bugfix – DPM mode with VIN mode
+* Fixed duplicated Data Matrix results in GS1 Composite mode
+* Added UPC with leading zero option
+* Rare QR crash fix
+* AAMVA parser crash fix
+* General stability improvements
+
 ## 1.6.5
 * Updated barKoder SDK 1.6.5
 * Added MaxiCode recognition support

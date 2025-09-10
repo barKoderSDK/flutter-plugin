@@ -130,6 +130,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "unfreezeScanning":
                 unfreezeScanning(result);
                 break;
+            case "captureImage":
+                captureImage(result);
+                break;
             case "scanImage":
                 scanImage((String) call.arguments, result);
                 break;
@@ -459,6 +462,15 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setARBarcodeThumbnailOnResultEnabled":
                 setARBarcodeThumbnailOnResultEnabled((boolean) call.arguments, result);
                 break;
+            case "setARResultLimit":
+                setARResultLimit((int) call.arguments, result);
+                break;
+            case "setARContinueScanningOnLimit":
+                setARContinueScanningOnLimit((boolean) call.arguments, result);
+                break;
+            case "setAREmitResultsAtSessionEndOnly":
+                setAREmitResultsAtSessionEndOnly((boolean) call.arguments, result);
+                break;
             case "setARHeaderHeight":
                 setARHeaderHeight((double) call.arguments, result);
                 break;
@@ -524,6 +536,15 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "isARBarcodeThumbnailOnResultEnabled":
                 isARBarcodeThumbnailOnResultEnabled(result);
+                break;
+            case "getARResultLimit":
+                getARResultLimit(result);
+                break;
+            case "getARContinueScanningOnLimit":
+                getARContinueScanningOnLimit(result);
+                break;
+            case "getAREmitResultsAtSessionEndOnly":
+                getAREmitResultsAtSessionEndOnly(result);
                 break;
             case "getARHeaderHeight":
                 getARHeaderHeight(result);
@@ -776,6 +797,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void unfreezeScanning(MethodChannel.Result methodResult) {
         bkdView.unfreezeScanning();
+
+        methodResult.success(null);
+    }
+
+    private void captureImage(MethodChannel.Result methodResult) {
+        bkdView.captureImage();
 
         methodResult.success(null);
     }
@@ -1231,6 +1258,21 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         result.success(null);
     }
 
+    private void setARResultLimit(int value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setResultLimit(value);
+        result.success(null);
+    }
+
+    private void setARContinueScanningOnLimit(boolean value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setContinueScanningOnLimit(value);
+        result.success(null);
+    }
+
+    private void setAREmitResultsAtSessionEndOnly(boolean value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setEmitResultsAtSessionEndOnly(value);
+        result.success(null);
+    }
+
     private void setARHeaderHeight(double value, MethodChannel.Result result) {
         bkdView.config.getArConfig().setHeaderHeight((float) value);
         result.success(null);
@@ -1329,6 +1371,18 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void isARBarcodeThumbnailOnResultEnabled(MethodChannel.Result result) {
         result.success(bkdView.config.getArConfig().isBarcodeThumbnailOnResultEnabled());
+    }
+
+    private void getARResultLimit(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getResultLimit());
+    }
+
+    private void getARContinueScanningOnLimit(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getContinueScanningOnLimit());
+    }
+
+    private void getAREmitResultsAtSessionEndOnly(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getEmitResultsAtSessionEndOnly());
     }
 
     private void getARHeaderHeight(MethodChannel.Result result) {

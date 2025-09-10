@@ -102,6 +102,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.freezeScanning(result)
             case "unfreezeScanning":
                 self?.unfreezeScanning(result)
+            case "captureImage":
+                self?.captureImage(result)
             case "setLocationLineColor":
                 self?.setLocationLineColor(call, result: result)
             case "setLocationLineWidth":
@@ -342,6 +344,12 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setARHeaderVerticalTextMargin(call, result: result)
             case "setARHeaderTextFormat":
                 self?.setARHeaderTextFormat(call, result: result)
+            case "setARResultLimit":
+                self?.setARResultLimit(call, result: result)
+            case "setARContinueScanningOnLimit":
+                self?.setARContinueScanningOnLimit(call, result: result)
+            case "setAREmitResultsAtSessionEndOnly":
+                self?.setAREmitResultsAtSessionEndOnly(call, result: result)
             case "getShowDuplicatesLocations":
                 self?.getShowDuplicatesLocations(result)
             case "getARMode":
@@ -386,6 +394,12 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.getARHeaderVerticalTextMargin(result)
             case "getARHeaderTextFormat":
                 self?.getARHeaderTextFormat(result)
+            case "getARResultLimit":
+                self?.getARResultLimit(result)
+            case "getARContinueScanningOnLimit":
+                self?.getARContinueScanningOnLimit(result)
+            case "getAREmitResultsAtSessionEndOnly":
+                self?.getAREmitResultsAtSessionEndOnly(result)
             default:
                 break
             }
@@ -481,6 +495,12 @@ extension BarkoderPlatformView {
     
     private func unfreezeScanning(_ result: @escaping FlutterResult) {
         barkoderView.unfreezeScanning()
+        
+        result(nil)
+    }
+    
+    private func captureImage(_ result: @escaping FlutterResult) {
+        barkoderView.captureImage()
         
         result(nil)
     }
@@ -955,8 +975,8 @@ extension BarkoderPlatformView {
                     decoderConfig.code32.enabled = enabled
                 case Telepen:
                     decoderConfig.telepen.enabled = enabled
-				case Dotcode:
-					decoderConfig.dotcode.enabled = enabled
+                case Dotcode:
+                    decoderConfig.dotcode.enabled = enabled
                 case IDDocument:
                     decoderConfig.idDocument.enabled = enabled
                 case Databar14:
@@ -1376,6 +1396,24 @@ extension BarkoderPlatformView {
 
         barkoderView.config?.arConfig.barcodeThumbnailOnResult = enabled
         
+        result(nil)
+    }
+    
+    private func setARResultLimit(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let value = call.arguments as? Int else { return }
+        barkoderView.config?.arConfig.resultLimit = value
+        result(nil)
+    }
+
+    private func setARContinueScanningOnLimit(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else { return }
+        barkoderView.config?.arConfig.continueScanningOnLimit = enabled
+        result(nil)
+    }
+
+    private func setAREmitResultsAtSessionEndOnly(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else { return }
+        barkoderView.config?.arConfig.emitResultsAtSessionEndOnly = enabled
         result(nil)
     }
 
@@ -1845,6 +1883,18 @@ extension BarkoderPlatformView {
     
     private func isARBarcodeThumbnailOnResultEnabled(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.arConfig.barcodeThumbnailOnResult)
+    }
+    
+    private func getARResultLimit(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.resultLimit)
+    }
+
+    private func getARContinueScanningOnLimit(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.continueScanningOnLimit)
+    }
+
+    private func getAREmitResultsAtSessionEndOnly(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.arConfig.emitResultsAtSessionEndOnly)
     }
 
     private func getARHeaderHeight(_ result: @escaping FlutterResult) {
