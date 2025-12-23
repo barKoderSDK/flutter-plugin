@@ -36,11 +36,15 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private static final String METHOD_CHANEL_NAME = "barkoder_flutter";
     private static final String SCANNING_RESULTS_EVENT_NAME = "barkoder_flutter_scanningResultsEvent";
+    private static final String UI_EVENTS_EVENT_NAME        = "barkoder_flutter_uiEvents";
     private static final String LICENSE_PARAM_KEY = "licenseKey";
 
     private MethodChannel methodChannel;
     private EventChannel scanningResultsEvent;
     private EventChannel.EventSink scanningResultsEventSink;
+
+    private EventChannel uiEventsEvent;
+    private EventChannel.EventSink uiEventsEventSink;
 
     private BarkoderView bkdView;
 
@@ -56,6 +60,16 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         scanningResultsEvent = new EventChannel(binaryMessenger, SCANNING_RESULTS_EVENT_NAME);
         // If we have more events in the future we will need to create local callbacks
         scanningResultsEvent.setStreamHandler(this);
+
+        uiEventsEvent = new EventChannel(binaryMessenger, UI_EVENTS_EVENT_NAME);
+        uiEventsEvent.setStreamHandler(new EventChannel.StreamHandler() {
+            @Override public void onListen(Object arguments, EventChannel.EventSink events) {
+                uiEventsEventSink = events;
+            }
+            @Override public void onCancel(Object arguments) {
+                uiEventsEventSink = null;
+            }
+        });
     }
 
     @Override
@@ -70,11 +84,14 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         BarkoderLog.i(TAG, "dispose BarkoderFlutterView");
 
         scanningResultsEvent.setStreamHandler(null);
+        if (uiEventsEvent != null) uiEventsEvent.setStreamHandler(null);
         methodChannel.setMethodCallHandler(null);
         bkdView.stopScanning();
 
         scanningResultsEventSink = null;
+        uiEventsEventSink = null;
         scanningResultsEvent = null;
+        uiEventsEvent = null;
         methodChannel = null;
         bkdView = null;
     }
@@ -336,6 +353,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "isQrDpmModeEnabled":
                 isQrDpmModeEnabled(result);
                 break;
+            case "setQrMultiPartMergeEnabled":
+                setQrMultiPartMergeEnabled((boolean) call.arguments, result);
+                break;
+            case "isQrMultiPartMergeEnabled":
+                isQrMultiPartMergeEnabled(result);
+                break;
             case "setQrMicroDpmModeEnabled":
                 setQrMicroDpmModeEnabled((boolean) call.arguments, result);
                 break;
@@ -497,6 +520,18 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "setARHeaderTextFormat":
                 setARHeaderTextFormat((String) call.arguments, result);
+                break;
+            case "configureCloseButton":
+                configureCloseButton(call, result);
+                break;
+            case "configureFlashButton":
+                configureFlashButton(call, result);
+                break;
+            case "configureZoomButton":
+                configureZoomButton(call, result);
+                break;
+            case "selectVisibleBarcodes":
+                selectVisibleBarcodes(result);
                 break;
             case "getShowDuplicatesLocations":
                 getShowDuplicatesLocations(result);
@@ -1091,6 +1126,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(null);
     }
 
+    private void setQrMultiPartMergeEnabled(boolean enabled, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().QR.multiPartMerge = enabled;
+
+        methodResult.success(null);
+    }
+
     private void setQrMicroDpmModeEnabled(boolean enabled, MethodChannel.Result methodResult) {
         bkdView.config.getDecoderConfig().QRMicro.dpmMode = enabled;
 
@@ -1319,6 +1360,134 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         result.success(null);
     }
 
+    private void configureCloseButton(MethodCall call, MethodChannel.Result methodResult) {
+        Boolean visible = call.argument("visible");
+        Double positionX = call.argument("positionX");
+        Double positionY = call.argument("positionY");
+        Double iconSizeD     = call.argument("iconSize");
+        Double cornerRadiusD = call.argument("cornerRadius");
+        Double paddingD      = call.argument("padding");
+        Float  iconSize      = iconSizeD == null ? null : iconSizeD.floatValue();
+        Float  cornerRadius  = cornerRadiusD == null ? null : cornerRadiusD.floatValue();
+        Float  padding       = paddingD == null ? null : paddingD.floatValue();
+
+        String tintHex = call.argument("tintColor");
+        String bgHex   = call.argument("backgroundColor");
+        Integer tintColor        = Util.hexColorToIntColorOrNull(tintHex);
+        Integer backgroundColor  = Util.hexColorToIntColorOrNull(bgHex);
+
+        Boolean useCustomIcon = call.argument("useCustomIcon");
+
+        String base64CustomIcon = call.argument("customIcon");
+        final Bitmap customIcon = Util.decodeBase64BitmapOrNull(base64CustomIcon);
+
+        bkdView.configureCloseButton(
+                visible,
+                new float[]{ positionX.floatValue(), positionY.floatValue() },
+                iconSize,
+                tintColor,
+                backgroundColor,
+                cornerRadius,
+                padding,
+                useCustomIcon,
+                customIcon,
+                () -> {
+                    if (uiEventsEventSink != null) {
+                        uiEventsEventSink.success("closeButtonTapped");
+                    }
+                }
+        );
+        methodResult.success(null);
+    }
+
+    private void configureFlashButton(MethodCall call, MethodChannel.Result methodResult) {
+        Boolean visible = call.argument("visible");
+        Double positionX = call.argument("positionX");
+        Double positionY = call.argument("positionY");
+        Double iconSizeD     = call.argument("iconSize");
+        Double cornerRadiusD = call.argument("cornerRadius");
+        Double paddingD      = call.argument("padding");
+        Float  iconSize      = iconSizeD == null ? null : iconSizeD.floatValue();
+        Float  cornerRadius  = cornerRadiusD == null ? null : cornerRadiusD.floatValue();
+        Float  padding       = paddingD == null ? null : paddingD.floatValue();
+
+        String tintHex = call.argument("tintColor");
+        String bgHex   = call.argument("backgroundColor");
+        Integer tintColor        = Util.hexColorToIntColorOrNull(tintHex);
+        Integer backgroundColor  = Util.hexColorToIntColorOrNull(bgHex);
+
+        Boolean useCustomIcon = call.argument("useCustomIcon");
+
+        String base64On  = call.argument("customIconFlashOn");
+        String base64Off = call.argument("customIconFlashOff");
+        final Bitmap customIconFlashOn  = Util.decodeBase64BitmapOrNull(base64On);
+        final Bitmap customIconFlashOff = Util.decodeBase64BitmapOrNull(base64Off);
+
+        bkdView.configureFlashButton(
+                visible,
+                new float[]{ positionX.floatValue(), positionY.floatValue() },
+                iconSize,
+                tintColor,
+                backgroundColor,
+                cornerRadius,
+                padding,
+                useCustomIcon,
+                customIconFlashOn,
+                customIconFlashOff
+        );
+        methodResult.success(null);
+    }
+
+    private void configureZoomButton(MethodCall call, MethodChannel.Result methodResult) {
+        Boolean visible = call.argument("visible");
+        Double positionX = call.argument("positionX");
+        Double positionY = call.argument("positionY");
+        Double iconSizeD     = call.argument("iconSize");
+        Double cornerRadiusD = call.argument("cornerRadius");
+        Double paddingD      = call.argument("padding");
+        Double zoomInD       = call.argument("zoomedInFactor");
+        Double zoomOutD      = call.argument("zoomedOutFactor");
+        Float  iconSize      = iconSizeD == null ? null : iconSizeD.floatValue();
+        Float  cornerRadius  = cornerRadiusD == null ? null : cornerRadiusD.floatValue();
+        Float  padding       = paddingD == null ? null : paddingD.floatValue();
+        Float  zoomedInFactor  = zoomInD  == null ? null : zoomInD.floatValue();
+        Float  zoomedOutFactor = zoomOutD == null ? null : zoomOutD.floatValue();
+
+        String tintHex = call.argument("tintColor");
+        String bgHex   = call.argument("backgroundColor");
+        Integer tintColor        = Util.hexColorToIntColorOrNull(tintHex);
+        Integer backgroundColor  = Util.hexColorToIntColorOrNull(bgHex);
+
+        Boolean useCustomIcon = call.argument("useCustomIcon");
+
+        String base64In  = call.argument("customIconZoomedIn");
+        String base64Out = call.argument("customIconZoomedOut");
+        final Bitmap customIconZoomedIn  = Util.decodeBase64BitmapOrNull(base64In);
+        final Bitmap customIconZoomedOut = Util.decodeBase64BitmapOrNull(base64Out);
+
+        bkdView.configureZoomButton(
+                visible,
+                new float[]{ positionX.floatValue(), positionY.floatValue() },
+                iconSize,
+                tintColor,
+                backgroundColor,
+                cornerRadius,
+                padding,
+                useCustomIcon,
+                customIconZoomedIn,
+                customIconZoomedOut,
+                zoomedInFactor,
+                zoomedOutFactor
+        );
+        methodResult.success(null);
+    }
+
+    private void selectVisibleBarcodes(MethodChannel.Result methodResult) {
+        bkdView.selectVisibleBarcodes();
+
+        methodResult.success(null);
+    }
+
     private void getShowDuplicatesLocations(MethodChannel.Result result) {
         result.success(bkdView.config.getShowDuplicatesLocations());
     }
@@ -1459,6 +1628,10 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(bkdView.config.getDecoderConfig().QR.dpmMode);
     }
 
+    private void isQrMultiPartMergeEnabled(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().QR.multiPartMerge);
+    }
+
     private void isQrMicroDpmModeEnabled(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.getDecoderConfig().QRMicro.dpmMode);
     }
@@ -1577,8 +1750,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         @SuppressWarnings("ConstantConditions")
         String licenseKey = creationParams.get(LICENSE_PARAM_KEY).toString();
 
-        return new BarkoderConfig(context, licenseKey, licenseCheckResult ->
-                BarkoderLog.i(TAG, "LICENSE RESULT: " + licenseCheckResult.message));
+        return new BarkoderConfig(context, licenseKey, licenseCheckResult -> {
+            BarkoderLog.i(TAG, "License Info: " + Barkoder.GetLicenseInfo());
+        });
     }
 
     private void sendErrorResult(BarkoderFlutterErrors error, String message, MethodChannel.Result result) {

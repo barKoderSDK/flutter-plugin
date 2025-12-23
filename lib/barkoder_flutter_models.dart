@@ -43,6 +43,8 @@ class DecoderResult {
   String? characterSet;
   Map<String, dynamic>? extra;
   List<MRZImage>? mrzImages;
+  List<Map<String, double>>? locationPoints;
+  Uint8List? sadlImage;
 
   DecoderResult({
     required this.barcodeType,
@@ -52,6 +54,8 @@ class DecoderResult {
     this.characterSet,
     this.extra,
     this.mrzImages,
+    this.locationPoints,
+    this.sadlImage,
   });
 
   DecoderResult.fromJson(Map<String, dynamic> resultMap) {
@@ -66,6 +70,21 @@ class DecoderResult {
           .map((imageData) => MRZImage.fromJson(imageData))
           .toList();
     }
+    if (resultMap['locationPoints'] is List) {
+      locationPoints = (resultMap['locationPoints'] as List)
+          .whereType<Map>()
+          .map((p) => {
+                'x': (p['x'] as num).toDouble(),
+                'y': (p['y'] as num).toDouble(),
+              })
+          .toList();
+    }
+
+    if (resultMap.containsKey('sadlImageAsBase64')) {
+      sadlImage = resultMap['sadlImageAsBase64'] != null
+          ? Base64Decoder().convert(resultMap['sadlImageAsBase64'])
+          : null;
+    }
   }
 
   static List<DecoderResult> fromJsonString(String jsonString) {
@@ -77,7 +96,7 @@ class DecoderResult {
 
   @override
   String toString() {
-    return '{$barcodeType, $barcodeTypeName, $binaryDataAsBase64, $textualData, $characterSet, $extra, $mrzImages';
+    return '{$barcodeType, $barcodeTypeName, $binaryDataAsBase64, $textualData, $characterSet, $extra, $mrzImages, $locationPoints, $sadlImage}';
   }
 }
 
@@ -135,7 +154,8 @@ enum BarcodeType {
   royalMail,
   kix,
   japanesePost,
-  maxiCode;
+  maxiCode,
+  ocrText;
 }
 
 enum FormattingType { disabled, automatic, gs1, aamva, sadl }
@@ -265,7 +285,7 @@ class BarkoderConfig {
 class DekoderConfig {
   BarcodeConfig? aztec;
   BarcodeConfig? aztecCompact;
-  BarcodeConfigWithDpmMode? qr;
+  QRBarcodeConfig? qr;
   BarcodeConfigWithDpmMode? qrMicro;
   BarcodeConfigWithLength? code128;
   BarcodeConfigWithLength? code93;
@@ -303,6 +323,7 @@ class DekoderConfig {
   BarcodeConfig? kix;
   BarcodeConfig? japanesePost;
   BarcodeConfig? maxiCode;
+  BarcodeConfig? ocrText;
   GeneralSettings? general;
 
   DekoderConfig(
@@ -346,6 +367,7 @@ class DekoderConfig {
       this.kix,
       this.japanesePost,
       this.maxiCode,
+      this.ocrText,
       this.general});
 
   Map<String, dynamic> toMap() {
@@ -390,6 +412,7 @@ class DekoderConfig {
       'KIX': kix?.toMap(),
       'Japanese Post': japanesePost?.toMap(),
       'MaxiCode': maxiCode?.toMap(),
+      'OCR Text': ocrText?.toMap(),
       'general': general?.toMap()
     };
 
@@ -644,6 +667,40 @@ class BarcodeConfigWithDpmMode {
       "minimumLength": _minLength,
       "maximumLength": _maxLength,
       "dpmMode": dpmMode
+    };
+
+    filteredMap.removeWhere((key, value) => value == null);
+
+    return filteredMap;
+  }
+
+  setLengthRange(int minLength, int maxLength) {
+    _minLength = minLength;
+    _maxLength = maxLength;
+  }
+}
+
+class QRBarcodeConfig {
+  bool? enabled;
+  int? dpmMode;
+  bool? multiPartMerge;
+  int? _minLength;
+  int? _maxLength;
+
+  QRBarcodeConfig({this.enabled, this.dpmMode, this.multiPartMerge});
+
+  QRBarcodeConfig.setLengthRange(
+      {this.enabled, required minLength, required maxLength})
+      : _minLength = minLength,
+        _maxLength = maxLength;
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> filteredMap = {
+      "enabled": enabled,
+      "minimumLength": _minLength,
+      "maximumLength": _maxLength,
+      "dpmMode": dpmMode,
+      "multiPartMerge": multiPartMerge
     };
 
     filteredMap.removeWhere((key, value) => value == null);

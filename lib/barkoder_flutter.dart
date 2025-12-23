@@ -14,7 +14,13 @@ class Barkoder {
   static final Stream<dynamic> _scanningResultsStream =
       const EventChannel('barkoder_flutter_scanningResultsEvent')
           .receiveBroadcastStream();
+
+  static final Stream<dynamic> _uiEventsStream =
+      const EventChannel('barkoder_flutter_uiEvents')
+          .receiveBroadcastStream();
+
   StreamSubscription<dynamic>? _scanningResultsStreamSubscription;
+  StreamSubscription<dynamic>? _uiEventsSubscription;
 
   bool _isBarkoderViewNotMounted = true;
 
@@ -24,6 +30,27 @@ class Barkoder {
 
   void releaseBarkoder() {
     _isBarkoderViewNotMounted = true;
+    _uiEventsSubscription?.cancel();
+    _uiEventsSubscription = null;
+  }
+
+  /// Registers a callback to handle the Close Button tap event during scanning.
+  /// 
+  /// [handler]: Function to execute when the Close Button is pressed.
+  /// 
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.onCloseButtonTapped(() {
+  ///   print('Close button tapped');
+  /// });
+  /// ```
+  void onCloseButtonTapped(VoidCallback handler) {
+    _uiEventsSubscription?.cancel();
+    _uiEventsSubscription = _uiEventsStream.listen((event) {
+      if (event == 'closeButtonTapped') {
+        handler();
+      }
+    });
   }
 
   /// Retrieves the maximum available zoom factor for the device's camera.
@@ -1751,6 +1778,45 @@ class Barkoder {
     return _methodChannel.invokeMethod('setQrDpmModeEnabled', enabled);
   }
 
+  /// Retrieves whether the QR multi-part merge mode is enabled
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether the QR multi-part merge mode is enabled.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = await _barkoder.isQrMultiPartMergeEnabled;
+  /// print('QR multi-part merge mode enabled: $isEnabled');
+  /// ```
+  Future<bool> get isQrMultiPartMergeEnabled async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('isQrMultiPartMergeEnabled');
+  }
+
+  /// Sets whether the QR multi-part merge mode is enabled.
+  ///
+  /// [enabled]: A boolean indicating whether to enable or disable multi-part merge mode.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool isEnabled = true;
+  /// _barkoder.setQrMultiPartMergeEnabled(isEnabled);
+  /// print('QR multi-part merge mode enabled set to: $isEnabled');
+  /// ```
+  Future<void> setQrMultiPartMergeEnabled(bool enabled) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setQrMultiPartMergeEnabled', enabled);
+  }
+
   /// Retrieves whether Direct Part Marking (DPM) mode for QR Micro barcodes is enabled
   ///
   /// Returns a [Future] that completes with a boolean indicating whether Direct Part Marking (DPM) mode for QR Micro barcodes is enabled.
@@ -2670,6 +2736,176 @@ class Barkoder {
     }
 
     return _methodChannel.invokeMethod('setARHeaderTextFormat', value);
+  }
+
+  /// Configures the close button displayed during scanning.
+  /// All color strings are hex (e.g., "#3472c9"), and icon strings are Base64.
+  ///
+  /// [visible]: Show the button while scanning.
+  /// [positionX]: X position in points.
+  /// [positionY]: Y position in points.
+  /// [iconSize]: Glyph point size.
+  /// [tintColor]: Icon tint as a hex string; leave "" to use the default.
+  /// [backgroundColor]: Button background as a hex string; leave "" for default (clear).
+  /// [cornerRadius]: Corner radius.
+  /// [padding]: Inner padding around the glyph.
+  /// [useCustomIcon]: Set true to use the provided custom icon.
+  /// [customIcon]: Custom icon as a Base64-encoded image string.
+  ///
+  Future<void> configureCloseButton({
+    required bool visible,
+    required double positionX,
+    required double positionY,
+    required double iconSize,
+    required String tintColor,
+    required String backgroundColor,
+    required double cornerRadius,
+    required double padding,
+    required bool useCustomIcon,
+    required String customIcon, // base64 string
+  }) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('configureCloseButton', {
+      'visible': visible,
+      'positionX': positionX,
+      'positionY': positionY,
+      'iconSize': iconSize,
+      'tintColor': tintColor,
+      'backgroundColor': backgroundColor,
+      'cornerRadius': cornerRadius,
+      'padding': padding,
+      'useCustomIcon': useCustomIcon,
+      'customIcon': customIcon,
+    });
+  }
+
+  /// Configures the flash (torch) button displayed during scanning; auto-hides if the device torch is unavailable.
+  /// All color strings are hex (e.g., "#3472c9"), and icon strings are Base64.
+  ///
+  /// [visible]: Show the button while scanning.
+  /// [positionX]: X position in points.
+  /// [positionY]: Y position in points.
+  /// [iconSize]: Glyph point size.
+  /// [tintColor]: Icon tint as a hex string; leave "" to use the default.
+  /// [backgroundColor]: Button background as a hex string; leave "" for default (clear).
+  /// [cornerRadius]: Corner radius.
+  /// [padding]: Inner padding around the glyph.
+  /// [useCustomIcon]: Set true to use the provided custom icons.
+  /// [customIconFlashOn]: ON-state icon as a Base64-encoded image string.
+  /// [customIconFlashOff]: OFF-state icon as a Base64-encoded image string.
+  ///
+  Future<void> configureFlashButton({
+    required bool visible,
+    required double positionX,
+    required double positionY,
+    required double iconSize,
+    required String tintColor,
+    required String backgroundColor,
+    required double cornerRadius,
+    required double padding,
+    required bool useCustomIcon,
+    required String customIconFlashOn,  // base64
+    required String customIconFlashOff, // base64
+  }) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('configureFlashButton', {
+      'visible': visible,
+      'positionX': positionX,
+      'positionY': positionY,
+      'iconSize': iconSize,
+      'tintColor': tintColor,
+      'backgroundColor': backgroundColor,
+      'cornerRadius': cornerRadius,
+      'padding': padding,
+      'useCustomIcon': useCustomIcon,
+      'customIconFlashOn': customIconFlashOn,
+      'customIconFlashOff': customIconFlashOff,
+    });
+  }
+
+  /// Configures the zoom button displayed during scanning.
+  /// All color strings are hex (e.g., "#3472c9"), and icon strings are Base64.
+  ///
+  /// [visible]: Show the button while scanning.
+  /// [positionX]: X position in points.
+  /// [positionY]: Y position in points.
+  /// [iconSize]: Glyph point size.
+  /// [tintColor]: Icon tint as a hex string; leave "" to use the default.
+  /// [backgroundColor]: Button background as a hex string; leave "" for default (clear).
+  /// [cornerRadius]: Corner radius.
+  /// [padding]: Inner padding around the glyph.
+  /// [useCustomIcon]: Set true to use the provided custom icons.
+  /// [customIconZoomedIn]: Zoomed-in state icon as a Base64-encoded image string.
+  /// [customIconZoomedOut]: Zoomed-out state icon as a Base64-encoded image string.
+  /// [zoomedInFactor]: Zoom factor to apply when toggled in (e.g., 2.0).
+  /// [zoomedOutFactor]: Zoom factor to apply when toggled out (e.g., 1.0).
+  ///`
+  Future<void> configureZoomButton({
+    required bool visible,
+    required double positionX,
+    required double positionY,
+    required double iconSize,
+    required String tintColor,
+    required String backgroundColor,
+    required double cornerRadius,
+    required double padding,
+    required bool useCustomIcon,
+    required String customIconZoomedIn,   // base64
+    required String customIconZoomedOut,  // base64
+    required double zoomedInFactor,
+    required double zoomedOutFactor,
+  }) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('configureZoomButton', {
+      'visible': visible,
+      'positionX': positionX,
+      'positionY': positionY,
+      'iconSize': iconSize,
+      'tintColor': tintColor,
+      'backgroundColor': backgroundColor,
+      'cornerRadius': cornerRadius,
+      'padding': padding,
+      'useCustomIcon': useCustomIcon,
+      'customIconZoomedIn': customIconZoomedIn,
+      'customIconZoomedOut': customIconZoomedOut,
+      'zoomedInFactor': zoomedInFactor,
+      'zoomedOutFactor': zoomedOutFactor,
+    });
+  }
+
+  /// Selects all barcodes that are currently visible in AR mode..
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.selectVisibleBarcodes();
+  /// print('Selected visible barcodes');
+  /// ```
+  Future<void> selectVisibleBarcodes() {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('selectVisibleBarcodes');
   }
 
   /// Retrieves whether showing duplicate barcode locations in the AR view is enabled.

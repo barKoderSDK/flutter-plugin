@@ -1,3 +1,13 @@
+## 1.6.7
+* Updated barKoder SDK 1.6.7
+* Added OCR
+* Added native SDK buttons
+* Added sadlImage in result
+* Added locationPoints in result
+* Added MRZ support for Belgian ID + personal number on some IDs
+* Fixed Aztec issue
+* Fixed VIN ROI issue
+
 ## 1.6.6
 * Updated barKoder SDK 1.6.6
 * Added setARResultLimit method that sets a limit on the number of results per AR scanning session;

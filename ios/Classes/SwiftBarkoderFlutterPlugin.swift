@@ -43,16 +43,33 @@ public class BarkoderViewFactory: NSObject, FlutterPlatformViewFactory {
     
 }
 
+final class EventSinkHandler: NSObject, FlutterStreamHandler {
+    var sink: FlutterEventSink?
+
+    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        sink = events
+        return nil
+    }
+
+    func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        sink = nil
+        return nil
+    }
+}
+
 public class BarkoderPlatformView: NSObject, FlutterPlatformView {
     
     private static var BARKODER_CHANNEL_NAME = "barkoder_flutter"
     private static var SCANNING_RESULTS_EVENT_NAME = "barkoder_flutter_scanningResultsEvent";
+    private static var UI_EVENTS_EVENT_NAME       = "barkoder_flutter_uiEvents"
     
     let viewId: Int64
     let messenger: FlutterBinaryMessenger
     let channel: FlutterMethodChannel
     let scanningResultsEvent: FlutterEventChannel
     var scanningResultsEventSink: FlutterEventSink?
+    let uiEventsEvent: FlutterEventChannel
+    let uiEventsHandler = EventSinkHandler()
     var barkoderView: BarkoderView
     
     init(
@@ -72,6 +89,11 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
             binaryMessenger: messenger
         )
         
+        self.uiEventsEvent = FlutterEventChannel(
+            name: BarkoderPlatformView.UI_EVENTS_EVENT_NAME,
+            binaryMessenger: messenger
+        )
+        
         self.barkoderView = BarkoderView()
         
         super.init()
@@ -79,6 +101,7 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
         createBarkoderConfig(args)
         setMethodCallHandler()
         scanningResultsEvent.setStreamHandler(self)
+        uiEventsEvent.setStreamHandler(uiEventsHandler)
     }
     
     public func view() -> UIView {
@@ -258,6 +281,10 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setQrDpmModeEnabled(call, result: result)
             case "isQrDpmModeEnabled":
                 self?.isQrDpmModeEnabled(result)
+            case "setQrMultiPartMergeEnabled":
+                self?.setQrMultiPartMergeEnabled(call, result: result)
+            case "isQrMultiPartMergeEnabled":
+                self?.isQrMultiPartMergeEnabled(result)
             case "setQrMicroDpmModeEnabled":
                 self?.setQrMicroDpmModeEnabled(call, result: result)
             case "isQrMicroDpmModeEnabled":
@@ -400,6 +427,14 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.getARContinueScanningOnLimit(result)
             case "getAREmitResultsAtSessionEndOnly":
                 self?.getAREmitResultsAtSessionEndOnly(result)
+            case "configureCloseButton":
+                self?.configureCloseButton(call, result: result)
+            case "configureFlashButton":
+                self?.configureFlashButton(call, result: result)
+            case "configureZoomButton":
+                self?.configureZoomButton(call, result: result)
+            case "selectVisibleBarcodes":
+                self?.selectVisibleBarcodes(result)
             default:
                 break
             }
@@ -430,7 +465,7 @@ extension BarkoderPlatformView {
         if let arguments = args as? [String: Any],
            let licenseKey = arguments["licenseKey"] as? String {
             barkoderView.config = BarkoderConfig(licenseKey: licenseKey) { licenseResult in
-                print("Licensing SDK: \(licenseResult)")
+                print("License Info: \(Config.getLicenseInfo())")
             }
         }
     }
@@ -1001,6 +1036,8 @@ extension BarkoderPlatformView {
                     decoderConfig.japanesePost.enabled = enabled
                 case MaxiCode:
                     decoderConfig.maxiCode.enabled = enabled
+                case OCRText:
+                    decoderConfig.ocrText.enabled = enabled
                 default:
                     result(
                         FlutterError(
@@ -1107,6 +1144,16 @@ extension BarkoderPlatformView {
         }
         
         barkoderView.config?.decoderConfig?.qr.dpmMode = enabled ? 1 : 0
+        
+        result(nil)
+    }
+    
+    private func setQrMultiPartMergeEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let enabled = call.arguments as? Bool else {
+            return
+        }
+        
+        barkoderView.config?.decoderConfig?.qr.multiPartMerge = enabled
         
         result(nil)
     }
@@ -1489,6 +1536,152 @@ extension BarkoderPlatformView {
         
         result(nil)
     }
+    
+    private func configureCloseButton(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let visible = arguments["visible"] as? Bool,
+              let positionX = (arguments["positionX"] as? NSNumber)?.doubleValue,
+              let positionY = (arguments["positionY"] as? NSNumber)?.doubleValue,
+              let iconSize = (arguments["iconSize"] as? NSNumber)?.doubleValue,
+              let tintColorHex = arguments["tintColor"] as? String,
+              let backgroundColorHex = arguments["backgroundColor"] as? String,
+              let cornerRadius = (arguments["cornerRadius"] as? NSNumber)?.doubleValue,
+              let padding = (arguments["padding"] as? NSNumber)?.doubleValue,
+              let useCustomIcon = arguments["useCustomIcon"] as? Bool,
+              let base64customIcon = arguments["customIcon"] as? String
+        else { return }
+
+        let position         = NSValue(cgPoint: CGPoint(x: CGFloat(positionX), y: CGFloat(positionY)))
+        let iconSizeNum      = NSNumber(value: iconSize)
+        let cornerRadiusNum  = NSNumber(value: cornerRadius)
+        let paddingNum       = NSNumber(value: padding)
+        let useCustomIconNum = NSNumber(value: useCustomIcon)
+
+        let tintColor        = UIColor.fromHexOrNil(tintColorHex)
+        let backgroundColor  = UIColor.fromHexOrNil(backgroundColorHex)
+
+        let customImage = Util.image(fromBase64: base64customIcon)
+
+        let onClose: () -> Void = { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.uiEventsHandler.sink?("closeButtonTapped")
+            }
+        }
+
+        barkoderView.configureCloseButton(
+            visible: visible,
+            position: position,
+            iconSize: iconSizeNum,
+            tintColor: tintColor,
+            backgroundColor: backgroundColor,
+            cornerRadius: cornerRadiusNum,
+            padding: paddingNum,
+            useCustomIcon: useCustomIconNum,
+            customIcon: customImage,
+            onClose: onClose
+        )
+
+        result(nil)
+    }
+    
+    private func configureFlashButton(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let visible = arguments["visible"] as? Bool,
+              let positionX = (arguments["positionX"] as? NSNumber)?.doubleValue,
+              let positionY = (arguments["positionY"] as? NSNumber)?.doubleValue,
+              let iconSize = (arguments["iconSize"] as? NSNumber)?.doubleValue,
+              let tintColorHex = arguments["tintColor"] as? String,
+              let backgroundColorHex = arguments["backgroundColor"] as? String,
+              let cornerRadius = (arguments["cornerRadius"] as? NSNumber)?.doubleValue,
+              let padding = (arguments["padding"] as? NSNumber)?.doubleValue,
+              let useCustomIcon = arguments["useCustomIcon"] as? Bool,
+              let base64customIconFlashOn = arguments["customIconFlashOn"] as? String,
+              let base64customIconFlashOff = arguments["customIconFlashOff"] as? String
+        else { return }
+
+        let position         = NSValue(cgPoint: CGPoint(x: CGFloat(positionX), y: CGFloat(positionY)))
+        let iconSizeNum      = NSNumber(value: iconSize)
+        let cornerRadiusNum  = NSNumber(value: cornerRadius)
+        let paddingNum       = NSNumber(value: padding)
+        let useCustomIconNum = NSNumber(value: useCustomIcon)
+
+        let tintColor        = UIColor.fromHexOrNil(tintColorHex)
+        let backgroundColor  = UIColor.fromHexOrNil(backgroundColorHex)
+        
+        let customIconFlashOn = Util.image(fromBase64: base64customIconFlashOn)
+        let customIconFlashOff = Util.image(fromBase64: base64customIconFlashOff)
+
+        barkoderView.configureFlashButton(
+            visible: visible,
+            position: position,
+            iconSize: iconSizeNum,
+            tintColor: tintColor,
+            backgroundColor: backgroundColor,
+            cornerRadius: cornerRadiusNum,
+            padding: paddingNum,
+            useCustomIcon: useCustomIconNum,
+            customIconFlashOn: customIconFlashOn,
+            customIconFlashOff: customIconFlashOff
+        )
+
+        result(nil)
+    }
+    
+    private func configureZoomButton(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let visible = arguments["visible"] as? Bool,
+              let positionX = (arguments["positionX"] as? NSNumber)?.doubleValue,
+              let positionY = (arguments["positionY"] as? NSNumber)?.doubleValue,
+              let iconSize = (arguments["iconSize"] as? NSNumber)?.doubleValue,
+              let tintColorHex = arguments["tintColor"] as? String,
+              let backgroundColorHex = arguments["backgroundColor"] as? String,
+              let cornerRadius = (arguments["cornerRadius"] as? NSNumber)?.doubleValue,
+              let padding = (arguments["padding"] as? NSNumber)?.doubleValue,
+              let useCustomIcon = arguments["useCustomIcon"] as? Bool,
+              let base64customIconZoomedIn = arguments["customIconZoomedIn"] as? String,
+              let base64customIconZoomedOut = arguments["customIconZoomedOut"] as? String,
+              let zoomedInFactor = (arguments["zoomedInFactor"] as? NSNumber)?.doubleValue,
+              let zoomedOutFactor = (arguments["zoomedOutFactor"] as? NSNumber)?.doubleValue
+        else { return }
+
+        let position            = NSValue(cgPoint: CGPoint(x: CGFloat(positionX), y: CGFloat(positionY)))
+        let iconSizeNum         = NSNumber(value: iconSize)
+        let cornerRadiusNum     = NSNumber(value: cornerRadius)
+        let paddingNum          = NSNumber(value: padding)
+        let zoomedInFactorNum   = NSNumber(value: zoomedInFactor)
+        let zoomedOutFactorNum  = NSNumber(value: zoomedOutFactor)
+        let useCustomIconNum    = NSNumber(value: useCustomIcon)
+
+        let tintColor        = UIColor.fromHexOrNil(tintColorHex)
+        let backgroundColor  = UIColor.fromHexOrNil(backgroundColorHex)
+        
+        let customIconZoomedIn = Util.image(fromBase64: base64customIconZoomedIn)
+        let customIconZoomedOut = Util.image(fromBase64: base64customIconZoomedOut)
+
+        barkoderView.configureZoomButton(
+            visible: visible,
+            position: position,
+            iconSize: iconSizeNum,
+            tintColor: tintColor,
+            backgroundColor: backgroundColor,
+            cornerRadius: cornerRadiusNum,
+            padding: paddingNum,
+            useCustomIcon: useCustomIconNum,
+            customIconZoomedIn: customIconZoomedIn,
+            customIconZoomedOut: customIconZoomedOut,
+            zoomedInFactor: zoomedInFactorNum,
+            zoomedOutFactor: zoomedOutFactorNum
+        )
+
+        result(nil)
+    }
+    
+    private func selectVisibleBarcodes(_ result: @escaping FlutterResult) {
+        barkoderView.selectVisibleBarcodes()
+        
+        result(nil)
+    }
      
 }
 
@@ -1758,6 +1951,8 @@ extension BarkoderPlatformView {
             result(decoderConfig.japanesePost.enabled)
         case MaxiCode:
             result(decoderConfig.maxiCode.enabled)
+        case OCRText:
+            result(decoderConfig.ocrText.enabled)
         default:
             result(
                 FlutterError(
@@ -1807,6 +2002,10 @@ extension BarkoderPlatformView {
     
     private func isQrDpmModeEnabled(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.decoderConfig?.qr.dpmMode == 1 ? true : false)
+    }
+    
+    private func isQrMultiPartMergeEnabled(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.decoderConfig?.qr.multiPartMerge)
     }
     
     private func isQrMicroDpmModeEnabled(_ result: @escaping FlutterResult) {
