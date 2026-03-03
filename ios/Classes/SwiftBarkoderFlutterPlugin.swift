@@ -435,6 +435,10 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.configureZoomButton(call, result: result)
             case "selectVisibleBarcodes":
                 self?.selectVisibleBarcodes(result)
+            case "setPowerSavingMode":
+                self?.setPowerSavingMode(call, result: result)
+            case "getPowerSavingMode":
+                self?.getPowerSavingMode(result)
             default:
                 break
             }
@@ -1682,6 +1686,16 @@ extension BarkoderPlatformView {
         
         result(nil)
     }
+    
+    private func setPowerSavingMode(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let powerSavingMode = call.arguments as? Int else {
+            return
+        }
+        
+        barkoderView.config?.powerSavingMode = powerSavingMode
+        
+        result(nil)
+    }
      
 }
 
@@ -2130,6 +2144,10 @@ extension BarkoderPlatformView {
 
     private func getARHeaderTextFormat(_ result: @escaping FlutterResult) {
         result(barkoderView.config?.arConfig.headerTextFormat)
+    }
+    
+    private func getPowerSavingMode(_ result: @escaping FlutterResult) {
+        result(barkoderView.config?.powerSavingMode)
     }
     
 }

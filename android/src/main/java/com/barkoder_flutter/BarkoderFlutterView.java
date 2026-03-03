@@ -608,6 +608,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "getARHeaderTextFormat":
                 getARHeaderTextFormat(result);
                 break;
+            case "setPowerSavingMode":
+                setPowerSavingMode((int) call.arguments, result);
+                break;
+            case "getPowerSavingMode":
+                getPowerSavingMode(result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -1488,6 +1494,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(null);
     }
 
+    private void setPowerSavingMode(int powerSavingMode, MethodChannel.Result methodResult) {
+        bkdView.config.setPowerSavingMode(powerSavingMode);
+
+        methodResult.success(null);
+    }
+
     private void getShowDuplicatesLocations(MethodChannel.Result result) {
         result.success(bkdView.config.getShowDuplicatesLocations());
     }
@@ -1656,6 +1668,10 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void isScanningIndicatorAlwaysVisible(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.isScanningIndicatorAlwaysVisible());
+    }
+
+    private void getPowerSavingMode(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getPowerSavingMode());
     }
 
     private void configureBarkoder(String barkoderConfigAsJsonString, MethodChannel.Result methodResult) {

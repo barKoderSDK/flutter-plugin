@@ -1,3 +1,11 @@
+## 1.6.8
+* Updated barKoder SDK 1.6.8
+* Default resolution set to Full HD (FHD)
+* Added Power Saving Mode
+* South African Driver’s Licenses (SADL) parser fix
+* Improved overall performance and stability
+* Beta: Added Parsers for data in South African IDs and South African Vehicle License Discs
+
 ## 1.6.7
 * Updated barKoder SDK 1.6.7
 * Added OCR

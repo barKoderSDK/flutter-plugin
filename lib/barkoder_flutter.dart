@@ -3363,6 +3363,46 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getARHeaderTextFormat');
   }
 
+  /// Retrieves the power saving mode level.
+  ///
+  /// Returns a [Future] that completes with an integer representing the power saving mode level.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int powerSavingMode = await _barkoder.getPowerSavingMode;
+  /// print('Power saving mode: $powerSavingMode');
+  /// ```
+  Future<int> get getPowerSavingMode async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getPowerSavingMode');
+  }
+
+  /// Power saving mode level. Higher values reduce CPU/battery usage by limiting frame processing. 0 = disabled (no constraints).
+  ///
+  /// [powerSavingMode]: An integer representing the power saving mode level.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// int powerSavingMode = 1; // Example power saving mode level
+  /// await _barkoder.setPowerSavingMode(powerSavingMode);
+  /// print('Power saving mode set to: $powerSavingMode');
+  /// ```
+  Future<void> setPowerSavingMode(int powerSavingMode) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod(
+        'setPowerSavingMode', powerSavingMode);
+  }
+
   void _clearScanningResultsStreamSubscription() {
     _scanningResultsStreamSubscription?.cancel();
     _scanningResultsStreamSubscription = null;

@@ -222,6 +222,7 @@ class BarkoderConfig {
   bool? pinchToZoomEnabled;
   bool? regionOfInterestVisible;
   BarkoderResolution? barkoderResolution;
+  int? powerSavingMode;
   bool? beepOnSuccessEnabled;
   bool? vibrateOnSuccessEnabled;
   bool? enableVINRestrictions;
@@ -245,6 +246,7 @@ class BarkoderConfig {
       this.pinchToZoomEnabled,
       this.regionOfInterestVisible,
       this.barkoderResolution,
+      this.powerSavingMode,
       this.beepOnSuccessEnabled,
       this.vibrateOnSuccessEnabled,
       this.enableVINRestrictions,
@@ -269,6 +271,7 @@ class BarkoderConfig {
       "pinchToZoomEnabled": pinchToZoomEnabled,
       "regionOfInterestVisible": regionOfInterestVisible,
       "barkoderResolution": barkoderResolution?.index,
+      "powerSavingMode": powerSavingMode,
       "beepOnSuccessEnabled": beepOnSuccessEnabled,
       "vibrateOnSuccessEnabled": vibrateOnSuccessEnabled,
       "enableVINRestrictions": enableVINRestrictions,
