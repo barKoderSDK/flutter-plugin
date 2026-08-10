@@ -13,11 +13,15 @@ A new Flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'barkoder_flutter/Sources/barkoder_flutter/**/*.swift'
   s.dependency 'Flutter'
   s.platform = :ios, '11.0'
-  s.preserve_paths = 'Barkoder.xcframework/**/*', 'BarkoderSDK.xcframework/**/*'
-  s.vendored_frameworks = 'Barkoder.xcframework', 'BarkoderSDK.xcframework'
+  s.preserve_paths = 
+  'barkoder_flutter/Barkoder.xcframework/**/*',
+  'barkoder_flutter/BarkoderSDK.xcframework/**/*'
+  s.vendored_frameworks =
+  'barkoder_flutter/Barkoder.xcframework',
+  'barkoder_flutter/BarkoderSDK.xcframework'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-framework BarkoderSDK' }
 
   # Flutter.framework does not contain a i386 slice.

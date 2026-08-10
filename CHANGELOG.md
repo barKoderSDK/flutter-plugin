@@ -1,3 +1,16 @@
+## 1.7.1
+* Updated barKoder SDK 1.7.1
+* Added Swift Package Manager (SPM) support
+* New AR Mode: matchFilter
+* Added roiCenterMark option
+* Added Bar Coded Boarding Pass (BCBP) parser
+* GS1 Parser overhaul
+* QR decoder improvements
+* PDF417 bugfixes
+* Code 93 zero termination fix
+* Improved overall performance and stability
+* Code 128 start codes added to result
+
 ## 1.6.8
 * Updated barKoder SDK 1.6.8
 * Default resolution set to Full HD (FHD)

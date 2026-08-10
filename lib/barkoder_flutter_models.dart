@@ -40,6 +40,7 @@ class DecoderResult {
   late String barcodeTypeName;
   late String binaryDataAsBase64;
   late String textualData;
+  late bool isMatched;
   String? characterSet;
   Map<String, dynamic>? extra;
   List<MRZImage>? mrzImages;
@@ -51,6 +52,7 @@ class DecoderResult {
     required this.barcodeTypeName,
     required this.binaryDataAsBase64,
     required this.textualData,
+    required this.isMatched,
     this.characterSet,
     this.extra,
     this.mrzImages,
@@ -63,6 +65,7 @@ class DecoderResult {
     barcodeTypeName = resultMap['barcodeTypeName'];
     binaryDataAsBase64 = resultMap['binaryDataAsBase64'];
     textualData = resultMap['textualData'];
+    isMatched = resultMap['isMatched'];
     characterSet = resultMap['characterSet'];
     if (resultMap.containsKey('extra')) extra = json.decode(resultMap['extra']);
     if (resultMap.containsKey('mrzImagesAsBase64')) {
@@ -96,7 +99,7 @@ class DecoderResult {
 
   @override
   String toString() {
-    return '{$barcodeType, $barcodeTypeName, $binaryDataAsBase64, $textualData, $characterSet, $extra, $mrzImages, $locationPoints, $sadlImage}';
+    return '{$barcodeType, $barcodeTypeName, $binaryDataAsBase64, $textualData, $isMatched, $characterSet, $extra, $mrzImages, $locationPoints, $sadlImage}';
   }
 }
 
@@ -158,7 +161,7 @@ enum BarcodeType {
   ocrText;
 }
 
-enum FormattingType { disabled, automatic, gs1, aamva, sadl }
+enum FormattingType { disabled, automatic, gs1, aamva, sadl, bcbp }
 
 enum MsiChecksumType {
   disabled,
@@ -180,7 +183,15 @@ enum BarkoderCameraPosition { BACK, FRONT }
 
 enum BarkoderResolution { HD, FHD, UHD }
 
-enum BarkoderARMode { off, interactiveDisabled, interactiveEnabled, nonInteractive }
+enum BarkoderRoiCenterMark { none, crosshair, point }
+
+enum BarkoderARMode {
+  off,
+  interactiveDisabled,
+  interactiveEnabled,
+  nonInteractive,
+  matchFilter
+}
 
 enum BarkoderAROverlayRefresh { smooth, normal }
 
@@ -217,11 +228,13 @@ class BarkoderConfig {
   bool? scanningIndicatorAlwaysVisible;
   bool? closeSessionOnResultEnabled;
   bool? imageResultEnabled;
+  bool? barcodeThumbnailOnResult;
   bool? locationInImageResultEnabled;
   bool? locationInPreviewEnabled;
   bool? pinchToZoomEnabled;
   bool? regionOfInterestVisible;
   BarkoderResolution? barkoderResolution;
+  BarkoderRoiCenterMark? roiCenterMark;
   int? powerSavingMode;
   bool? beepOnSuccessEnabled;
   bool? vibrateOnSuccessEnabled;
@@ -241,11 +254,13 @@ class BarkoderConfig {
       this.scanningIndicatorAlwaysVisible,
       this.closeSessionOnResultEnabled,
       this.imageResultEnabled,
+      this.barcodeThumbnailOnResult,
       this.locationInImageResultEnabled,
       this.locationInPreviewEnabled,
       this.pinchToZoomEnabled,
       this.regionOfInterestVisible,
       this.barkoderResolution,
+      this.roiCenterMark,
       this.powerSavingMode,
       this.beepOnSuccessEnabled,
       this.vibrateOnSuccessEnabled,
@@ -266,11 +281,13 @@ class BarkoderConfig {
       "scanningIndicatorAlwaysVisible": scanningIndicatorAlwaysVisible,
       "closeSessionOnResultEnabled": closeSessionOnResultEnabled,
       "imageResultEnabled": imageResultEnabled,
+      "barcodeThumbnailOnResult": barcodeThumbnailOnResult,
       "locationInImageResultEnabled": locationInImageResultEnabled,
       "locationInPreviewEnabled": locationInPreviewEnabled,
       "pinchToZoomEnabled": pinchToZoomEnabled,
       "regionOfInterestVisible": regionOfInterestVisible,
       "barkoderResolution": barkoderResolution?.index,
+      "roiCenterMark": roiCenterMark?.index,
       "powerSavingMode": powerSavingMode,
       "beepOnSuccessEnabled": beepOnSuccessEnabled,
       "vibrateOnSuccessEnabled": vibrateOnSuccessEnabled,
@@ -441,6 +458,8 @@ class BarkoderARConfig {
   int? resultLimit;
   bool? continueScanningOnLimit;
   bool? emitResultsAtSessionEndOnly;
+  bool? returnOnlyMatchedResults;
+  bool? displayOnlyMatchedResults;
   double? headerHeight;
   BarkoderARHeaderShowMode? headerShowMode;
   double? headerMaxTextHeight;
@@ -467,6 +486,8 @@ class BarkoderARConfig {
     this.resultLimit,
     this.continueScanningOnLimit,
     this.emitResultsAtSessionEndOnly,
+    this.returnOnlyMatchedResults,
+    this.displayOnlyMatchedResults,
     this.headerHeight,
     this.headerShowMode,
     this.headerMaxTextHeight,
@@ -495,6 +516,8 @@ class BarkoderARConfig {
       "resultLimit": resultLimit,
       "continueScanningOnLimit": continueScanningOnLimit,
       "emitResultsAtSessionEndOnly": emitResultsAtSessionEndOnly,
+      "returnOnlyMatchedResults": returnOnlyMatchedResults,
+      "displayOnlyMatchedResults": displayOnlyMatchedResults,
       "headerHeight": headerHeight,
       "headerShowMode": headerShowMode?.index,
       "headerMaxTextHeight": headerMaxTextHeight,
@@ -746,6 +769,8 @@ class GeneralSettings {
   double? roiHeight;
   FormattingType? formattingType;
   String? encodingCharacterSet;
+  String? matchFilter;
+  bool? returnOnlyMatchedResults;
   int? maximumResultsCount;
   int? multicodeCachingDuration;
   bool? multicodeCachingEnabled;
@@ -759,6 +784,8 @@ class GeneralSettings {
       this.roiHeight,
       this.formattingType,
       this.encodingCharacterSet,
+      this.matchFilter,
+      this.returnOnlyMatchedResults,
       this.maximumResultsCount,
       this.multicodeCachingDuration,
       this.multicodeCachingEnabled});
@@ -773,6 +800,8 @@ class GeneralSettings {
       "roi_h": roiHeight,
       "formattingType": formattingType?.index,
       "encodingCharacterSet": encodingCharacterSet,
+      "matchFilter": matchFilter,
+      "returnOnlyMatchedResults": returnOnlyMatchedResults,
       "maximumResultsCount": maximumResultsCount,
       "multicodeCachingDuration": multicodeCachingDuration,
       "multicodeCachingEnabled": multicodeCachingEnabled

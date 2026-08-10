@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     // _barkoder.configureBarkoder(BarkoderConfig(
     //   imageResultEnabled: true,
-    //   decoder: DekoderConfig(qr: BarcodeConfig(enabled: true)),
+    //   decoder: DekoderConfig(qr: QRBarcodeConfig(enabled: true)),
     // ));
 
     if (!mounted) return;

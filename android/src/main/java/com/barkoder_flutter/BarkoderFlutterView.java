@@ -16,6 +16,7 @@ import com.barkoder.enums.BarkoderARLocationType;
 import com.barkoder.enums.BarkoderARMode;
 import com.barkoder.enums.BarkoderResolution;
 import com.barkoder.enums.BarkoderCameraPosition;
+import com.barkoder.enums.BarkoderRoiCenterMark;
 import com.barkoder.overlaymanager.BarkoderAROverlayRefresh;
 
 import org.json.JSONObject;
@@ -109,6 +110,13 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (bkdView == null) {
+            if ("stopScanning".equals(call.method)) {
+                result.success(null);
+                return;
+            }
+
+            BarkoderLog.i(TAG, "Method called after BarkoderView destroyed: " + call.method);
+
             sendErrorResult(BarkoderFlutterErrors.BARKODER_VIEW_DESTROYED, null, result);
             return;
         }
@@ -237,8 +245,14 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "getBarkoderResolution":
                 getBarkoderResolution(result);
                 break;
+            case "getRoiCenterMark":
+                getRoiCenterMark(result);
+                break;
             case "setBarkoderResolution":
                 setBarkoderResolution((int) call.arguments, result);
+                break;
+            case "setRoiCenterMark":
+                setRoiCenterMark((int) call.arguments, result);
                 break;
             case "isBeepOnSuccessEnabled":
                 isBeepOnSuccessEnabled(result);
@@ -301,6 +315,18 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "setEncodingCharacterSet":
                 setEncodingCharacterSet((String) call.arguments, result);
+                break;
+            case "getMatchFilter":
+                getMatchFilter(result);
+                break;
+            case "setMatchFilter":
+                setMatchFilter((String) call.arguments, result);
+                break;
+            case "getReturnOnlyMatchedResults":
+                getReturnOnlyMatchedResults(result);
+                break;
+            case "setReturnOnlyMatchedResults":
+                setReturnOnlyMatchedResults((boolean) call.arguments, result);
                 break;
             case "getDecodingSpeed":
                 getDecodingSpeed(result);
@@ -494,6 +520,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setAREmitResultsAtSessionEndOnly":
                 setAREmitResultsAtSessionEndOnly((boolean) call.arguments, result);
                 break;
+            case "setARReturnOnlyMatchedResults":
+                setARReturnOnlyMatchedResults((boolean) call.arguments, result);
+                break;
+            case "setARDisplayOnlyMatchedResults":
+                setARDisplayOnlyMatchedResults((boolean) call.arguments, result);
+                break;
             case "setARHeaderHeight":
                 setARHeaderHeight((double) call.arguments, result);
                 break;
@@ -532,6 +564,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "selectVisibleBarcodes":
                 selectVisibleBarcodes(result);
+                break;
+            case "resetARCache":
+                resetARCache(result);
                 break;
             case "getShowDuplicatesLocations":
                 getShowDuplicatesLocations(result);
@@ -581,6 +616,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "getAREmitResultsAtSessionEndOnly":
                 getAREmitResultsAtSessionEndOnly(result);
                 break;
+            case "getARReturnOnlyMatchedResults":
+                getARReturnOnlyMatchedResults(result);
+                break;
+            case "getARDisplayOnlyMatchedResults":
+                getARDisplayOnlyMatchedResults(result);
+                break;
             case "getARHeaderHeight":
                 getARHeaderHeight(result);
                 break;
@@ -613,6 +654,9 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
                 break;
             case "getPowerSavingMode":
                 getPowerSavingMode(result);
+                break;
+            case "getDeviceId":
+                getDeviceId(result);
                 break;
             default:
                 result.notImplemented();
@@ -662,6 +706,17 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void getBarkoderResolution(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.getBarkoderResolution().ordinal());
+    }
+
+    private void setRoiCenterMark(int index, MethodChannel.Result methodResult) {
+        BarkoderRoiCenterMark roiCenterMark = BarkoderRoiCenterMark.values()[index];
+        bkdView.config.setRoiCenterMark(roiCenterMark);
+
+        methodResult.success(null);
+    }
+
+    private void getRoiCenterMark(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getRoiCenterMark().ordinal());
     }
 
     private void setRegionOfInterestVisible(boolean visible, MethodChannel.Result methodResult) {
@@ -1030,8 +1085,28 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(bkdView.config.getDecoderConfig().encodingCharacterSet);
     }
 
+    private void getMatchFilter(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().matchFilter);
+    }
+
+    private void getReturnOnlyMatchedResults(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.config.getDecoderConfig().returnOnlyMatchedResults);
+    }
+
     private void setEncodingCharacterSet(String characterSet, MethodChannel.Result methodResult) {
         bkdView.config.getDecoderConfig().encodingCharacterSet = characterSet;
+
+        methodResult.success(null);
+    }
+
+    private void setMatchFilter(String matchFilter, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().matchFilter = matchFilter;
+
+        methodResult.success(null);
+    }
+
+    private void setReturnOnlyMatchedResults(boolean value, MethodChannel.Result methodResult) {
+        bkdView.config.getDecoderConfig().returnOnlyMatchedResults = value;
 
         methodResult.success(null);
     }
@@ -1320,6 +1395,16 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         result.success(null);
     }
 
+    private void setARReturnOnlyMatchedResults(boolean value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setReturnOnlyMatchedResults(value);
+        result.success(null);
+    }
+
+    private void setARDisplayOnlyMatchedResults(boolean value, MethodChannel.Result result) {
+        bkdView.config.getArConfig().setDisplayOnlyMatchedResults(value);
+        result.success(null);
+    }
+
     private void setARHeaderHeight(double value, MethodChannel.Result result) {
         bkdView.config.getArConfig().setHeaderHeight((float) value);
         result.success(null);
@@ -1494,6 +1579,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         methodResult.success(null);
     }
 
+    private void resetARCache(MethodChannel.Result methodResult) {
+        bkdView.resetArCache();
+
+        methodResult.success(null);
+    }
+
     private void setPowerSavingMode(int powerSavingMode, MethodChannel.Result methodResult) {
         bkdView.config.setPowerSavingMode(powerSavingMode);
 
@@ -1564,6 +1655,14 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void getAREmitResultsAtSessionEndOnly(MethodChannel.Result result) {
         result.success(bkdView.config.getArConfig().getEmitResultsAtSessionEndOnly());
+    }
+
+    private void getARReturnOnlyMatchedResults(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getReturnOnlyMatchedResults());
+    }
+
+    private void getARDisplayOnlyMatchedResults(MethodChannel.Result result) {
+        result.success(bkdView.config.getArConfig().getDisplayOnlyMatchedResults());
     }
 
     private void getARHeaderHeight(MethodChannel.Result result) {
@@ -1672,6 +1771,10 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
 
     private void getPowerSavingMode(MethodChannel.Result methodResult) {
         methodResult.success(bkdView.config.getPowerSavingMode());
+    }
+
+    private void getDeviceId(MethodChannel.Result methodResult) {
+        methodResult.success(Barkoder.GetDeviceId());
     }
 
     private void configureBarkoder(String barkoderConfigAsJsonString, MethodChannel.Result methodResult) {

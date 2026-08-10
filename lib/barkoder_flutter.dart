@@ -890,6 +890,46 @@ class Barkoder {
         'setBarkoderResolution', resolution.index);
   }
 
+  /// Sets the style of the visual marker drawn at the center of the Region of Interest (ROI).
+  ///
+  /// [roiCenterMark]: The BarkoderRoiCenterMark enum value to set.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// BarkoderRoiCenterMark roiCenterMark = BarkoderRoiCenterMark.crosshair;
+  /// await _barkoder.setRoiCenterMark(roiCenterMark);
+  /// print('ROI center mark set to: $roiCenterMark');
+  /// ```
+  Future<void> setRoiCenterMark(BarkoderRoiCenterMark roiCenterMark) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setRoiCenterMark', roiCenterMark.index);
+  }
+
+  /// Retrieves the style of the visual marker drawn at the center of the Region of Interest (ROI).
+  ///
+  /// Returns a [Future] that completes with a [BarkoderRoiCenterMark] enum value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// BarkoderRoiCenterMark roiCenterMark = await _barkoder.getRoiCenterMark();
+  /// print('ROI center mark: $roiCenterMark');
+  /// ```
+  Future<BarkoderRoiCenterMark> getRoiCenterMark() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    final index = await _methodChannel.invokeMethod('getRoiCenterMark');
+    return BarkoderRoiCenterMark.values[index];
+  }
+
   /// Retrieves the value indicating whether a beep sound is played on successful barcode scanning.
   ///
   /// Returns a [Future] that completes with a boolean indicating whether beep on success is enabled.
@@ -1420,6 +1460,82 @@ class Barkoder {
     }
 
     return _methodChannel.invokeMethod('setEncodingCharacterSet', characterSet);
+  }
+
+  /// Defines the string match filter applied to decoded results.
+  ///
+  /// Results expose their match status through `isMatched`.
+  ///
+  /// [matchFilter]: The match filter string to apply.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setMatchFilter('ABC');
+  /// ```
+  Future<void> setMatchFilter(String matchFilter) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setMatchFilter', matchFilter);
+  }
+
+  /// Retrieves the string match filter applied to decoded results.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String matchFilter = await _barkoder.getMatchFilter();
+  /// print('Match filter: $matchFilter');
+  /// ```
+  Future<String> getMatchFilter() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getMatchFilter');
+  }
+
+  /// Controls whether only results matching `matchFilter` are returned.
+  ///
+  /// If `false`, all decoded results are returned, including unmatched results.
+  ///
+  /// This option only applies when a match filter is active.
+  ///
+  /// [value]: Whether only matched results are returned.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setReturnOnlyMatchedResults(true);
+  /// ```
+  Future<void> setReturnOnlyMatchedResults(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setReturnOnlyMatchedResults', value);
+  }
+
+  /// Retrieves whether only results matching `matchFilter` are returned.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool onlyMatched = await _barkoder.getReturnOnlyMatchedResults();
+  /// print('Return only matched results: $onlyMatched');
+  /// ```
+  Future<bool> getReturnOnlyMatchedResults() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getReturnOnlyMatchedResults');
   }
 
   /// Retrieves the current decoding speed setting for barcode scanning.
@@ -2567,6 +2683,52 @@ class Barkoder {
     return _methodChannel.invokeMethod('setAREmitResultsAtSessionEndOnly', value);
   }
 
+  /// When AR mode is `matchFilter`, controls whether only matched results are returned.
+  ///
+  /// If `false`, all detected results are returned, while unmatched results remain marked through `isMatched`.
+  ///
+  /// This option only applies when `arMode == matchFilter` and a match filter is active.
+  ///
+  /// [value]: Whether only matched AR results are returned.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARReturnOnlyMatchedResults(true);
+  /// ```
+  Future<void> setARReturnOnlyMatchedResults(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARReturnOnlyMatchedResults', value);
+  }
+
+  /// When AR mode is `matchFilter`, controls whether only matched results are displayed.
+  ///
+  /// If `false`, all decoded results are displayed, including unmatched results.
+  ///
+  /// This option only applies when `arMode == matchFilter` and a match filter is active.
+  ///
+  /// [value]: Whether only matched AR results are displayed.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.setARDisplayOnlyMatchedResults(true);
+  /// ```
+  Future<void> setARDisplayOnlyMatchedResults(bool value) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return _methodChannel.invokeMethod('setARDisplayOnlyMatchedResults', value);
+  }
+
   /// Sets the height of the header text label shown above the barcode in AR mode.
   ///
   /// [value]: Header height.
@@ -2908,6 +3070,23 @@ class Barkoder {
     return _methodChannel.invokeMethod('selectVisibleBarcodes');
   }
 
+  /// Clears the current AR result cache and removes all rendered AR barcode overlays without stopping the camera, ending the scanning session, or emitting results.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// _barkoder.resetARCache();
+  /// print('AR cache reset');
+  /// ```
+  Future<void> resetARCache() {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('resetARCache');
+  }
+
   /// Retrieves whether showing duplicate barcode locations in the AR view is enabled.
   ///
   /// Returns a [Future] that completes with a [bool] value.
@@ -3200,6 +3379,42 @@ class Barkoder {
     return await _methodChannel.invokeMethod('getAREmitResultsAtSessionEndOnly');
   }
 
+  /// Retrieves whether only matched results are returned in AR match filter mode.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool onlyMatched = await _barkoder.getARReturnOnlyMatchedResults();
+  /// print('AR return only matched results: $onlyMatched');
+  /// ```
+  Future<bool> getARReturnOnlyMatchedResults() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return await _methodChannel.invokeMethod('getARReturnOnlyMatchedResults');
+  }
+
+  /// Retrieves whether only matched results are displayed in AR match filter mode.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool onlyMatched = await _barkoder.getARDisplayOnlyMatchedResults();
+  /// print('AR display only matched results: $onlyMatched');
+  /// ```
+  Future<bool> getARDisplayOnlyMatchedResults() async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+        code: BarkoderErrors.barkoderViewNotMounted,
+        message: BarkoderErrors.barkodeViewNotMountedDesc,
+      ));
+    }
+
+    return await _methodChannel.invokeMethod('getARDisplayOnlyMatchedResults');
+  }
+
   /// Retrieves the header height above barcode in AR mode.
   ///
   /// Returns a [Future] that completes with a [double] value.
@@ -3401,6 +3616,25 @@ class Barkoder {
 
     return _methodChannel.invokeMethod(
         'setPowerSavingMode', powerSavingMode);
+  }
+
+  /// Retrieves the Device ID.
+  ///
+  /// Returns a [Future] that completes with a [String] value.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// String deviceId = await _barkoder.getDeviceId();
+  /// print('Device ID: $deviceId');
+  /// ```
+  Future<String> get getDeviceId async {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return await _methodChannel.invokeMethod('getDeviceId');
   }
 
   void _clearScanningResultsStreamSubscription() {
