@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "barkoder_flutter",
     platforms: [
-        .iOS("13.0"),
+        .iOS("15.0"),
     ],
     products: [
         .library(name: "barkoder-flutter", targets: ["barkoder_flutter"])

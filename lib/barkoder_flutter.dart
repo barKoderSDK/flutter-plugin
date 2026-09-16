@@ -156,6 +156,47 @@ class Barkoder {
     return _methodChannel.invokeMethod('setFlashEnabled', enabled);
   }
 
+  /// Controls whether the front camera preview is horizontally mirrored.
+  ///
+  /// [mirrored]: A boolean indicating whether to mirror the front camera preview.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool mirrored = true;
+  /// await _barkoder.setPreviewMirrored(mirrored);
+  /// print('Preview mirrored: $mirrored');
+  /// ```
+  Future<void> setPreviewMirrored(bool mirrored) {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel.invokeMethod('setPreviewMirrored', mirrored);
+  }
+
+  /// Retrieves whether the front camera preview is horizontally mirrored.
+  ///
+  /// Returns a [Future] that completes with a boolean indicating whether the front camera preview is mirrored.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// bool mirrored = await _barkoder.isPreviewMirrored();
+  /// print('Preview mirrored: $mirrored');
+  /// ```
+  Future<bool> isPreviewMirrored() {
+    if (_isBarkoderViewNotMounted) {
+      return Future.error(PlatformException(
+          code: BarkoderErrors.barkoderViewNotMounted,
+          message: BarkoderErrors.barkodeViewNotMountedDesc));
+    }
+
+    return _methodChannel
+        .invokeMethod('isPreviewMirrored')
+        .then((mirrored) => mirrored as bool);
+  }
+
   /// Starts the camera.
   ///
   /// Example usage:

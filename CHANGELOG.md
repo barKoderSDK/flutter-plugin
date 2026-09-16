@@ -1,3 +1,9 @@
+## 1.7.2
+* Updated barKoder SDK 1.7.2
+* Added setPreviewMirrored setting to control front camera mirroring
+* Fixed a scanning issue affecting apps built with Xcode 27
+* Minimum supported iOS version is now iOS 15
+
 ## 1.7.1
 * Updated barKoder SDK 1.7.1
 * Added Swift Package Manager (SPM) support

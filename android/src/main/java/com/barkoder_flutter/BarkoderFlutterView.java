@@ -137,6 +137,12 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
             case "setFlashEnabled":
                 setFlashEnabled((boolean) call.arguments, result);
                 break;
+            case "setPreviewMirrored":
+                setPreviewMirrored((boolean) call.arguments, result);
+                break;
+            case "isPreviewMirrored":
+                isPreviewMirrored(result);
+                break;
             case "startCamera":
                 startCamera(result);
                 break;
@@ -931,6 +937,16 @@ class BarkoderFlutterView implements PlatformView, MethodChannel.MethodCallHandl
         bkdView.setFlashEnabled(enabled);
 
         methodResult.success(null);
+    }
+
+    private void setPreviewMirrored(boolean mirrored, MethodChannel.Result methodResult) {
+        bkdView.setPreviewMirrored(mirrored);
+
+        methodResult.success(null);
+    }
+
+    private void isPreviewMirrored(MethodChannel.Result methodResult) {
+        methodResult.success(bkdView.isPreviewMirrored());
     }
 
     private void isFlashAvailable(MethodChannel.Result methodResult) {

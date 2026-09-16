@@ -774,6 +774,8 @@ class GeneralSettings {
   int? maximumResultsCount;
   int? multicodeCachingDuration;
   bool? multicodeCachingEnabled;
+  bool? upcEanDeblur;
+  bool? enableMisshaped1D;
 
   GeneralSettings(
       {this.threadsLimit,
@@ -788,7 +790,9 @@ class GeneralSettings {
       this.returnOnlyMatchedResults,
       this.maximumResultsCount,
       this.multicodeCachingDuration,
-      this.multicodeCachingEnabled});
+      this.multicodeCachingEnabled,
+      this.upcEanDeblur,
+      this.enableMisshaped1D});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> filteredMap = {
@@ -804,7 +808,9 @@ class GeneralSettings {
       "returnOnlyMatchedResults": returnOnlyMatchedResults,
       "maximumResultsCount": maximumResultsCount,
       "multicodeCachingDuration": multicodeCachingDuration,
-      "multicodeCachingEnabled": multicodeCachingEnabled
+      "multicodeCachingEnabled": multicodeCachingEnabled,
+      "upcEanDeblur": upcEanDeblur,
+      "enableMisshaped1D": enableMisshaped1D
     };
 
     filteredMap.removeWhere((key, value) => value == null);

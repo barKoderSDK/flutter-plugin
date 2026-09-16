@@ -116,6 +116,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setZoomFactor(call, result: result)
             case "setFlashEnabled":
                 self?.setFlashEnabled(call, result: result)
+            case "setPreviewMirrored":
+                self?.setPreviewMirrored(call, result: result)
             case "startCamera":
                 self?.startCamera(result)
             case "stopScanning":
@@ -198,6 +200,8 @@ public class BarkoderPlatformView: NSObject, FlutterPlatformView {
                 self?.setEnableVINRestrictions(call, result: result)
             case "isFlashAvailable":
                 self?.isFlashAvailable(result)
+            case "isPreviewMirrored":
+                self?.isPreviewMirrored(result)
             case "isCloseSessionOnResultEnabled":
                 self?.isCloseSessionOnResultEnabled(result)
             case "isImageResultEnabled":
@@ -759,6 +763,16 @@ extension BarkoderPlatformView {
             return
         }
         self.barkoderView.config?.roiCenterMark = roiCenterMark
+
+        result(nil)
+    }
+
+    private func setPreviewMirrored(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let mirrored = call.arguments as? Bool else {
+            return
+        }
+
+        barkoderView.previewMirrored = mirrored
 
         result(nil)
     }
@@ -1779,6 +1793,10 @@ extension BarkoderPlatformView {
         barkoderView.isFlashAvailable { flashAvailable in
             result(flashAvailable)
         }
+    }
+
+    private func isPreviewMirrored(_ result: @escaping FlutterResult) {
+        result(barkoderView.previewMirrored)
     }
     
     private func isCloseSessionOnResultEnabled(_ result: @escaping FlutterResult) {
